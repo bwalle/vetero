@@ -1,0 +1,131 @@
+/* {{{
+ * (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
+ */
+
+#ifndef MONTHREPORTGENERATOR_H_
+#define MONTHREPORTGENERATOR_H_
+
+/**
+ * @file monthreportgenerator.h
+ * @brief Generates monthly reports
+ *
+ * @author Bernhard Walle <bernhard@bwalle.de>
+ */
+
+#include "reportgenerator.h"
+#include "htmldocument.h"
+
+namespace vetero {
+namespace reportgen {
+
+/**
+ * @brief Creates the month statistics HTML page including the diagrams
+ *
+ * Generates the month statistics page, including a diagram for the temperature, the
+ * humidity, the wind and the rain.
+ *
+ * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup report
+ */
+class MonthReportGenerator : public ReportGenerator
+{
+    public:
+        /**
+         * @brief Creates a new instance
+         *
+         * @param[in] reportGenerator the appliation's main class
+         * @param[in] month the month in ISO format (<tt>YYYY-MM</tt>)
+         */
+        MonthReportGenerator(VeteroReportgen    *reportGenerator,
+                             const std::string  &month);
+
+        /**
+         * @brief Does the work.
+         *
+         * @exception common::ApplicationError if something failed
+         */
+        virtual void generateReports()
+        throw (common::ApplicationError);
+
+    protected:
+        /**
+         * @brief Generates one report
+         *
+         * @param[in] month the date string
+         */
+        void generateOneReport(const std::string &month)
+        throw (common::ApplicationError, common::DatabaseError);
+
+        /**
+         * @brief Creates the temperature diagram for one month
+         *
+         * @exception common::ApplicationError on general error
+         * @exception common::DatabaseError if the SQL is invalid
+         */
+        void createTemperatureDiagram()
+        throw (common::ApplicationError, common::DatabaseError);
+
+        /**
+         * @brief Creates the wind diagram for one month
+         *
+         * @exception common::ApplicationError on general error
+         * @exception common::DatabaseError if the SQL is invalid
+         */
+        void createWindDiagram()
+        throw (common::ApplicationError, common::DatabaseError);
+
+        /**
+         * @brief Creates the rain diagram for one month
+         *
+         * @exception common::ApplicationError on general error
+         * @exception common::DatabaseError if the SQL is invalid
+         */
+        void createRainDiagram()
+        throw (common::ApplicationError, common::DatabaseError);
+
+        /**
+         * @brief Creates the HTML page
+         *
+         * @exception common::ApplicationError on general error
+         * @exception common::DatabaseError if the SQL is invalid
+         */
+        void createHtml()
+        throw (common::ApplicationError, common::DatabaseError);
+
+        /**
+         * @brief Creates the table with the numeric values
+         *
+         * @param[in] html the HTML document that is used to write the HTML table
+         * @exception common::ApplicationError on general error
+         * @exception common::DatabaseError if the SQL is invalid
+         */
+        void createTable(HtmlDocument &html)
+        throw (common::ApplicationError, common::DatabaseError);
+
+    private:
+        std::string m_monthString;
+        int m_year;
+        int m_month;
+
+        std::string m_temperatureFileName;
+        std::string m_windFileName;
+        std::string m_rainFileName;
+};
+
+} // end namespace reportgen
+} // end namespace vetero
+
+#endif /* MONTHREPORTGENERATOR_H_ */

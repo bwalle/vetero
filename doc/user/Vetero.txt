@@ -1,0 +1,61 @@
+= Vetero =
+:author:    Bernhard Walle
+:email:     bernhard@bwalle.de
+:revdate:   2011-04-26
+:revnumber: 0.1.0
+:lang:      de
+
+
+== Übersicht ==
+
+Vetero erlaubt es, Daten vom ELV USB-WDE1 Wetterdatenempfänger
+
+- in eine Datenbank zu speichern,
+- auf einem LC-Display darzustellen,
+- auf einen Webserver hochzuladen und
+- Tabellen und Diagramme für die Auswertung zu generieren.
+
+Dabei kann lediglich ein Kombisensor verwendet werden, was die Messung von Temperatur,
+Luftfeuchtigkeit, Niederschlag und Windgeschwindigkeit ermöglicht.
+
+== Implementierung ==
+
+=== Datenbank ===
+
+Als Datenbank wird SQlite3 verwendet. Hierbei handelt es sich nicht um einen »herkömmlichen«
+Datenbankserver wie MySQL, Oracle oder PostgreSQL sondern um eine Bibliothek die es ermöglicht,
+eine Datei über SQL als Datenbank zu verwenden. 
+
+.Datenbankschema: Tabelle `weather_data`
+[cols="1,1,5",frame="topbot",options="header"]
+|=============================================================================================
+|Name            |Typ         |Beschreibung
+|`id`            |`INTEGER`   |Primärschlüssel des Messwertes, automatisch verwaltet
+|`timestamp`     |`DATETIME`  |Zeitstempel des Messwertes in Lokalzeit
+|`temp`          |`REAL`      |Temperatur in °C
+|`humid`         |`INTEGER`   |Luftfeuchtigkeit in %
+|`rain_gauge`    |`INTEGER`   |Regenmenge in Wippenschlägen (Zählerüberlauf wird kompensiert, läuft also nie über)
+|`is_rain`       |`BOOL`      |Regensensor
+|`wind`          |`REAL`      |Windgeschwindigkeit in km/h
+|=============================================================================================
+
+Außerdem wird der aktuelle Offset der Wippenschläge in einer anderen Tabelle gespeichert. Bei jedem
+Überlauf wird dieser Wert inkrementiert, dadurch ist `rain_gauge` ein monoton steigender Wert. Um
+die Regenmenge in einem bestimmten Zeitraum zu ermitteln ist also lediglich eine Differenzbildung
+erforderlich.
+
+Um zukünftige Erweiterungen zu ermöglichen gibt es eine Tabelle `misc`, in der Schlüssel-Wert-Paare
+gespeichert werden. Die Speicherung erfolgt hierbei rein textuell. Der einzige Schlüssel ist hierbei
+`rain_gauge_offset`.
+
+.Datenbankschema: Tabelle `misc`
+[cols="1,1,5",frame="topbot",options="header"]
+|=============================================================================================
+|Name            |Typ         |Beschreibung
+|`id`            |`INTEGER`   |Primärschlüssel, automatisch verwaltet
+|`key`           |`STRING`    |Schlüssel als Freitext.
+|`value`         |`STRING`    |Wert als Freitext.
+|=============================================================================================
+
+
+// vim: set ft=asciidoc spelllang=de spell tw=100:
