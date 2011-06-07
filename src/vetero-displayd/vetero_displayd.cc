@@ -224,7 +224,7 @@ void VeteroDisplayd::updateDisplay(const common::CurrentWeather &weather)
     m_display->renderText(5, 11, vetero::display::NORMAL_FONT, "%5.1f km/h", weather.maxWindSpeed());
 
     // Rain
-    m_display->renderText(6, 0, vetero::display::BOLD_FONT, _("Rain"))
+    m_display->renderText(6, 0, vetero::display::BOLD_FONT, _("Rain"));
     m_display->renderText(6, 13, vetero::display::NORMAL_FONT, "%5.1f mm", weather.rain());
 
     m_display->update();
