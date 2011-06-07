@@ -21,6 +21,8 @@
 #include <libbw/log/debug.h>
 
 #include <common/utils.h>
+#include <common/translation.h>
+
 #include "monthreportgenerator.h"
 #include "calendar.h"
 #include "gnuplot.h"
@@ -190,19 +192,19 @@ void MonthReportGenerator::createHtml()
 
     html.setTitle(bw::Datetime(m_year, m_month, 1, 0, 0, 0, false).strftime("%B %Y"));
 
-    html.addSection("Temperaturverlauf", "Temperatur", "temperature");
+    html.addSection(_("Temperature profile"), _("Temperature"), "temperature");
     html.img(m_temperatureFileName);
     html.addTopLink();
 
-    html.addSection("Windgeschwindigkeit", "Wind", "wind");
+    html.addSection(_("Wind speed"), _("Wind"), "wind");
     html.img(m_windFileName);
     html.addTopLink();
 
-    html.addSection("Niederschlag", "Niederschlag", "rain");
+    html.addSection(_("Rain"), _("Rain"), "rain");
     html.img(m_rainFileName);
     html.addTopLink();
 
-    html.addSection("Numerische Werte", "Werte", "numeric");
+    html.addSection(_("Numeric values"), _("Values"), "numeric");
     createTable(html);
     html.addTopLink();
 

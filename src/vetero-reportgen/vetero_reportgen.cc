@@ -24,6 +24,7 @@
 #include <libbw/log/errorlog.h>
 #include <libbw/log/debug.h>
 
+#include <common/translation.h>
 #include <common/dbaccess.h>
 
 #include "config.h"
@@ -67,7 +68,11 @@ void VeteroReportgen::readConfiguration()
     m_configuration.reset(new common::Configuration(m_configfile));
     if (!m_configuration->configurationRead() && m_noConfigFatal)
         throw common::ApplicationError(m_configuration->error());
-    std::setlocale(LC_TIME, m_configuration->getLocale().c_str());
+
+    setlocale(LC_ALL, m_configuration->getLocale().c_str());
+    setlocale(LC_NUMERIC, "C");
+    bindtextdomain("vetero-reportgen", INSTALL_PREFIX "/share");
+    textdomain("vetero-reportgen");
 }
 
 // -------------------------------------------------------------------------------------------------

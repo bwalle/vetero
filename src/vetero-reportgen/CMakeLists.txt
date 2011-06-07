@@ -33,4 +33,12 @@ target_link_libraries(vetero-reportgen ${EXTRA_LIBS} vetero bw)
 
 install (TARGETS vetero-reportgen DESTINATION bin)
 
+# Translation
+add_custom_target(vetero-reportgen-pot
+    COMMAND             xgettext -c++ --from-code=utf-8 -k_
+                        -o ${VETERO_PO_DIRECTORY}/vetero-reportgen/vetero-reportgen.pot
+                        ${VETERO_REPORTGEN_SRCS}
+    WORKING_DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 # vim: set sw=4 ts=4 et fdm=marker:

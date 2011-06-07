@@ -22,8 +22,6 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 add_subdirectory(common)
 add_subdirectory(veterod)
 add_subdirectory(vetero-reportgen)
-if (BUILD_VETERO_DISPLAYD)
-    add_subdirectory(vetero-displayd)
-endif (BUILD_VETERO_DISPLAYD)
+add_subdirectory(vetero-displayd)
 
 # vim: set sw=4 ts=4 et fdm=marker:

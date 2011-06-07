@@ -1,0 +1,64 @@
+# German translations for vetero-reportgen package
+# German messages for vetero-reportgen.
+# Copyright (C) 2011 THE vetero-reportgen'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the vetero-reportgen package.
+# Bernhard Walle <bernhard@bwalle.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: vetero-reportgen\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-07 21:22+0200\n"
+"PO-Revision-Date: 2011-06-07 20:59+0200\n"
+"Last-Translator: Bernhard Walle <bernhard@bwalle.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: htmldocument.cc:189
+#, c-format
+msgid "Created by %s %s on %s\n"
+msgstr "Erstellt von %s %s am %s\n"
+
+#: indexgenerator.cc:45
+msgid "Current"
+msgstr "Aktuell"
+
+#: indexgenerator.cc:45
+msgid "Current weather data"
+msgstr "Aktuelle Wetterdaten"
+
+#: monthreportgenerator.cc:207
+msgid "Numeric values"
+msgstr "Numerische Werte"
+
+#: indexgenerator.cc:42
+msgid "Overview Weather data"
+msgstr "Übersicht Wetterdaten"
+
+#: monthreportgenerator.cc:203
+msgid "Rain"
+msgstr "Niederschlag"
+
+#: monthreportgenerator.cc:195
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: monthreportgenerator.cc:195
+msgid "Temperature profile"
+msgstr "Temperaturverlauf"
+
+#: monthreportgenerator.cc:207
+msgid "Values"
+msgstr "Werte"
+
+#: monthreportgenerator.cc:199
+msgid "Wind"
+msgstr "Wind"
+
+#: monthreportgenerator.cc:199
+msgid "Wind speed"
+msgstr "Windgeschwindigkeit"

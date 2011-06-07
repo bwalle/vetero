@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-07 21:22+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: htmldocument.cc:189
+#, c-format
+msgid "Created by %s %s on %s\n"
+msgstr ""
+
+#: monthreportgenerator.cc:195
+msgid "Temperature profile"
+msgstr ""
+
+#: monthreportgenerator.cc:195
+msgid "Temperature"
+msgstr ""
+
+#: monthreportgenerator.cc:199
+msgid "Wind speed"
+msgstr ""
+
+#: monthreportgenerator.cc:199
+msgid "Wind"
+msgstr ""
+
+#: monthreportgenerator.cc:203
+msgid "Rain"
+msgstr ""
+
+#: monthreportgenerator.cc:207
+msgid "Numeric values"
+msgstr ""
+
+#: monthreportgenerator.cc:207
+msgid "Values"
+msgstr ""
+
+#: indexgenerator.cc:42
+msgid "Overview Weather data"
+msgstr ""
+
+#: indexgenerator.cc:45
+msgid "Current weather data"
+msgstr ""
+
+#: indexgenerator.cc:45
+msgid "Current"
+msgstr ""

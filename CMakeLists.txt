@@ -139,10 +139,24 @@ configure_file(
 )
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
+#
+# Translations
+#
+
+include(FindGettext)
+if (NOT GETTEXT_FOUND)
+    message(WARNING "GNU gettext tools not found")
+endif (NOT GETTEXT_FOUND)
+set(VETERO_PO_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+add_custom_target(pot
+    DEPENDS vetero-reportgen-pot
+    DEPENDS vetero-displayd-pot)
+
 
 add_subdirectory(src)
 add_subdirectory(doc)
 add_subdirectory(share)
+add_subdirectory(po)
 
 include(CPack)
 

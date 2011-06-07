@@ -19,6 +19,9 @@
 
 #include <libbw/stringutil.h>
 
+#include <common/utils.h>
+#include <common/translation.h>
+
 #include "htmldocument.h"
 #include "config.h"
 
@@ -183,8 +186,9 @@ void HtmlDocument::write(std::ostream &os)
     os << "<table width='100%' bgcolor='#217808' align='center' cellspacing='0' style='margin-top: 20px'>\n"
        << "  <tr>\n"
        << "    <td bgcolor='#dddddd' style='padding: 5px;'>\n"
-       << "      Erstellt von <a href='http://www.bwalle.de/website/vetero.html'>Vetero</a> "
-       <<        GIT_VERSION << " am " << bw::Datetime::now().strftime("%Y-%m-%d %H:%M") << "\n"
+       << common::str_printf( _("Created by %s %s on %s\n"),
+                             "<a href='http://www.bwalle.de/website/vetero.html'>Vetero</a> ",
+                             GIT_VERSION, bw::Datetime::now().strftime("%Y-%m-%d %H:%M").c_str())
        << "    </td>\n"
        << "  </tr>\n"
        << "</table>\n";

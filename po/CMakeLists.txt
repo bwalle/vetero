@@ -15,26 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
 #
 
-set(VETERO_DISPLAYD_SRCS
-    main.cc
-    serdisplibdisplay.cc
-    charset.cc
-    vetero_displayd.cc
-)
-
-if (BUILD_VETERO_DISPLAYD)
-    add_executable(vetero-displayd ${VETERO_DISPLAYD_SRCS})
-    target_link_libraries(vetero-displayd ${EXTRA_LIBS} ${EXTRA_LCD_LIBS} vetero bw)
-
-    install (TARGETS vetero-displayd DESTINATION bin)
-endif (BUILD_VETERO_DISPLAYD)
-
-# Translation
-add_custom_target(vetero-displayd-pot
-    COMMAND             xgettext -c++ --from-code=utf-8 -k_
-                        -o ${VETERO_PO_DIRECTORY}/vetero-displayd/vetero-displayd.pot
-                        ${VETERO_DISPLAYD_SRCS}
-    WORKING_DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}
-)
+add_subdirectory(vetero-reportgen)
+add_subdirectory(vetero-displayd)
 
 # vim: set sw=4 ts=4 et fdm=marker:

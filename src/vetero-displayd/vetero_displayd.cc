@@ -27,6 +27,7 @@
 #include <common/dbaccess.h>
 #include <common/error.h>
 #include <common/dataset.h>
+#include <common/translation.h>
 
 #include "vetero_displayd.h"
 #include "config.h"
@@ -142,6 +143,11 @@ void VeteroDisplayd::readConfiguration()
     m_configuration.reset(new common::Configuration(m_configfile));
     if (!m_configuration->configurationRead() && m_noConfigFatal)
         throw common::ApplicationError(m_configuration->error());
+
+    setlocale(LC_ALL, m_configuration->getLocale().c_str());
+    setlocale(LC_NUMERIC, "C");
+    bindtextdomain("vetero-displayd", INSTALL_PREFIX "/share");
+    textdomain("vetero-displayd");
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -198,27 +204,27 @@ void VeteroDisplayd::updateDisplay(const common::CurrentWeather &weather)
     m_display->clear();
 
     // Temperature
-    m_display->renderText(0, 0, vetero::display::BOLD_FONT, "Temperatur");
+    m_display->renderText(0, 0, vetero::display::BOLD_FONT, _("Temperature"));
     m_display->renderText(0, 13, vetero::display::NORMAL_FONT, "%6.1f°C", weather.temperature());
     m_display->renderText(1, 2, vetero::display::NORMAL_FONT, "Min/Max %5.1f/%5.1f",
                           weather.minTemperature(), weather.maxTemperature());
 
     // Humidity
-    m_display->renderText(2, 0, vetero::display::BOLD_FONT, "Luftfeuchte");
+    m_display->renderText(2, 0, vetero::display::BOLD_FONT, _("Humidity"));
     m_display->renderText(2, 14, vetero::display::NORMAL_FONT, "%5d %%", weather.humidity());
 
     // Dew point
-    m_display->renderText(3, 0, vetero::display::BOLD_FONT, "Taupunkt");
+    m_display->renderText(3, 0, vetero::display::BOLD_FONT, _("Dew point"));
     m_display->renderText(3, 13, vetero::display::NORMAL_FONT, "%6.1f°C", weather.dewpoint());
 
     // Wind
-    m_display->renderText(4, 0, vetero::display::BOLD_FONT, "Windgeschw.");
+    m_display->renderText(4, 0, vetero::display::BOLD_FONT, _("Wind speed"));
     m_display->renderText(4, 11, vetero::display::NORMAL_FONT, "%5.1f km/h", weather.windSpeed());
     m_display->renderText(5, 6, vetero::display::NORMAL_FONT, "Max.");
     m_display->renderText(5, 11, vetero::display::NORMAL_FONT, "%5.1f km/h", weather.maxWindSpeed());
 
     // Rain
-    m_display->renderText(6, 0, vetero::display::BOLD_FONT, "Niederschlag");
+    m_display->renderText(6, 0, vetero::display::BOLD_FONT, _("Rain"))
     m_display->renderText(6, 13, vetero::display::NORMAL_FONT, "%5.1f mm", weather.rain());
 
     m_display->update();
