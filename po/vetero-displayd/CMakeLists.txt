@@ -15,6 +15,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
 #
 
-gettext_create_translations(vetero-displayd.pot de.po)
+gettext_create_translations(vetero-displayd.pot ALL de.po)
 
 # vim: set sw=4 ts=4 et fdm=marker:
