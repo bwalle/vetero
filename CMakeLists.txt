@@ -124,7 +124,7 @@ set (EXTRA_LIBS ${EXTRA_LIBS} bw)
 #
 # git version
 #
-execute_process(COMMAND           hg log -r . --template '{latesttag}'
+execute_process(COMMAND           hg log -r . --template {latesttag}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE   GIT_VERSION
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
