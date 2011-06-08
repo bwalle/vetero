@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vetero-displayd\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-07 20:34+0200\n"
+"POT-Creation-Date: 2011-06-07 21:22+0200\n"
 "PO-Revision-Date: 2011-06-07 20:35+0200\n"
 "Last-Translator: Bernhard Walle <bernhard@bwalle.de>\n"
 "Language-Team: German\n"
@@ -18,22 +18,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: vetero_displayd.cc:212
+#: vetero_displayd.cc:217
 msgid "Dew point"
 msgstr "Taupunkt"
 
-#: vetero_displayd.cc:208
+#: vetero_displayd.cc:213
 msgid "Humidity"
 msgstr "Luftfeuchte"
 
-#: vetero_displayd.cc:222
+#: vetero_displayd.cc:227
 msgid "Rain"
 msgstr "Niederschlag"
 
-#: vetero_displayd.cc:202
+#: vetero_displayd.cc:207
 msgid "Temperature"
 msgstr "Temperatur"
 
-#: vetero_displayd.cc:216
+#: vetero_displayd.cc:221
 msgid "Wind speed"
 msgstr "Windgeschw."
