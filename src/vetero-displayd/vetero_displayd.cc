@@ -146,7 +146,7 @@ void VeteroDisplayd::readConfiguration()
 
     setlocale(LC_ALL, m_configuration->getLocale().c_str());
     setlocale(LC_NUMERIC, "C");
-    bindtextdomain("vetero-displayd", INSTALL_PREFIX "/share");
+    bindtextdomain("vetero-displayd", INSTALL_PREFIX "/share/locale");
     textdomain("vetero-displayd");
 }
 

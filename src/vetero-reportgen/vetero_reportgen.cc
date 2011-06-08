@@ -71,7 +71,7 @@ void VeteroReportgen::readConfiguration()
 
     setlocale(LC_ALL, m_configuration->getLocale().c_str());
     setlocale(LC_NUMERIC, "C");
-    bindtextdomain("vetero-reportgen", INSTALL_PREFIX "/share");
+    bindtextdomain("vetero-reportgen", INSTALL_PREFIX "/share/locale");
     textdomain("vetero-reportgen");
 }
 
