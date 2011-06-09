@@ -106,6 +106,7 @@ void DbAccess::initViews() const
                      "                              rain_min.date) ) AS rain_month "
                      "FROM      weatherdata_extended "
                      "GROUP BY  date(timestamp) "
+                     "HAVING    temp_min <> temp_max "
                      "ORDER BY  date");
 }
 
