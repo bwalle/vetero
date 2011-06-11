@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 
 #include <libbw/optionparser.h>
+#include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
 #include <libbw/log/errorlog.h>
 #include <libbw/os.h>
@@ -223,14 +224,14 @@ void Veterod::startDisplay()
 }
 
 // -------------------------------------------------------------------------------------------------
-void Veterod::updateReports(const std::string &type, const std::string &date, bool upload)
+void Veterod::updateReports(const std::vector<std::string> &jobs, bool upload)
 {
     if (m_configuration->getReportDirectory().empty()) {
         BW_DEBUG_INFO("'report_directory' not set. Updating of reports disabled.");
         return;
     }
 
-    BW_DEBUG_INFO("Updating weather reports (%s)", type.c_str());
+    BW_DEBUG_INFO("Updating weather reports (%s)", bw::str(jobs.begin(), jobs.end()).c_str());
 
     std::vector<std::string> args;
     if (!m_configfile.empty()) {
@@ -243,10 +244,7 @@ void Veterod::updateReports(const std::string &type, const std::string &date, bo
     if (upload)
         args.push_back("--upload");
 
-    std::string job = type;
-    if (!date.empty())
-        job += ":" + date;
-    args.push_back(job);
+    args.insert(args.end(), jobs.begin(), jobs.end());
 
     pid_t childpid = 0;
     try {
@@ -363,16 +361,15 @@ void Veterod::exec()
     while (true) {
         try {
             vetero::common::UsbWde1Dataset dataset = reader.read();
-
-            // generate the monthly report before writing the current data set
-            // to avoid having the new day in the monthly report
-            if (dataset.timestamp().day() != lastInserted.day())
-                updateReports("month", dataset.timestamp().strftime("%Y-%m"), false);
-
             dbAccess.insertUsbWde1Dataset(dataset);
             notifyDisplay();
-            updateReports("current");
-            updateReports("day", dataset.timestamp().dateStr(), true);
+
+            std::vector<std::string> jobs;
+            jobs.push_back("current");
+            jobs.push_back("day:" + dataset.timestamp().dateStr());
+            if (dataset.timestamp().day() != lastInserted.day())
+                jobs.push_back("month:" + dataset.timestamp().strftime("%Y-%m"));
+            updateReports(jobs, true);
 
             lastInserted = dataset.timestamp();
         } catch (const common::ApplicationError &err) {

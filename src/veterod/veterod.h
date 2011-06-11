@@ -158,15 +158,13 @@ class Veterod {
          *
          * Used the external program <tt>vetero-reportgen</tt>.
          *
-         * @param[in] type the first argument of <tt>vetero-reportgen</tt> which is the type of the report
-         *            that needs to be genrated. Currently <tt>"current"</tt> and <tt>"day"</tt>,
-         *            <tt>"month"</tt> and <tt>"year"</tt> are supported.
+         * @param[in] jobs the jobs specification as accepted by <tt>vetero-reportgen</tt>
          * @param[in] date if @p type is not <tt>"all"</tt>, a date string must be provided here which
          *            can be the date, the month or just the year.
          * @param[in] upload @c true if the files should also be uploaded, @c false otherwise.
          * @exception common::ApplicationError if the program cannot be started
          */
-        void updateReports(const std::string &type, const std::string &date="", bool upload=false);
+        void updateReports(const std::vector<std::string> &jobs, bool upload=false);
 
         /**
          * @brief Creates the pidfile
