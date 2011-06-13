@@ -361,6 +361,16 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
         void setCharset(const std::string &charset);
 
         /**
+         * @brief Sets the locale for the text rendering
+         *
+         * This influences the decimal separator used for printf(). See
+         * vetero::common::str_printf_l() for details.
+         *
+         * @param[in] locale the locale string
+         */
+        void setLocale(const std::string &locale);
+
+        /**
          * @brief Renders text in the specified line
          *
          * @note The builtin font can render only a subset of latin1, mostly ascii and German umlauts.
@@ -392,6 +402,7 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
 
     private:
         std::string m_charset;
+        std::string m_locale;
 };
 
 /* }}} */

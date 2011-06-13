@@ -15,7 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#include <cstdlib>
+#include <iomanip>
+#include <cassert>
 
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
@@ -66,8 +67,8 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
     throw (common::ApplicationError, common::DatabaseError)
 {
     m_monthString = date;
-    m_year = std::atoi( m_monthString.substr(0, 4).c_str() );
-    m_month = std::atoi( m_monthString.substr(5, 2).c_str() );
+    m_year = bw::from_str<int>(m_monthString.substr(0, 4));
+    m_month = bw::from_str<int>(m_monthString.substr(5, 2));
 
     createTemperatureDiagram();
     createWindDiagram();
@@ -225,17 +226,32 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     std::string firstDay = m_monthString + "-01";
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
 
+    struct FormatDescription {
+        const char *unit;
+        int        precision;
+    } format[] = {
+        { NULL,   -1 },     // date
+        { "°C",    1 },     // temp_avg
+        { "°C",    1 },     // temp_min
+        { "°C",    1 },     // temp_avg
+        { "km/h",  1 },     // wind_max
+        { "Bft",   0 },     // wind_max_beaufort
+        { "l/m²",  1 },     // rain
+        { "l/m²",  1 }      // rain_month
+    };
+
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT strftime('%%d.%%m.%%Y', date), "
-            "       round(temp_avg, 1) || ' °C', "
-            "       round(temp_min, 1) || ' °C', "
-            "       round(temp_max, 1) || ' °C', "
-            "       round(wind_max, 1) || ' km/h', "
-            "       wind_max_beaufort || ' Bft', "
-            "       round(rain, 1) || ' l/m²', "
-            "       round(rain_month, 1) || ' l/m²' "
+            "SELECT strftime('%s', date), "
+            "       temp_avg, "
+            "       temp_min, "
+            "       temp_max, "
+            "       wind_max, "
+            "       wind_max_beaufort, "
+            "       rain, "
+            "       rain_month "
             "FROM   day_statistics "
             "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+            _("%Y-%m-%d"),
             firstDay.c_str(), lastDay.c_str());
 
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
@@ -255,11 +271,30 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
          << "  <th style='padding: 5px'><b>Summe</b></th>\n"
          << "</tr>\n";
 
+    std::stringstream ss;
+    ss.imbue(std::locale(""));
     for (size_t i = 0; i < result.size(); i++) {
         html << "<tr bgcolor='#FFFFFF'>\n";
 
-        for (size_t j = 0; j < result[i].size(); j++)
-             html << "<td align='right' style='padding: 5px'>" << result[i][j] << "</td>\n";
+        for (size_t j = 0; j < result[i].size(); j++) {
+            std::string value = result[i][j];
+
+            assert(j < ARRAY_SIZE(format));
+            FormatDescription *desc = &format[j];
+            if (desc->precision > 0) {
+                double numericValue = bw::from_str<double>(value, std::locale::classic());
+
+                ss.str("");
+                ss.setf(std::ios::fixed, std::ios::floatfield);
+                ss.precision(desc->precision);
+                ss << numericValue;
+                value = ss.str();
+            }
+            if (desc->unit)
+                value += " " + std::string(desc->unit);
+
+            html << "<td align='right' style='padding: 5px'>" << value << "</td>\n";
+        }
 
         html << "</tr>\n";
     }

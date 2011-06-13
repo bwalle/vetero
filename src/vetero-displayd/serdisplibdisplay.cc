@@ -176,6 +176,7 @@ SerdisplibTextDisplay::SerdisplibTextDisplay(SerdisplibConnection  *connection,
                                              const std::string     &displayname,
                                              const std::string     &optionstring) throw (DisplayError)
     : SerdisplibDisplay(connection, displayname, optionstring)
+    , m_locale("C")
 {}
 
 // -------------------------------------------------------------------------------------------------
@@ -203,6 +204,12 @@ void SerdisplibTextDisplay::setCharset(const std::string &charset)
 }
 
 // -------------------------------------------------------------------------------------------------
+void SerdisplibTextDisplay::setLocale(const std::string &locale)
+{
+    m_locale = locale;
+}
+
+// -------------------------------------------------------------------------------------------------
 void SerdisplibTextDisplay::renderText(int               line,
                                        int               startColumn,
                                        enum DisplayFont  font,
@@ -217,7 +224,7 @@ void SerdisplibTextDisplay::renderText(int               line,
     // format the string we need to render
     std::va_list ap;
     va_start(ap, text);
-    std::string formated_text = common::str_vprintf(text, ap);
+    std::string formated_text = common::str_vprintf_l(text, m_locale.c_str(), ap);
     va_end(ap);
 
     std::string convertedString;

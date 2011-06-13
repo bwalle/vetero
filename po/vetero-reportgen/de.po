@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vetero-reportgen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-13 15:46+0200\n"
+"POT-Creation-Date: 2011-06-13 18:55+0200\n"
 "PO-Revision-Date: 2011-06-13 15:46+0200\n"
 "Last-Translator: Bernhard Walle <bernhard@bwalle.de>\n"
 "Language-Team: German\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: monthreportgenerator.cc:254
+msgid "%Y-%m-%d"
+msgstr "%a, %d.%m.%Y"
 
 #: htmldocument.cc:188
 #, c-format
@@ -31,8 +35,8 @@ msgstr "Aktuell"
 msgid "Current weather data"
 msgstr "Aktuelle Wetterdaten"
 
-#: monthreportgenerator.cc:96 monthreportgenerator.cc:137
-#: monthreportgenerator.cc:172
+#: monthreportgenerator.cc:97 monthreportgenerator.cc:138
+#: monthreportgenerator.cc:173
 msgid "Day"
 msgstr "Tag"
 
@@ -40,7 +44,7 @@ msgstr "Tag"
 msgid "Humidity [%]"
 msgstr "Luftfeuchtigkeit [%]"
 
-#: monthreportgenerator.cc:213
+#: monthreportgenerator.cc:214
 msgid "Numeric values"
 msgstr "Numerische Werte"
 
@@ -48,23 +52,23 @@ msgstr "Numerische Werte"
 msgid "Overview Weather data"
 msgstr "Übersicht Wetterdaten"
 
-#: monthreportgenerator.cc:209
+#: monthreportgenerator.cc:210
 msgid "Rain"
 msgstr "Niederschlag"
 
-#: dayreportgenerator.cc:186 monthreportgenerator.cc:173
+#: dayreportgenerator.cc:186 monthreportgenerator.cc:174
 msgid "Rain [l/m²]"
 msgstr "Niederschlag [l/m²]"
 
-#: monthreportgenerator.cc:201
+#: monthreportgenerator.cc:202
 msgid "Temperature"
 msgstr "Temperatur"
 
-#: dayreportgenerator.cc:90 monthreportgenerator.cc:97
+#: dayreportgenerator.cc:90 monthreportgenerator.cc:98
 msgid "Temperature [°C]"
 msgstr "Temperatur [°C]"
 
-#: monthreportgenerator.cc:201
+#: monthreportgenerator.cc:202
 msgid "Temperature profile"
 msgstr "Temperaturverlauf"
 
@@ -73,15 +77,15 @@ msgstr "Temperaturverlauf"
 msgid "Time [HH:MM]"
 msgstr "Zeit [HH:MM]"
 
-#: monthreportgenerator.cc:213
+#: monthreportgenerator.cc:214
 msgid "Values"
 msgstr "Werte"
 
-#: monthreportgenerator.cc:205
+#: monthreportgenerator.cc:206
 msgid "Wind"
 msgstr "Wind"
 
-#: monthreportgenerator.cc:205
+#: monthreportgenerator.cc:206
 msgid "Wind speed"
 msgstr "Windgeschwindigkeit"
 
