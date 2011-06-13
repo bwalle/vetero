@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#include <cstdlib>
-
 #include <libbw/stringutil.h>
 #include <libbw/log/errorlog.h>
 
@@ -162,10 +160,10 @@ CurrentWeather DbAccess::queryCurrentWeather() const
         "WHERE  date = date('now', 'localtime')");
 
     if (!result.empty() && result.at(0).size() == 4) {
-        current.setMinTemperature( std::atof(result.at(0).at(0).c_str()) );
-        current.setMaxTemperature( std::atof(result.at(0).at(1).c_str()) );
-        current.setMaxWindSpeed( std::atof(result.at(0).at(2).c_str()) );
-        current.setRain( std::atof(result.at(0).at(3).c_str()) );
+        current.setMinTemperature( bw::from_str<double>(result.at(0).at(0)) );
+        current.setMaxTemperature( bw::from_str<double>(result.at(0).at(1)) );
+        current.setMaxWindSpeed( bw::from_str<double>(result.at(0).at(2)) );
+        current.setRain( bw::from_str<double>(result.at(0).at(3)) );
     } else {
         BW_ERROR_WARNING("Unable to retrieve day statistics for current values");
         current.setMinTemperature(current.temperature());
@@ -227,13 +225,13 @@ std::vector<UsbWde1Dataset> DbAccess::queryData(const std::string &whereClause) 
             throw DatabaseError("Requested columns of size 7, got size " + bw::str(row.size()) );
 
         UsbWde1Dataset newData;
-        newData.setTimestamp( bw::Datetime( std::strtol(row[0].c_str(), NULL, 10) ) );
-        newData.setTemperature( std::atof(row[1].c_str()) );
-        newData.setHumidity( std::atoi(row[2].c_str()) );
-        newData.setDewpoint( std::atof(row[3].c_str()) );
-        newData.setRainGauge( std::atoi(row[4].c_str()) );
+        newData.setTimestamp( bw::Datetime(bw::from_str<time_t>(row[0])) );
+        newData.setTemperature( bw::from_str<double>(row[1]) );
+        newData.setHumidity( bw::from_str<int>(row[2]) );
+        newData.setDewpoint( bw::from_str<double>(row[3]) );
+        newData.setRainGauge( bw::from_str<double>(row[4]) );
         newData.setIsRain( row[5] == "true" );
-        newData.setWindSpeed( std::atof(row[6].c_str()) );
+        newData.setWindSpeed( bw::from_str<double>(row[6]) );
 
         ret.push_back(newData);
     }

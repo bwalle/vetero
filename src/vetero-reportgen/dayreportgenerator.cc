@@ -15,9 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#include <cstdlib>
-
 #include <libbw/log/debug.h>
+#include <libbw/stringutil.h>
 
 #include "common/translation.h"
 #include "dayreportgenerator.h"
@@ -192,7 +191,7 @@ void DayReportGenerator::createRainDiagram()
     plot << "set xtics '02:00'\n";
 
     // there might be days with no rain :-)
-    if (result.empty() || result.back().empty() || std::atof(result.back().back().c_str()) < 0.001)
+    if (result.empty() || result.back().empty() || bw::from_str<double>(result.back().back()) < 0.001)
         plot << "set yrange [0:1]\n";
     else
         plot << "set yrange [0:]\n";
@@ -211,9 +210,9 @@ void DayReportGenerator::createHtml()
 {
     std::string filename(reportgen()->configuration().getReportDirectory() + "/" + m_date + ".xhtml");
 
-    int year = std::atoi( m_date.substr(0, 4).c_str() );
-    int month = std::atoi( m_date.substr(5, 2).c_str() );
-    int day = std::atoi( m_date.substr(8, 2).c_str() );
+    int year = bw::from_str<int>(m_date.substr(0, 4));
+    int month = bw::from_str<int>(m_date.substr(5, 2));
+    int day = bw::from_str<int>(m_date.substr(8, 2));
 
     HtmlDocument html(reportgen());
     html.setTitle(bw::Datetime(year, month, day, 0, 0, 0, false).strftime("%A, %d. %B %Y"));

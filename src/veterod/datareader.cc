@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#include <cstdlib>
-
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
 #include <libbw/datetime.h>
@@ -108,24 +106,24 @@ vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line)
     // temperature
     std::string temperature = parts[TEMPERATURE_INDEX];
     temperature = bw::replace_char(temperature, ',', ".");
-    data.setTemperature( std::atof(temperature.c_str()) );
+    data.setTemperature( bw::from_str<double>(temperature) );
 
     // humidity
     std::string humidity = parts[HUMIDITY_INDEX];
-    data.setHumidity( std::atoi(humidity.c_str()) );
+    data.setHumidity( bw::from_str<int>(humidity) );
 
     // wind
     std::string wind = parts[WIND_INDEX];
     wind = bw::replace_char(wind, ',', ".");
-    data.setWindSpeed( std::atof(wind.c_str()) );
+    data.setWindSpeed( bw::from_str<double>(wind) );
 
     // rain
     std::string rain = parts[RAIN_INDEX];
-    data.setRainGauge( std::atoi(rain.c_str()) );
+    data.setRainGauge( bw::from_str<int>(rain) );
 
     // is raining
     std::string isRain = parts[IS_RAIN_INDEX];
-    data.setIsRain( std::atoi(isRain.c_str()) );
+    data.setIsRain( bw::from_str<int>(isRain) );
 
     return data;
 }
