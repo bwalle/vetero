@@ -116,8 +116,8 @@ pid_t start_background(const std::string &process, const std::vector<std::string
             std::exit(-1);
     } else if (childpid > 0)
         return childpid;
-    else
-        throw SystemError("Unable to fork()", errno);
+
+    throw SystemError("Unable to fork()", errno);
 }
 
 } // end namespace common

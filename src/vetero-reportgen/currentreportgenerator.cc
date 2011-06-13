@@ -106,7 +106,7 @@ std::string CurrentReportGenerator::findTemplate() const
             INSTALL_PREFIX "/share/current_weather.svg"
     };
 
-    for (int i = 0; i < sizeof(templateFiles)/sizeof(templateFiles[0]); i++) {
+    for (size_t i = 0; i < sizeof(templateFiles)/sizeof(templateFiles[0]); i++) {
         const char *file = templateFiles[i];
 
         if (access(file, R_OK) == 0)

@@ -230,7 +230,7 @@ void SerdisplibTextDisplay::renderText(int               line,
     const int offset_y = line * (FONT_HEIGHT + GAP_Y);
     const int max_char_index = std::min(convertedString.size(), size_t(getColumns() - startColumn));
 
-    for (size_t char_index = 0; char_index < max_char_index; ++char_index) {
+    for (int char_index = 0; char_index < max_char_index; ++char_index) {
         const int offset_x = (startColumn + char_index) * (FONT_WIDTH + GAP_X);
         unsigned char c = convertedString[char_index];
 
@@ -240,7 +240,7 @@ void SerdisplibTextDisplay::renderText(int               line,
         else
             char_pic = Font_6x8[c];
 
-        for (size_t y = 0; y < FONT_HEIGHT; y++)
+        for (int y = 0; y < FONT_HEIGHT; y++)
             for (int x = 0; x < FONT_WIDTH; x++)
                 setPixel(offset_x + x, offset_y + y, bit_is_set(char_pic[y], FONT_WIDTH - 1 - x));
     }

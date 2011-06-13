@@ -255,10 +255,10 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
          << "  <th style='padding: 5px'><b>Summe</b></th>\n"
          << "</tr>\n";
 
-    for (int i = 0; i < result.size(); i++) {
+    for (size_t i = 0; i < result.size(); i++) {
         html << "<tr bgcolor='#FFFFFF'>\n";
 
-        for (int j = 0; j < result[i].size(); j++)
+        for (size_t j = 0; j < result[i].size(); j++)
              html << "<td align='right' style='padding: 5px'>" << result[i][j] << "</td>\n";
 
         html << "</tr>\n";

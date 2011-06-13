@@ -145,7 +145,7 @@ void Gnuplot::storeData(int fd, const StringStringVector &data)
     std::string contents = ss.str();
 
     ssize_t ret = write(fd, contents.c_str(), contents.size());
-    if (ret != contents.size())
+    if (ret != static_cast<ssize_t>(contents.size()))
         throw common::SystemError("Unable to write all bytes to the temporary file", errno);
 }
 

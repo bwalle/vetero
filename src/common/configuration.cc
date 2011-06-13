@@ -67,7 +67,7 @@ Configuration::Configuration(const std::string &preferredFilename)
     if (!preferredFilename.empty())
         filename = preferredFilename;
     else {
-        for (int i = 0; i < sizeof(configfiles)/sizeof(configfiles[0]); i++)
+        for (size_t i = 0; i < sizeof(configfiles)/sizeof(configfiles[0]); i++)
             if (access(configfiles[i].c_str(), R_OK) == 0) {
                 filename = configfiles[i];
                 break;

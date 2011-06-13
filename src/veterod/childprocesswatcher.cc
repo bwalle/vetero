@@ -87,9 +87,10 @@ bool ChildProcessWatcher::wait(pid_t pid)
         else if (WIFSIGNALED(status)) {
             int signo = WTERMSIG(status);
             BW_ERROR_ERR("Child process %ld terminated with signal %d (%s)",
-                         long(rpid), strsignal(signo), signo);
+                         static_cast<long>(rpid), signo, strsignal(signo));
         } else
-            BW_ERROR_ERR("Child process %ld terminated with exit status %d", rpid, rc);
+            BW_ERROR_ERR("Child process %ld terminated with exit status %d",
+                         static_cast<long>(rpid), rc);
 
         // remove the PID from the list
         std::set<pid_t>::iterator pos = std::find(m_children.begin(), m_children.end(), rpid);

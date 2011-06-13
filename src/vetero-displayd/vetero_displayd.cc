@@ -52,9 +52,9 @@ static void veterodisplayd_sigusr1_sighandler(int signal)
 
 // -------------------------------------------------------------------------------------------------
 VeteroDisplayd::VeteroDisplayd()
-    : m_serdispConnection(NULL)
+    : m_noConfigFatal(false)
+    , m_serdispConnection(NULL)
     , m_display(NULL)
-    , m_noConfigFatal(false)
 {}
 
 // -------------------------------------------------------------------------------------------------
