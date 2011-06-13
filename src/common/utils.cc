@@ -90,7 +90,8 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
     // restore locale
     if (oldlocale)
         uselocale(oldlocale);
-    freelocale(clocale);
+    if (clocale)
+        freelocale(clocale);
 
     if (!ret)
         throw std::bad_alloc();
