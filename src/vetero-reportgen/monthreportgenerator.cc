@@ -125,8 +125,8 @@ void MonthReportGenerator::createWindDiagram()
             "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
             firstDay.c_str(), lastDay.c_str());
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
-            "SELECT ROUND(MAX(wind)) "
-            "FROM   weatherdata_extended "
+            "SELECT ROUND(MAX(wind_max)) "
+            "FROM   day_statistics "
             "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
             firstDay.c_str(), lastDay.c_str());
 
