@@ -22,6 +22,7 @@
 #include <libbw/log/debug.h>
 #include <libbw/stringutil.h>
 
+#include "common/translation.h"
 #include "common/dbaccess.h"
 #include "common/utils.h"
 #include "htmldocument.h"
@@ -80,7 +81,7 @@ void CurrentReportGenerator::generateReports()
 
         pos = line.find("UUUU-UU-UU UU:UU");
         if (pos != std::string::npos)
-            line.replace(pos, 16, currentWeather.timestamp().strftime("%Y-%m-%d %H:%M"));
+            line.replace(pos, 16, currentWeather.timestamp().strftime(_("%Y-%m-%d %H:%M")));
 
         pos = line.find("HH");
         if (pos != std::string::npos)
