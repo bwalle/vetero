@@ -241,7 +241,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     };
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT strftime('%s', date), "
+            "SELECT strftime('%%s', date), "
             "       temp_avg, "
             "       temp_min, "
             "       temp_max, "
@@ -251,18 +251,17 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
             "       rain_month "
             "FROM   day_statistics "
             "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            _("%Y-%m-%d"),
             firstDay.c_str(), lastDay.c_str());
 
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
          << "<tr bgcolor='#FFFFFF'>\n"
-         << "  <th style='padding: 5px' colspan=\"1\"><b></b></th>\n"
+         << "  <th style='padding: 5px' colspan=\"2\"><b></b></th>\n"
          << "  <th style='padding: 5px' colspan=\"3\"><b>Temperatur</b></th>\n"
          << "  <th style='padding: 5px' colspan=\"2\"><b>Wind</b></th>\n"
          << "  <th style='padding: 5px' colspan=\"2\"><b>Niederschlag</b></th>\n"
          << "</tr>\n"
          << "<tr bgcolor='#FFFFFF'>\n"
-         << "  <th style='padding: 5px'><b>Datum</b></th>\n"
+         << "  <th style='padding: 5px' colspan=\"2\"><b>Datum</b></th>\n"
          << "  <th style='padding: 5px'><b>Avg.</b></th>\n"
          << "  <th style='padding: 5px'><b>Min.</b></th>\n"
          << "  <th style='padding: 5px'><b>Max.</b></th>\n"
@@ -280,21 +279,31 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
         for (size_t j = 0; j < result[i].size(); j++) {
             std::string value = result[i][j];
 
-            assert(j < ARRAY_SIZE(format));
-            FormatDescription *desc = &format[j];
-            if (desc->precision > 0) {
-                double numericValue = bw::from_str<double>(value, std::locale::classic());
+            if (j == 0) {
+                std::string weekday = bw::Datetime(bw::from_str<time_t>(value)).strftime("%a");
+                std::string date = bw::Datetime(bw::from_str<time_t>(value)).strftime(_("%Y-%m-%d"));
 
-                ss.str("");
-                ss.setf(std::ios::fixed, std::ios::floatfield);
-                ss.precision(desc->precision);
-                ss << numericValue;
-                value = ss.str();
+                html << "<td align='left' style='padding: 5px'>" << weekday << "</td>\n";
+                html << "<td align='right' style='padding: 5px'>" << date << "</td>\n";
+
+            } else {
+                assert(j < ARRAY_SIZE(format));
+                FormatDescription *desc = &format[j];
+
+                if (desc->precision > 0) {
+                    double numericValue = bw::from_str<double>(value, std::locale::classic());
+
+                    ss.str("");
+                    ss.setf(std::ios::fixed, std::ios::floatfield);
+                    ss.precision(desc->precision);
+                    ss << numericValue;
+                    value = ss.str();
+                }
+                if (desc->unit)
+                    value += " " + std::string(desc->unit);
+
+                html << "<td align='right' style='padding: 5px'>" << value << "</td>\n";
             }
-            if (desc->unit)
-                value += " " + std::string(desc->unit);
-
-            html << "<td align='right' style='padding: 5px'>" << value << "</td>\n";
         }
 
         html << "</tr>\n";

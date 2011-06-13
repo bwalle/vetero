@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-13 18:55+0200\n"
+"POT-Creation-Date: 2011-06-13 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,20 +30,20 @@ msgstr ""
 msgid "Wind strength [Beaufort]"
 msgstr ""
 
-#: dayreportgenerator.cc:89 dayreportgenerator.cc:119
-#: dayreportgenerator.cc:154 dayreportgenerator.cc:185
+#: dayreportgenerator.cc:88 dayreportgenerator.cc:118
+#: dayreportgenerator.cc:153 dayreportgenerator.cc:184
 msgid "Time [HH:MM]"
 msgstr ""
 
-#: dayreportgenerator.cc:90 monthreportgenerator.cc:98
+#: dayreportgenerator.cc:89 monthreportgenerator.cc:98
 msgid "Temperature [°C]"
 msgstr ""
 
-#: dayreportgenerator.cc:120
+#: dayreportgenerator.cc:119
 msgid "Humidity [%]"
 msgstr ""
 
-#: dayreportgenerator.cc:186 monthreportgenerator.cc:174
+#: dayreportgenerator.cc:185 monthreportgenerator.cc:174
 msgid "Rain [l/m²]"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Values"
 msgstr ""
 
-#: monthreportgenerator.cc:254
+#: monthreportgenerator.cc:284
 msgid "%Y-%m-%d"
 msgstr ""
 
