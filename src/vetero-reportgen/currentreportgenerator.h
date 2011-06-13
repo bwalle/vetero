@@ -20,9 +20,8 @@
 
 #include <libbw/thread/thread.h>
 
-#include <common/dataset.h>
-#include <common/error.h>
-
+#include "common/dataset.h"
+#include "common/error.h"
 #include "reportgenerator.h"
 
 /**

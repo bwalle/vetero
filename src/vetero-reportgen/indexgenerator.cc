@@ -19,9 +19,9 @@
 #include <cstdlib>
 
 #include <libbw/stringutil.h>
-#include <common/utils.h>
-#include <common/translation.h>
 
+#include "common/utils.h"
+#include "common/translation.h"
 #include "calendar.h"
 #include "indexgenerator.h"
 #include "htmldocument.h"

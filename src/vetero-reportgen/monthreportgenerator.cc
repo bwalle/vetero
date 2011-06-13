@@ -20,9 +20,8 @@
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
 
-#include <common/utils.h>
-#include <common/translation.h>
-
+#include "common/utils.h"
+#include "common/translation.h"
 #include "monthreportgenerator.h"
 #include "calendar.h"
 #include "gnuplot.h"

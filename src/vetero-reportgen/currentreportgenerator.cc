@@ -22,9 +22,8 @@
 #include <libbw/log/debug.h>
 #include <libbw/stringutil.h>
 
-#include <common/dbaccess.h>
-#include <common/utils.h>
-
+#include "common/dbaccess.h"
+#include "common/utils.h"
 #include "htmldocument.h"
 #include "vetero_reportgen.h"
 #include "currentreportgenerator.h"

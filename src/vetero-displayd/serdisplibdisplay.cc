@@ -23,8 +23,7 @@
 
 #include <libbw/stringutil.h>
 
-#include <common/utils.h>
-
+#include "common/utils.h"
 #include "serdisplibdisplay.h"
 #include "charset.h"
 #include "font_6x8.h"

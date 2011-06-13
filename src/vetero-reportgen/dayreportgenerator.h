@@ -18,7 +18,7 @@
 #ifndef DAYSTATISTICSREPORTGENERATOR_H_
 #define DAYSTATISTICSREPORTGENERATOR_H_
 
-#include <common/database.h>
+#include "common/database.h"
 #include "reportgenerator.h"
 
 /**

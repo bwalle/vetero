@@ -24,9 +24,8 @@
 #include <libbw/log/errorlog.h>
 #include <libbw/log/debug.h>
 
-#include <common/translation.h>
-#include <common/dbaccess.h>
-
+#include "common/translation.h"
+#include "common/dbaccess.h"
 #include "config.h"
 #include "vetero_reportgen.h"
 #include "dayreportgenerator.h"

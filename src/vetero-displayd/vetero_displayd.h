@@ -19,10 +19,9 @@
 
 #include <memory>
 
-#include <common/database.h>
-#include <common/error.h>
-#include <common/configuration.h>
-
+#include "common/database.h"
+#include "common/error.h"
+#include "common/configuration.h"
 #include "serdisplibdisplay.h"
 
 /**

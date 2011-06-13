@@ -28,9 +28,8 @@
 #include <libbw/log/errorlog.h>
 #include <libbw/os.h>
 
-#include <common/dbaccess.h>
-#include <common/utils.h>
-
+#include "common/dbaccess.h"
+#include "common/utils.h"
 #include "veterod.h"
 #include "config.h"
 #include "datareader.h"

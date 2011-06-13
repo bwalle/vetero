@@ -24,11 +24,10 @@
 #include <libbw/log/errorlog.h>
 #include <libbw/os.h>
 
-#include <common/dbaccess.h>
-#include <common/error.h>
-#include <common/dataset.h>
-#include <common/translation.h>
-
+#include "common/dbaccess.h"
+#include "common/error.h"
+#include "common/dataset.h"
+#include "common/translation.h"
 #include "vetero_displayd.h"
 #include "config.h"
 

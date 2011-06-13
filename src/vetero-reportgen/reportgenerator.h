@@ -18,8 +18,7 @@
 #ifndef REPORTGENERATOR_H_
 #define REPORTGENERATOR_H_
 
-#include <common/lockfile.h>
-
+#include "common/lockfile.h"
 #include "vetero_reportgen.h"
 
 /**

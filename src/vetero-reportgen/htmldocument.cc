@@ -19,9 +19,8 @@
 
 #include <libbw/stringutil.h>
 
-#include <common/utils.h>
-#include <common/translation.h>
-
+#include "common/utils.h"
+#include "common/translation.h"
 #include "htmldocument.h"
 #include "config.h"
 
