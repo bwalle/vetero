@@ -272,7 +272,8 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
          << "</tr>\n";
 
     std::stringstream ss;
-    ss.imbue(std::locale(""));
+    std::string localeStr = reportgen()->configuration().getLocale();
+    ss.imbue(std::locale(localeStr.c_str()));
     for (size_t i = 0; i < result.size(); i++) {
         html << "<tr bgcolor='#FFFFFF'>\n";
 

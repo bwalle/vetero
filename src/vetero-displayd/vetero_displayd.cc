@@ -178,7 +178,7 @@ void VeteroDisplayd::openDisplay()
         m_serdispConnection = new SerdisplibConnection(displayConnection);
         m_display = new SerdisplibTextDisplay(m_serdispConnection, displayName, "");
         m_display->setCharset("utf-8");
-        m_display->setLocale("");
+        m_display->setLocale(m_configuration->getLocale());
     } catch (const DisplayError &err) {
         throw common::ApplicationError("Unable to open display: " + std::string(err.what()));
     }
