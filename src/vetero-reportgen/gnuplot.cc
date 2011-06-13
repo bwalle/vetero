@@ -22,6 +22,7 @@
 
 #include <libbw/stringutil.h>
 
+#include "common/translation.h"
 #include "gnuplot.h"
 
 namespace vetero {
@@ -159,8 +160,8 @@ WeatherGnuplot::WeatherGnuplot(const common::Configuration &config)
 // -------------------------------------------------------------------------------------------------
 void WeatherGnuplot::addWindY()
 {
-    *this << "set ylabel \"Windgeschwindigkeit [km/h]\"\n";
-    *this << "set y2label \"Windstärke [Beaufort]\"\n";
+    *this << "set ylabel '" << _("Wind speed [km/h])") << "'\n";
+    *this << "set y2label '" << _("Wind strength [Beaufort]") << "'\n";
     *this << "set ytics nomirror\n";
     *this << "set y2tics ( '0'   0, "
                          " '1'   2, "

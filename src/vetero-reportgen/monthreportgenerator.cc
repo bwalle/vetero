@@ -93,8 +93,8 @@ void MonthReportGenerator::createTemperatureDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Tag\"\n";
-    plot << "set ylabel \"Temperatur [°C]\"\n";
+    plot << "set xlabel '" << _("Day") << "'\n";
+    plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
@@ -134,7 +134,7 @@ void MonthReportGenerator::createWindDiagram()
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Tag\"\n";
+    plot << "set xlabel '" << _("Day") <<"'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
@@ -169,8 +169,8 @@ void MonthReportGenerator::createRainDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Tag\"\n";
-    plot << "set ylabel \"Temperatur [°C]\"\n";
+    plot << "set xlabel '" << _("Day") << "'\n";
+    plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";

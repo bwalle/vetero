@@ -19,6 +19,7 @@
 
 #include <libbw/log/debug.h>
 
+#include "common/translation.h"
 #include "dayreportgenerator.h"
 #include "gnuplot.h"
 #include "htmldocument.h"
@@ -85,8 +86,8 @@ void DayReportGenerator::createTemperatureDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Zeit [HH:MM]\"\n";
-    plot << "set ylabel \"Temperatur [°C]\"\n";
+    plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
+    plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
     plot << "set timefmt '%H:%M:%S'\n";
@@ -115,8 +116,8 @@ void DayReportGenerator::createHumidityDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Zeit [HH:MM]\"\n";
-    plot << "set ylabel \"Luftfeuchtigkeit [%]\"\n";
+    plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
+    plot << "set ylabel '" << _("Humidity [%]") << "'\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
     plot << "set timefmt '%H:%M:%S'\n";
@@ -150,7 +151,7 @@ void DayReportGenerator::createWindDiagram()
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Zeit [HH:MM]\"\n";
+    plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
     plot << "set timefmt '%H:%M:%S'\n";
@@ -181,8 +182,8 @@ void DayReportGenerator::createRainDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
-    plot << "set xlabel \"Zeit [HH:MM]\"\n";
-    plot << "set ylabel \"Niederschlag [mm]\"\n";
+    plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
+    plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
     plot << "set timefmt '%H:%M:%S'\n";
