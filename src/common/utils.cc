@@ -23,6 +23,9 @@
 #include <cmath>
 #include <cstdlib>
 #include <cerrno>
+#include <xlocale.h>
+
+#include <libbw/log/errorlog.h>
 
 #include "utils.h"
 
@@ -35,18 +38,60 @@ std::string str_printf(const char *format, ...)
     std::va_list ap;
 
     va_start(ap, format);
-    std::string ret = str_vprintf(format, ap);
+    std::string ret = str_vprintf_l(format, NULL, ap);
     va_end(ap);
 
     return ret;
 }
 
 // -------------------------------------------------------------------------------------------------
+std::string str_printf_l(const char *format, const char *locale, ...)
+{
+    std::va_list ap;
+
+    va_start(ap, locale);
+    std::string ret = str_vprintf_l(format, locale, ap);
+    va_end(ap);
+
+    return ret;
+
+}
+
+// -------------------------------------------------------------------------------------------------
 std::string str_vprintf(const char *format, va_list ap)
+{
+    return str_vprintf_l(format, NULL, ap);
+}
+
+// -------------------------------------------------------------------------------------------------
+std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
 {
     char *ret;
 
+    // uselocale() is the thread-safe variant of setlocale()
+    // The _l() functions of the printf() family are not available on Linux.
+
+    locale_t oldlocale = NULL;
+    locale_t clocale = NULL;
+    
+    if (locale) {
+        clocale = newlocale(LC_NUMERIC_MASK, locale, NULL);
+        if (clocale)
+            oldlocale = uselocale(clocale);
+        else {
+            oldlocale = uselocale(NULL);
+            BW_ERROR_WARNING("Unable to set new locale (%s) with uselocale(): %s",
+                             locale, std::strerror(errno));
+        }
+    }
+
     vasprintf(&ret, format, ap);
+
+    // restore locale
+    if (oldlocale)
+        uselocale(oldlocale);
+    freelocale(clocale);
+
     if (!ret)
         throw std::bad_alloc();
 

@@ -38,7 +38,11 @@ namespace common {
 /**
  * @brief printf() implementation that allocates the result string automatically
  *
- * Don't need a static buffer but still having the advantage of the simplicity of printf().
+ * Don't need a static buffer but still having the advantage of the simplicity
+ * of printf().
+ *
+ * This function uses the default locale and is a convenience function that
+ * calls str_printf_l() with NULL as second parameter.
  *
  * @param[in] format the format string
  * @return the formated string
@@ -47,15 +51,61 @@ namespace common {
 std::string str_printf(const char *format, ...);
 
 /**
- * @brief printf() implementation that allocates the result string automatically (va_list variant)
+ * @brief printf_l() implementation that allocates the result string
+ *        automatically 
  *
- * Don't need a static buffer but still having the advantage of the simplicity of printf().
+ * Don't need a static buffer but still having the advantage of the simplicity
+ * of printf(). The function is even available on systems without printf_l()
+ * implementation like Linux.
+ *
+ * @param[in] format the ofrmat string
+ * @param[in] locale a string that describes the locale to be used instead of
+ *            the global locale. Unlike the system functions, @c NULL means
+ *            to use the global locale. If you want the traditional C locale
+ *            to be used, pass <tt>"C"</tt> for @p locale. The empty string
+ *            <tt>""</tt> means that the system should find out the locale
+ *            from the environemnt variables <tt>LANG</tt> and <tt>LC_</tt>.
+ *            See locale(3), xlocale(3) and setlocale(3) manual pages.
+ * @return the formated string
+ * @exception std::bad_alloc if it was not possible to allocate memory
+ */
+std::string str_printf_l(const char *format, const char *locale,  ...);
+
+/**
+ * @brief printf() implementation that allocates the result string automatically
+ *        (va_list variant)
+ *
+ * Don't need a static buffer but still having the advantage of the simplicity
+ * of printf().
+ *
+ * This function uses the default locale and is a convenience function that
+ * calls str_vprintf_l() with NULL as second parameter.
  *
  * @param[in] format the format string
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
  */
 std::string str_vprintf(const char *format, va_list ap);
+
+/**
+ * @brief printf() implementation that allocates the result string automatically
+ *        (va_list variant)
+ *
+ * Don't need a static buffer but still having the advantage of the simplicity
+ * of printf().
+ *
+ * @param[in] format the format string
+ * @param[in] locale a string that describes the locale to be used instead of
+ *            the global locale. Unlike the system functions, @c NULL means
+ *            to use the global locale. If you want the traditional C locale
+ *            to be used, pass <tt>"C"</tt> for @p locale. The empty string
+ *            <tt>""</tt> means that the system should find out the locale
+ *            from the environemnt variables <tt>LANG</tt> and <tt>LC_</tt>.
+ *            See locale(3), xlocale(3) and setlocale(3) manual pages.
+ * @return the formated string
+ * @exception std::bad_alloc if it was not possible to allocate memory
+ */
+std::string str_vprintf_l(const char *format, const char *locale, va_list ap);
 
 /**
  * @brief Starts a process in the background
