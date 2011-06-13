@@ -159,6 +159,28 @@ Gnuplot &Gnuplot::operator<<(const T &t)
     return *this;
 }
 
+/**
+ * @brief Adds some weather-specific functions to the Gnuplot class
+ *
+ * @author Bernhard Walle <bernhard@bwalle.de>
+ */
+class WeatherGnuplot : public Gnuplot
+{
+    public:
+        /**
+         * @brief C'tor
+         *
+         * @param[in] config the application's configuration
+         */
+        WeatherGnuplot(const common::Configuration &config);
+
+    public:
+        /**
+         * @brief Adds the y axis descriptions for a wind diagram
+         */
+        void addWindY();
+};
+
 } // namespace reportgen
 } // namespace vetero
 

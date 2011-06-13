@@ -124,12 +124,17 @@ void MonthReportGenerator::createWindDiagram()
             "FROM   day_statistics "
             "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
             firstDay.c_str(), lastDay.c_str());
+    common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
+            "SELECT ROUND(MAX(wind)) "
+            "FROM   weatherdata_extended "
+            "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+            firstDay.c_str(), lastDay.c_str());
 
+    std::string max = maxResult.at(0).at(0);
 
-    Gnuplot plot(reportgen()->configuration());
+    WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Tag\"\n";
-    plot << "set ylabel \"Temperatur [°C]\"\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
@@ -139,6 +144,8 @@ void MonthReportGenerator::createWindDiagram()
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
+    plot.addWindY();
+    plot << "set yrange [0 : " << max << "]\n";
     plot << "set output '" << m_windFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with impulses notitle "
             "linecolor rgb '#180076' lw 4;\n";

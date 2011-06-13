@@ -27,6 +27,8 @@
 namespace vetero {
 namespace reportgen {
 
+/* Gnuplot {{{ */
+
 // -------------------------------------------------------------------------------------------------
 std::string Gnuplot::PLACEHOLDER = "@TEMPFILE@";
 
@@ -36,6 +38,8 @@ Gnuplot::Gnuplot(const common::Configuration &config)
 {
     *this << "set locale '" << m_config.getLocale() << "'\n";
     *this << "set terminal svg size 1000 400 font 'Arial,9'\n";
+    *this << "set lmargin 10\n";
+    *this << "set rmargin 10\n";
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -143,6 +147,38 @@ void Gnuplot::storeData(int fd, const StringStringVector &data)
     if (ret != contents.size())
         throw common::SystemError("Unable to write all bytes to the temporary file", errno);
 }
+
+/* }}} */
+/* WeatherGnuplot {{{ */
+
+// -------------------------------------------------------------------------------------------------
+WeatherGnuplot::WeatherGnuplot(const common::Configuration &config)
+    : Gnuplot(config)
+{}
+
+// -------------------------------------------------------------------------------------------------
+void WeatherGnuplot::addWindY()
+{
+    *this << "set ylabel \"Windgeschwindigkeit [km/h]\"\n";
+    *this << "set y2label \"Windstärke [Beaufort]\"\n";
+    *this << "set ytics nomirror\n";
+    *this << "set y2tics ( '0'   0, "
+                         " '1'   2, "
+                         " '2'   6, "
+                         " '3'  12, "
+                         " '4'  20, "
+                         " '5'  29, "
+                         " '6'  39, "
+                         " '7'  50, "
+                         " '8'  62, "
+                         " '9'  75, "
+                         "'10'  89, "
+                         "'11' 103, "
+                         "'12' 117)\n";
+    *this << "set grid xtics noytics y2tics\n";
+}
+
+/* }}} */
 
 } // namespace reportgen
 } // namespace vetero

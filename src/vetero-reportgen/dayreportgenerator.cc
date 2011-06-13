@@ -141,11 +141,16 @@ void DayReportGenerator::createWindDiagram()
             "SELECT time(timestamp), wind "
             "FROM   weatherdata_extended "
             "WHERE  date(timestamp) = ?", m_date.c_str());
+    common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
+            "SELECT ROUND(MAX(wind)) "
+            "FROM   weatherdata_extended "
+            "WHERE  date(timestamp) = ?", m_date.c_str());
 
-    Gnuplot plot(reportgen()->configuration());
+    std::string max = maxResult.at(0).at(0);
+
+    WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Zeit [HH:MM]\"\n";
-    plot << "set ylabel \"Windgeschwindigkeit [km/h]\"\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
     plot << "set timefmt '%H:%M:%S'\n";
@@ -153,19 +158,8 @@ void DayReportGenerator::createWindDiagram()
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set xtics format '%H:%M'\n";
     plot << "set xtics '02:00'\n";
-
-    // there might be days with no wind :-)
-    int max = 0;
-    if (!result.empty() && result.at(0).size() > 1) {
-        for (size_t col = 0; col < result.size(); ++col)
-            max = std::max(max, std::atoi(result.at(col).at(1).c_str()));
-    }
-
-    if (max == 0)
-        plot << "set yrange [0:1]\n";
-    else
-        plot << "set yrange [0:]\n";
-
+    plot.addWindY();
+    plot << "set yrange [0 : " << max << "]\n";
     plot << "set output '" << m_windFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with points notitle  pt 7 ps 1 "
             "linecolor rgb '#180076' lw 2\n";
