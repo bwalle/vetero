@@ -92,7 +92,7 @@ void MonthReportGenerator::createTemperatureDiagram()
             firstDay.c_str(), lastDay.c_str());
 
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Tag\"\n";
     plot << "set ylabel \"Temperatur [°C]\"\n";
@@ -127,7 +127,7 @@ void MonthReportGenerator::createWindDiagram()
             firstDay.c_str(), lastDay.c_str());
 
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Tag\"\n";
     plot << "set ylabel \"Temperatur [°C]\"\n";
@@ -161,7 +161,7 @@ void MonthReportGenerator::createRainDiagram()
             "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
             firstDay.c_str(), lastDay.c_str());
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Tag\"\n";
     plot << "set ylabel \"Temperatur [°C]\"\n";

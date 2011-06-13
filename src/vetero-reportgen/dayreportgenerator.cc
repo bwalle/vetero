@@ -83,7 +83,7 @@ void DayReportGenerator::createTemperatureDiagram()
             "FROM   weatherdata_extended "
             "WHERE  date(timestamp) = ?", m_date.c_str());
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Zeit [HH:MM]\"\n";
     plot << "set ylabel \"Temperatur [°C]\"\n";
@@ -113,7 +113,7 @@ void DayReportGenerator::createHumidityDiagram()
             "FROM   weatherdata_extended "
             "WHERE  date(timestamp) = ?", m_date.c_str());
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Zeit [HH:MM]\"\n";
     plot << "set ylabel \"Luftfeuchtigkeit [%]\"\n";
@@ -142,7 +142,7 @@ void DayReportGenerator::createWindDiagram()
             "FROM   weatherdata_extended "
             "WHERE  date(timestamp) = ?", m_date.c_str());
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Zeit [HH:MM]\"\n";
     plot << "set ylabel \"Windgeschwindigkeit [km/h]\"\n";
@@ -185,7 +185,7 @@ void DayReportGenerator::createRainDiagram()
             "FROM   weatherdata_extended "
             "WHERE  date(timestamp) = ?", m_date.c_str());
 
-    Gnuplot plot;
+    Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
     plot << "set xlabel \"Zeit [HH:MM]\"\n";
     plot << "set ylabel \"Niederschlag [mm]\"\n";

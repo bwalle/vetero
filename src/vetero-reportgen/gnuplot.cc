@@ -31,9 +31,10 @@ namespace reportgen {
 std::string Gnuplot::PLACEHOLDER = "@TEMPFILE@";
 
 // -------------------------------------------------------------------------------------------------
-Gnuplot::Gnuplot()
+Gnuplot::Gnuplot(const common::Configuration &config)
+    : m_config(config)
 {
-    *this << "set locale 'de_DE'\n";
+    *this << "set locale '" << m_config.getLocale() << "'\n";
     *this << "set terminal svg size 1000 400 font 'Arial,9'\n";
 }
 

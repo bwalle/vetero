@@ -22,7 +22,8 @@
 #include <string>
 #include <vector>
 
-#include <common/error.h>
+#include "common/error.h"
+#include "common/configuration.h"
 
 /**
  * @file gnuplot.h
@@ -77,8 +78,10 @@ class Gnuplot
     public:
         /**
          * @brief C'tor
+         *
+         * @param[in] config the application's configuration
          */
-        Gnuplot();
+        Gnuplot(const common::Configuration &config);
 
         /**
          * @brief Virtual D'tor
@@ -143,6 +146,7 @@ class Gnuplot
         throw (common::ApplicationError);
 
     private:
+        const common::Configuration &m_config;
         std::stringstream m_stream;
         std::string m_workingDirectory;
 };
