@@ -159,8 +159,6 @@ class Veterod {
          * Used the external program <tt>vetero-reportgen</tt>.
          *
          * @param[in] jobs the jobs specification as accepted by <tt>vetero-reportgen</tt>
-         * @param[in] date if @p type is not <tt>"all"</tt>, a date string must be provided here which
-         *            can be the date, the month or just the year.
          * @param[in] upload @c true if the files should also be uploaded, @c false otherwise.
          * @exception common::ApplicationError if the program cannot be started
          */
