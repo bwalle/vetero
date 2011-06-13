@@ -21,6 +21,7 @@
 #include <string>
 
 #include <libbw/noncopyable.h>
+#include <libbw/compiler.h>
 
 #include <serdisplib/serdisp.h>
 
@@ -377,7 +378,8 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
                         int              startColumn,
                         enum DisplayFont font,
                         const char       *text, ...)
-        throw (std::out_of_range, std::bad_alloc, DisplayError);
+        throw (std::out_of_range, std::bad_alloc, DisplayError)
+        BW_COMPILER_PRINTF_FORMAT(5, 6);
 
         /**
          * @brief Deletes the contents of a line.
