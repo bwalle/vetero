@@ -15,7 +15,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#include <iomanip>
 #include <cassert>
 
 #include <libbw/stringutil.h>
@@ -270,9 +269,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
          << "  <th style='padding: 5px'><b>Summe</b></th>\n"
          << "</tr>\n";
 
-    std::stringstream ss;
     std::string localeStr = reportgen()->configuration().getLocale();
-    ss.imbue(std::locale(localeStr.c_str()));
     for (size_t i = 0; i < result.size(); i++) {
         html << "<tr bgcolor='#FFFFFF'>\n";
 
@@ -292,12 +289,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
 
                 if (desc->precision > 0) {
                     double numericValue = bw::from_str<double>(value, std::locale::classic());
-
-                    ss.str("");
-                    ss.setf(std::ios::fixed, std::ios::floatfield);
-                    ss.precision(desc->precision);
-                    ss << numericValue;
-                    value = ss.str();
+                    value = common::str_printf_l("%.*lf", localeStr.c_str(), desc->precision, numericValue);
                 }
                 if (desc->unit)
                     value += " " + std::string(desc->unit);
