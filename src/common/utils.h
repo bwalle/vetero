@@ -22,7 +22,9 @@
 #include <string>
 #include <cstdarg>
 
-#include <common/error.h>
+#include <libbw/compiler.h>
+
+#include "common/error.h"
 
 /**
  * @file
@@ -48,7 +50,8 @@ namespace common {
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
  */
-std::string str_printf(const char *format, ...);
+std::string str_printf(const char *format, ...)
+    COMPILER_PRINTF_FORMAT(1, 2);
 
 /**
  * @brief printf_l() implementation that allocates the result string
@@ -69,7 +72,8 @@ std::string str_printf(const char *format, ...);
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
  */
-std::string str_printf_l(const char *format, const char *locale,  ...);
+std::string str_printf_l(const char *format, const char *locale,  ...)
+    COMPILER_PRINTF_FORMAT(1, 3);
 
 /**
  * @brief printf() implementation that allocates the result string automatically
@@ -85,7 +89,8 @@ std::string str_printf_l(const char *format, const char *locale,  ...);
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
  */
-std::string str_vprintf(const char *format, va_list ap);
+std::string str_vprintf(const char *format, va_list ap)
+    COMPILER_PRINTF_FORMAT(1, 0);
 
 /**
  * @brief printf() implementation that allocates the result string automatically
@@ -105,7 +110,8 @@ std::string str_vprintf(const char *format, va_list ap);
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
  */
-std::string str_vprintf_l(const char *format, const char *locale, va_list ap);
+std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
+    COMPILER_PRINTF_FORMAT(1, 0);
 
 /**
  * @brief Starts a process in the background
