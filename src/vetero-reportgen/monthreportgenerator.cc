@@ -279,9 +279,12 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
             if (j == 0) {
                 std::string weekday = bw::Datetime(bw::from_str<time_t>(value)).strftime("%a");
                 std::string date = bw::Datetime(bw::from_str<time_t>(value)).strftime(_("%Y-%m-%d"));
+                std::string dateLink = bw::Datetime(bw::from_str<time_t>(value)).strftime("%Y-%m-%d");
 
                 html << "<td align='left' style='padding: 5px'>" << weekday << "</td>\n";
-                html << "<td align='right' style='padding: 5px'>" << date << "</td>\n";
+                html << "<td align='right' style='padding: 5px'>"
+                     << "<a style='text-decoration: none;' href='" << dateLink << ".xhtml'>"
+                     << date << "</a></td>\n";
 
             } else {
                 assert(j < ARRAY_SIZE(format));
