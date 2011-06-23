@@ -19,6 +19,7 @@
 #include <libbw/stringutil.h>
 
 #include "common/translation.h"
+#include "common/utils.h"
 #include "dayreportgenerator.h"
 #include "gnuplot.h"
 #include "htmldocument.h"
@@ -28,7 +29,7 @@ namespace reportgen {
 
 // -------------------------------------------------------------------------------------------------
 DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
-                                                           const std::string    &date)
+                                       const std::string    &date)
     : ReportGenerator(reportGenerator)
     , m_date(date)
 {}
@@ -76,7 +77,7 @@ void DayReportGenerator::createTemperatureDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating temperature diagrams for %s", m_date.c_str());
-    m_temperatureFileName = m_date + "_temperature.svg";
+    m_temperatureFileName = m_date + "_temperature.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
             "SELECT time(timestamp), temp, dewpoint "
@@ -85,6 +86,7 @@ void DayReportGenerator::createTemperatureDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_temperatureFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -94,7 +96,6 @@ void DayReportGenerator::createTemperatureDiagram()
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set xtics format '%H:%M'\n";
     plot << "set xtics '02:00'\n";
-    plot << "set output '" << m_temperatureFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines title 'Temperatur' linecolor rgb '#CC0000' lw 2, "
          << "'" << Gnuplot::PLACEHOLDER << "' using 1:3 with lines title 'Taupunkt' linecolor rgb '#FF8500' lw 2\n";
 
@@ -106,7 +107,7 @@ void DayReportGenerator::createHumidityDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating humidity diagrams for %s", m_date.c_str());
-    m_humidityFileName = m_date + "_humidity.svg";
+    m_humidityFileName = m_date + "_humidity.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
             "SELECT time(timestamp), humid "
@@ -115,6 +116,7 @@ void DayReportGenerator::createHumidityDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_humidityFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Humidity [%]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -124,7 +126,6 @@ void DayReportGenerator::createHumidityDiagram()
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set xtics format '%H:%M'\n";
     plot << "set xtics '02:00'\n";
-    plot << "set output '" << m_humidityFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines notitle linecolor rgb '#3C8EFF' lw 2\n";
 
     plot.plot(result);
@@ -135,7 +136,7 @@ void DayReportGenerator::createWindDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating wind diagrams for %s", m_date.c_str());
-    m_windFileName = m_date + "_wind.svg";
+    m_windFileName = m_date + "_wind.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
             "SELECT time(timestamp), wind "
@@ -150,6 +151,7 @@ void DayReportGenerator::createWindDiagram()
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_windFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
@@ -160,7 +162,6 @@ void DayReportGenerator::createWindDiagram()
     plot << "set xtics '02:00'\n";
     plot.addWindY();
     plot << "set yrange [0 : " << max << "]\n";
-    plot << "set output '" << m_windFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with points notitle  pt 7 ps 1 "
             "linecolor rgb '#180076' lw 2\n";
 
@@ -172,7 +173,7 @@ void DayReportGenerator::createRainDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating rain diagrams for %s", m_date.c_str());
-    m_rainFileName = m_date + "_rain.svg";
+    m_rainFileName = m_date + "_rain.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
             "SELECT time(timestamp), rain "
@@ -181,6 +182,7 @@ void DayReportGenerator::createRainDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_rainFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -198,7 +200,6 @@ void DayReportGenerator::createRainDiagram()
 
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set style fill solid 1.0 border\n";
-    plot << "set output '" << m_rainFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with boxes notitle linecolor rgb '#ADD0FF' lw 2\n";
 
     plot.plot(result);

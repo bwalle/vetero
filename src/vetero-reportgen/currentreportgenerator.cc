@@ -42,7 +42,7 @@ CurrentReportGenerator::CurrentReportGenerator(VeteroReportgen *reportGenerator)
 void CurrentReportGenerator::generateReports()
     throw (common::ApplicationError)
 {
-    BW_DEBUG_INFO("Updating current_weather.svg");
+    BW_DEBUG_INFO("Updating current_weather.svgz");
 
     common::CurrentWeather currentWeather;
     try {
@@ -59,7 +59,9 @@ void CurrentReportGenerator::generateReports()
 
     std::ifstream input(templateFile.c_str());
     std::string reportDir(reportgen()->configuration().getReportDirectory());
-    std::ofstream output( (reportDir + "/current_weather.svg").c_str());
+    std::string outputfilename = reportDir + "/current_weather.svgz";
+
+    std::ofstream output(outputfilename.c_str());
     if (!input.is_open() || !output.is_open())
         throw common::ApplicationError("Unable to open input/output file when generating SVG");
 
@@ -105,6 +107,9 @@ void CurrentReportGenerator::generateReports()
 
         output << line;
     }
+
+    output.close();
+    common::compress_file(outputfilename);
 }
 
 // -------------------------------------------------------------------------------------------------

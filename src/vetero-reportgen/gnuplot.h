@@ -108,6 +108,26 @@ class Gnuplot
         void setWorkingDirectory(const std::string &workingdir);
 
         /**
+         * @brief Returns the output file
+         *
+         * @return the name of the output file set with setOutputFile()
+         */
+        std::string outputFile() const;
+
+        /**
+         * @brief Sets the output file
+         *
+         * This function must be called before the <tt>plot</tt> command is written
+         * to the Gnuplot stream.
+         *
+         * The output file must be SVG and will be automatically compressed in the
+         * plot() function.
+         *
+         * @param[in] output the name of the output file
+         */
+        void setOutputFile(const std::string &output);
+
+        /**
          * @brief Prints something to Gnuplot
          *
          * See the description of the class how to use that operator properly.
@@ -136,7 +156,8 @@ class Gnuplot
         /**
          * @brief Stores the data @p data at @p fd
          *
-         * The function just formats the data separated by tabs and newlines. The temporary file is deleted automatically
+         * The function just formats the data separated by tabs and newlines. The temporary file
+         * is deleted automatically.
          *
          * @param[in] data a two-dimensional string array
          * @param[in] fd the file descriptor where the data is written to
@@ -149,6 +170,7 @@ class Gnuplot
         const common::Configuration &m_config;
         std::stringstream m_stream;
         std::string m_workingDirectory;
+        std::string m_outputFile;
 };
 
 // -------------------------------------------------------------------------------------------------

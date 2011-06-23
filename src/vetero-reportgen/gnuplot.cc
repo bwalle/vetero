@@ -23,6 +23,7 @@
 #include <libbw/stringutil.h>
 
 #include "common/translation.h"
+#include "common/utils.h"
 #include "gnuplot.h"
 
 namespace vetero {
@@ -57,6 +58,20 @@ std::string Gnuplot::workingDirectory() const
 void Gnuplot::setWorkingDirectory(const std::string &workingdir)
 {
     m_workingDirectory = workingdir;
+}
+
+// -------------------------------------------------------------------------------------------------
+std::string Gnuplot::outputFile() const
+{
+    return m_outputFile;
+}
+
+// -------------------------------------------------------------------------------------------------
+void Gnuplot::setOutputFile(const std::string &output)
+{
+    m_outputFile = output;
+
+    *this << "set output '" << m_outputFile << "'\n";
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -111,10 +126,14 @@ void Gnuplot::plot(const StringStringVector &data)
         throw;
     }
 
+    std::string outputfile = common::realpath(m_outputFile);
+
     unlink(tempname);
     close(tempfd);
     if (*oldWorkingdir)
         chdir(oldWorkingdir);
+
+    common::compress_file(outputfile);
 }
 
 // -------------------------------------------------------------------------------------------------

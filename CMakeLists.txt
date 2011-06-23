@@ -80,6 +80,16 @@ else (CMAKE_CROSSCOMPILING)
     set(EXTRA_LIBS ${EXTRA_LIBS} ${CONFUSE_LDFLAGS})
 endif (CMAKE_CROSSCOMPILING)
 
+#
+# zlib
+#
+
+include(FindZLIB)
+if (NOT ZLIB_FOUND)
+    message(FATAL_ERROR "zlib library could not be found")
+endif (NOT ZLIB_FOUND)
+include_directories(${ZLIB_INCLUDE_DIRS})
+set(EXTRA_LIBS ${EXTRA_LIBS} ${ZLIB_LIBRARIES})
 
 #
 # serdisplib

@@ -24,8 +24,12 @@
 #include <cstdlib>
 #include <cerrno>
 #include <xlocale.h>
+#include <sys/stat.h>
+
+#include <zlib.h>
 
 #include <libbw/log/errorlog.h>
+#include <libbw/stringutil.h>
 
 #include "utils.h"
 
@@ -119,6 +123,59 @@ pid_t start_background(const std::string &process, const std::vector<std::string
         return childpid;
 
     throw SystemError("Unable to fork()", errno);
+}
+
+// -------------------------------------------------------------------------------------------------
+void compress_file(const std::string &filename)
+throw (common::ApplicationError)
+{
+    // use the C file I/O since it's equivalent with zlib I/O
+
+    std::FILE *fp = std::fopen(filename.c_str(), "r");
+    if (!fp)
+        throw common::SystemError("Unable to open '" + filename + "' for reading", errno);
+
+    // get the size of the file
+    int ret = std::fseek(fp, 0, SEEK_END);
+    if (ret < 0) {
+        std::fclose(fp);
+        throw common::SystemError("Unable to seek '" + filename + "' to the end", errno);
+    }
+
+    off_t size = ftello(fp);
+    std::rewind(fp);
+
+    char *buffer = new char[size];
+    ret = std::fread(buffer, 1, size, fp);
+    std::fclose(fp);
+    if (ret != size) {
+        delete[] buffer;
+        throw common::SystemError("Unable to read " + bw::str(size) + " bytes from " + filename, errno);
+    }
+
+    gzFile outfp = gzopen(filename.c_str(), "w");
+    if (!outfp)
+        throw common::ApplicationError("Unable to open '" + filename + "' for writing: ");
+
+    ret = gzwrite(outfp, buffer, size);
+    delete[] buffer;
+    gzclose(outfp);
+    if (ret != size)
+        throw common::ApplicationError("Unable to write to '" + filename + "'");
+}
+
+// -------------------------------------------------------------------------------------------------
+std::string realpath(const std::string &filename)
+throw (common::ApplicationError)
+{
+    char *resolved = ::realpath(filename.c_str(), NULL);
+    if (!resolved)
+        throw common::SystemError("Unable to resolve '" + filename + "'", errno);
+
+    std::string ret(resolved);
+    std::free(resolved);
+
+    return ret;
 }
 
 } // end namespace common

@@ -79,7 +79,7 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
 void MonthReportGenerator::createTemperatureDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    m_temperatureFileName = m_monthString + "_temperature.svg";
+    m_temperatureFileName = m_monthString + "_temperature.svgz";
 
     std::string firstDay = m_monthString + "-01";
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
@@ -93,6 +93,7 @@ void MonthReportGenerator::createTemperatureDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_temperatureFileName);
     plot << "set xlabel '" << _("Day") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set grid\n";
@@ -103,7 +104,6 @@ void MonthReportGenerator::createTemperatureDiagram()
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
-    plot << "set output '" << m_temperatureFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines title 'Min' linecolor rgb '#0022FF' lw 2, "
          << "'" << Gnuplot::PLACEHOLDER << "' using 1:3 with lines title 'Max' linecolor rgb '#FF0000' lw 2, "
          << "'" << Gnuplot::PLACEHOLDER << "' using 1:4 with lines title 'Avg' linecolor rgb '#555555' lw 2\n";
@@ -114,7 +114,7 @@ void MonthReportGenerator::createTemperatureDiagram()
 void MonthReportGenerator::createWindDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    m_windFileName = m_monthString + "_wind.svg";
+    m_windFileName = m_monthString + "_wind.svgz";
 
     std::string firstDay = m_monthString + "-01";
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
@@ -134,6 +134,7 @@ void MonthReportGenerator::createWindDiagram()
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_windFileName);
     plot << "set xlabel '" << _("Day") <<"'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
@@ -146,7 +147,6 @@ void MonthReportGenerator::createWindDiagram()
     plot << "set xtics 86400\n";
     plot.addWindY();
     plot << "set yrange [0 : " << max << "]\n";
-    plot << "set output '" << m_windFileName << "'\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with impulses notitle "
             "linecolor rgb '#180076' lw 4;\n";
     plot.plot(result);
@@ -156,7 +156,7 @@ void MonthReportGenerator::createWindDiagram()
 void MonthReportGenerator::createRainDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    m_rainFileName = m_monthString + "_rain.svg";
+    m_rainFileName = m_monthString + "_rain.svgz";
 
     std::string firstDay = m_monthString + "-01";
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
@@ -169,6 +169,7 @@ void MonthReportGenerator::createRainDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setOutputFile(m_rainFileName);
     plot << "set xlabel '" << _("Day") << "'\n";
     plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
     plot << "set grid\n";
@@ -180,13 +181,11 @@ void MonthReportGenerator::createRainDiagram()
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
-    plot << "set output '" << m_rainFileName << "'\n";
     plot << "set style fill solid 1.0 border\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:3 with boxes notitle linecolor rgb '#ADD0FF' lw 1, "
          << " '" << Gnuplot::PLACEHOLDER << "' using 1:2 with impulses notitle linecolor rgb '#0000FF' lw 4\n";
 
     plot.plot(result);
-
 }
 
 // -------------------------------------------------------------------------------------------------

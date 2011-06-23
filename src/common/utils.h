@@ -132,6 +132,29 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
 pid_t start_background(const std::string &process, const std::vector<std::string> &args)
 throw (common::ApplicationError);
 
+/**
+ * @brief Compresses @p filename with gzip
+ *
+ * The function replaces the file contents. The extension doesn't matter.
+ *
+ * @warning Use the function only for small files since the whole contents of the source
+ *          file will be read into memory.
+ *
+ * @param[in] filename the name of the file
+ * @exception common::ApplicationError if reading the file or writing the file fails.
+ */
+void compress_file(const std::string &filename)
+throw (common::ApplicationError);
+
+/**
+ * @brief Wrapper around POSIX realpath()
+ *
+ * @param[in] filename the name of the file that should be resolved
+ * @exception common::ApplicationError on error
+ */
+std::string realpath(const std::string &filename)
+throw (common::ApplicationError);
+
 } // end namespace common
 } // end namespace vetero
 
