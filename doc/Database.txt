@@ -9,7 +9,6 @@ This table contains all data sets that are received.
 -------------------------------------------------------------------------------
  Name         | Type      | Description
 ===============================================================================
- id           | INTEGER   | Primary key, automatically managed by SQLite.
  timestamp    | DATETIME  | Time of the measurement, localtime
  temp         | INTEGER   | Temperature in 1/100 °C (e.g. 2750)
  humid        | INTEGER   | Humidity in 1/100 % (e.g. 7500). 0 if the
@@ -35,7 +34,6 @@ measurement.
 -------------------------------------------------------------------------------
  Name         | Type      | Description
 ===============================================================================
- id           | INTEGER   | Primary key, automatically managed by SQLite.
  date         | DATE      | Date of the statistics.
  temp_min     | INTEGER   | Minimum temperature in 1/100 °C.
  temp_max     | INTEGER   | Maximum temperature in 1/100 °C.
@@ -62,7 +60,6 @@ Table month_statistics
 -------------------------------------------------------------------------------
  Name         | Type      | Description
 ===============================================================================
- id           | INTEGER   | Primary key, automatically managed by SQLite.
  month        | STRING    | Month of the statistics as YYYY-MM string.
  temp_min     | INTEGER   | Minimum temperature in 1/100 °C.
  temp_max     | INTEGER   | Maximum temperature in 1/100 °C.
