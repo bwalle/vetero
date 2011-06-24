@@ -21,13 +21,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 set (VERSION "0.1.0")
 
 #
-# asciidoc HTML
-#
-
-find_program(ASCIIDOC_EXECUTABLE asciidoc)
-set(ASCIIDOC_OPTIONS -a toclevels=3 -a badges -a toc -a numbered)
-
-#
 # doxygen target
 #
 add_custom_target(
@@ -164,7 +157,6 @@ add_custom_target(pot
 
 
 add_subdirectory(src)
-add_subdirectory(doc)
 add_subdirectory(share)
 add_subdirectory(po)
 
