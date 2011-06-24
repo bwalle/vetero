@@ -21,7 +21,7 @@ This table contains all data sets that are received.
               |           | doesn't measure the wind.
               |           | doesn't measure the wind.
  wind_bft     | INTEGER   | Wind strength in Beaufort.
- rain         | INTEGER   | Rain in 1/100 l/m², counted from the last
+ rain         | INTEGER   | Rain in 1/1000 l/m², counted from the last
               |           | measurement.
 -------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ measurement.
  wind_bft_min | INTEGER   | Minimum wind strength in Beaufort.
  wind_bft_max | INTEGER   | Maximum wind strength in Beaufort.
  wind_bft_avg | INTEGER   | Average wind strength in Beaufort.
- rain         | INTEGER   | Total rain of the month in 1/100 l/m².
+ rain         | INTEGER   | Total rain of the month in 1/1000 l/m².
 -------------------------------------------------------------------------------
 
 
@@ -76,5 +76,5 @@ Table month_statistics
  wind_bft_min | INTEGER   | Minimum wind strength in Beaufort.
  wind_bft_max | INTEGER   | Maximum wind strength in Beaufort.
  wind_bft_avg | INTEGER   | Average wind strength in Beaufort.
- rain         | INTEGER   | Total rain of the month in 1/100 l/m².
+ rain         | INTEGER   | Total rain of the month in 1/1000 l/m².
 -------------------------------------------------------------------------------
