@@ -18,9 +18,12 @@ $slave = $pty->slave;
 
 print "Slave: " . $slave->ttyname() . "\n";
 
+$rain = 1400;
 do {
     print "Press RETURN to send a new dataset, Ctrl-C to quit.\n";
-    print $pty '$1;1;;;;;;;;;;;;;;;;;;20,2;53;3,6;1486;0;0' . "\n";
+    print $pty "\$1;1;;;;;;;;;;;;;;;;;;20,2;53;3,6;$rain;0;0\n";
+    print "\$1;1;;;;;;;;;;;;;;;;;;20,2;53;3,6;$rain;0;0\n";
+    $rain++;
 } while (<STDIN>);
 
 close($slave);
