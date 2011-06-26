@@ -15,11 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
+#include <iostream>
+
 #include <libbw/log/debug.h>
 #include <libbw/stringutil.h>
 
 #include "common/translation.h"
 #include "common/utils.h"
+#include "common/dbaccess.h"
 #include "dayreportgenerator.h"
 #include "gnuplot.h"
 #include "htmldocument.h"
@@ -38,19 +41,14 @@ DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
 void DayReportGenerator::generateReports()
     throw (common::ApplicationError)
 {
-    BW_DEBUG_INFO("Generating daily report for %s",
-                  m_date.empty() ? "every day" : m_date.c_str());
-
     try {
         if (m_date.empty()) {
-            common::Database::DbResultVector dates = reportgen()->database().executeSqlQuery(
-                    "SELECT     DISTINCT date(timestamp) AS d "
-                    "FROM       weatherdata "
-                    "ORDER BY   d");
+            common::DbAccess dbAccess(&reportgen()->database());
+            std::vector<std::string> dates = dbAccess.dataDays();
 
-            common::Database::DbResultVector::const_iterator it;
+            std::vector<std::string>::const_iterator it;
             for (it = dates.begin(); it != dates.end(); ++it)
-                generateOneReport(it->at(0));
+                generateOneReport(*it);
         } else
             generateOneReport(m_date);
     } catch (const common::DatabaseError &err) {
@@ -62,6 +60,7 @@ void DayReportGenerator::generateReports()
 void DayReportGenerator::generateOneReport(const std::string &date)
     throw (common::ApplicationError, common::DatabaseError)
 {
+    BW_DEBUG_INFO("Generating daily report for %s", m_date.c_str());
     m_date = date;
 
     createTemperatureDiagram();
@@ -80,9 +79,11 @@ void DayReportGenerator::createTemperatureDiagram()
     m_temperatureFileName = m_date + "_temperature.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT time(timestamp), temp, dewpoint "
-            "FROM   weatherdata_extended "
-            "WHERE  date(timestamp) = ?", m_date.c_str());
+        "SELECT time(timestamp), temp, dewpoint "
+        "FROM   weatherdata_float "
+        "WHERE  date(timestamp) = ?",
+        m_date.c_str()
+    );
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
@@ -96,8 +97,10 @@ void DayReportGenerator::createTemperatureDiagram()
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set xtics format '%H:%M'\n";
     plot << "set xtics '02:00'\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines title 'Temperatur' linecolor rgb '#CC0000' lw 2, "
-         << "'" << Gnuplot::PLACEHOLDER << "' using 1:3 with lines title 'Taupunkt' linecolor rgb '#FF8500' lw 2\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with lines title 'Temperatur' linecolor rgb '#CC0000' lw 2, "
+         << "'" << Gnuplot::PLACEHOLDER
+         << "' using 1:3 with lines title 'Taupunkt' linecolor rgb '#FF8500' lw 2\n";
 
     plot.plot(result);
 }
@@ -110,9 +113,10 @@ void DayReportGenerator::createHumidityDiagram()
     m_humidityFileName = m_date + "_humidity.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT time(timestamp), humid "
-            "FROM   weatherdata_extended "
-            "WHERE  date(timestamp) = ?", m_date.c_str());
+        "SELECT time(timestamp), humid "
+        "FROM   weatherdata_float "
+        "WHERE  date(timestamp) = ?", m_date.c_str()
+    );
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
@@ -126,7 +130,8 @@ void DayReportGenerator::createHumidityDiagram()
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set xtics format '%H:%M'\n";
     plot << "set xtics '02:00'\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines notitle linecolor rgb '#3C8EFF' lw 2\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with lines notitle linecolor rgb '#3C8EFF' lw 2\n";
 
     plot.plot(result);
 }
@@ -139,13 +144,15 @@ void DayReportGenerator::createWindDiagram()
     m_windFileName = m_date + "_wind.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT time(timestamp), wind "
-            "FROM   weatherdata_extended "
-            "WHERE  date(timestamp) = ?", m_date.c_str());
+        "SELECT time(timestamp), wind "
+        "FROM   weatherdata_float "
+        "WHERE  date(timestamp) = ?", m_date.c_str()
+    );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
-            "SELECT ROUND(MAX(wind)) "
-            "FROM   weatherdata_extended "
-            "WHERE  date(timestamp) = ?", m_date.c_str());
+        "SELECT ROUND(MAX(wind)) "
+        "FROM   weatherdata_float "
+        "WHERE  date(timestamp) = ?", m_date.c_str()
+    );
 
     std::string max = maxResult.at(0).at(0);
 
@@ -176,9 +183,18 @@ void DayReportGenerator::createRainDiagram()
     m_rainFileName = m_date + "_rain.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT time(timestamp), rain "
-            "FROM   weatherdata_extended "
-            "WHERE  date(timestamp) = ?", m_date.c_str());
+        "SELECT time(timestamp), rain "
+        "FROM   weatherdata_float "
+        "WHERE  date(timestamp) = ?",
+        m_date.c_str()
+    );
+
+    // accumulate the rain
+    double sum = 0.0;
+    for (int i = 0; i < result.size(); ++i) {
+        sum += bw::from_str<double>( result[i].at(1) );
+        result[i].at(1) = bw::str(sum);
+    }
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
@@ -193,14 +209,15 @@ void DayReportGenerator::createRainDiagram()
     plot << "set xtics '02:00'\n";
 
     // there might be days with no rain :-)
-    if (result.empty() || result.back().empty() || bw::from_str<double>(result.back().back()) < 0.001)
+    if (sum < 0.001)
         plot << "set yrange [0:1]\n";
     else
         plot << "set yrange [0:]\n";
 
     plot << "set xrange ['00:00:00' : '24:00:00']\n";
     plot << "set style fill solid 1.0 border\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with boxes notitle linecolor rgb '#ADD0FF' lw 2\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with boxes notitle linecolor rgb '#ADD0FF' lw 2\n";
 
     plot.plot(result);
 }

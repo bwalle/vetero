@@ -70,40 +70,49 @@ void CurrentReportGenerator::generateReports()
         std::string::size_type pos;
 
         std::string loc = reportgen()->configuration().getLocale();
+        std::string value;
 
         pos = line.find("TT.T");
-        if (pos != std::string::npos)
-            line.replace(pos, 4, common::str_printf_l("%.1lf", loc.c_str(),
-                                                      currentWeather.temperature()));
+        if (pos != std::string::npos) {
+            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.temperatureReal());
+            line.replace(pos, 4, value);
+        }
 
         pos = line.find("DD.D");
-        if (pos != std::string::npos)
-            line.replace(pos, 4, common::str_printf_l("%.1lf", loc.c_str(),
-                                                      currentWeather.dewpoint()));
+        if (pos != std::string::npos) {
+            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.dewpointReal());
+            line.replace(pos, 4, value);
+        }
 
         pos = line.find("UUUU-UU-UU UU:UU");
-        if (pos != std::string::npos)
-            line.replace(pos, 16, currentWeather.timestamp().strftime(_("%Y-%m-%d %H:%M")));
+        if (pos != std::string::npos) {
+            value = currentWeather.timestamp().strftime(_("%Y-%m-%d %H:%M"));
+            line.replace(pos, 16, value);
+        }
 
         pos = line.find("HH");
-        if (pos != std::string::npos)
-            line.replace(pos, 2, common::str_printf_l("%d", loc.c_str(),
-                                                      currentWeather.humidity()));
+        if (pos != std::string::npos) {
+            value = common::str_printf_l("%.0lf", loc.c_str(), currentWeather.humidityReal());
+            line.replace(pos, 2, value);
+        }
 
         pos = line.find("WW.W");
-        if (pos != std::string::npos)
-            line.replace(pos, 4, common::str_printf_l("%.1lf", loc.c_str(),
-                                                      currentWeather.windSpeed()));
+        if (pos != std::string::npos) {
+            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.windSpeedReal());
+            line.replace(pos, 4, value);
+        }
 
         pos = line.find("WB");
-        if (pos != std::string::npos)
-            line.replace(pos, 2, common::str_printf_l("%d", loc.c_str(),
-                                                      currentWeather.windBeaufort()));
+        if (pos != std::string::npos) {
+            value = common::str_printf_l("%d", loc.c_str(), currentWeather.windBeaufort());
+            line.replace(pos, 2, value);
+        }
 
         pos = line.find("RR.R");
-        if (pos != std::string::npos)
-            line.replace(pos, 4, common::str_printf_l("%.1lf", loc.c_str(),
-                                                      currentWeather.rain()));
+        if (pos != std::string::npos) {
+            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.rainReal());
+            line.replace(pos, 4, value);
+        }
 
         output << line;
     }

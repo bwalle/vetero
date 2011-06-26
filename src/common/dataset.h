@@ -56,6 +56,17 @@ class UsbWde1Dataset {
          */
         static const int RAIN_GAUGE_FACTOR = 295;
 
+        /**
+         * @brief Sensor type, comes from the user configuration
+         */
+        enum SensorType {
+            SensorInvalid = -1, /**< Invalid sensor type, default value */
+            SensorKombi,        /**< Kombisensor which has temperature, humidity, dew point,
+                                     wind and rain */
+            SensorPool,         /**< Pool sensor which only has temperature */
+            SensorNormal        /**< sensor with temperature and humidity */
+        };
+
     public:
         /**
          * @brief Constructor
@@ -74,6 +85,22 @@ class UsbWde1Dataset {
     public:
 
         /**
+         * @brief Returns the sensor type
+         *
+         * The sensor type determines which values are valid.
+         *
+         * @return the sensor type
+         */
+        SensorType sensorType() const;
+
+        /**
+         * @brief Sets the sensor type
+         *
+         * @param[in] type the sensor type
+         */
+        void setSensorType(SensorType type);
+
+        /**
          * @brief Returns the timestamp of the measurement
          *
          * @return the timestamp
@@ -90,79 +117,58 @@ class UsbWde1Dataset {
         /**
          * @brief Returns the temperature
          *
-         * @return the temperature in degrees Celsius (°C).
+         * @return the temperature in 1/100 degrees Celsius (°C).
          */
-        double temperature() const;
+        int temperature() const;
 
         /**
          * @brief Sets the temperature of the data set
          *
-         * @param[in] temperature the new temperature in degrees Celsius (°C).
+         * @param[in] temperature the new temperature in 1/100 degrees Celsius (°C).
          */
-        void setTemperature(double temperature);
+        void setTemperature(int temperature);
 
         /**
          * @brief Returns the humidity
          *
-         * @return the humidity in percent (%)
+         * @return the humidity in percent 1/100 (%)
          */
         int humidity() const;
 
         /**
          * @brief Sets the humidity
          *
-         * @param[in] humidity the humidity in percent (%)
+         * @param[in] humidity the humidity in 1/100 percent (%)
          */
         void setHumidity(int humidity);
 
         /**
-         * @brief Returns the current dew point
-         *
-         * @return the current dew point in °C.
-         */
-        double dewpoint() const;
-
-        /**
-         * @brief Sets the current dew point
-         *
-         * @param[in] dewpoint the dew point in °C.
-         */
-        void setDewpoint(double dewpoint);
-
-        /**
          * @brief Returns the wind speed
          *
-         * @return the wind speed in km/h.
+         * @return the wind speed in 1/100 km/h.
          */
-        double windSpeed() const;
+        int windSpeed() const;
 
         /**
          * @brief Set the wind speed
          *
-         * @param[in] windSpeed the wind speed in km/h.
+         * @param[in] windSpeed the wind speed in 1/100 km/h.
          */
-        void setWindSpeed(double windSpeed);
-
-        /**
-         * @brief Returns the wind speed in Beaufort.
-         *
-         * @return the wind speed in Beaufort between 0 and 12.
-         */
-        int windSpeedBeaufort() const;
+        void setWindSpeed(int windSpeed);
 
         /**
          * @brief Returns the rain gauge
          *
          * @return the rain gauge in ticks.
          */
-        unsigned long long rainGauge() const;
+        int rainGauge() const;
 
         /**
          * @brief Sets the rain gauge
          *
          * @param[in] rainGauge the rain gauge in ticks.
          */
-        void setRainGauge(unsigned long long rainGauge);
+        void setRainGauge(int rainGauge);
 
         /**
          * @brief Returns the rain status.
@@ -189,12 +195,12 @@ class UsbWde1Dataset {
         std::string str() const;
 
     private:
+        SensorType m_sensorType;
         bw::Datetime m_timestamp;
-        double m_temperature;
+        int m_temperature;
         int m_humidity;
-        double m_dewpoint;
-        double m_windSpeed;
-        unsigned long long m_rainGauge;
+        int m_windSpeed;
+        int m_rainGauge;
         bool m_IsRain;
 };
 
@@ -245,6 +251,9 @@ class CurrentWeather
          */
         bw::Datetime timestamp() const;
 
+        /** @name Temperature */                                                           /* {{{ */
+        /** @{ */
+
         /**
          * @brief Sets the timestamp of the measurement
          *
@@ -255,86 +264,138 @@ class CurrentWeather
         /**
          * @brief Returns the current temperature
          *
+         * @return the current temperature in 1/100 °C.
+         */
+        int temperature() const;
+
+        /**
+         * @brief Returns the current temperature as floating-point
+         *
          * @return the current temperature in °C.
          */
-        double temperature() const;
+        double temperatureReal() const;
 
         /**
          * @brief Sets the current temperature
          *
-         * @param[in] temperature the current temperature in °C.
+         * @param[in] temperature the current temperature in 1/100 °C.
          */
-        void setTemperature(double temperature);
+        void setTemperature(int temperature);
 
         /**
          * @brief Returns the minimum temperature of the day
          *
-         * @return the minimum temperature in °C.
+         * @return the minimum temperature in 1/100 °C.
          */
-        double minTemperature() const;
+        int minTemperature() const;
+
+        /**
+         * @brief Returns the minimum temperature of the day as floating-point
+         *
+         * @return the current temperature in °C.
+         */
+        double minTemperatureReal() const;
 
         /**
          * @brief Sets the minimum temperature of the day
          *
-         * @param[in] minTemperature the minimum temperature in °C.
+         * @param[in] minTemperature the minimum temperature in 1/100 °C.
          */
-        void setMinTemperature(double minTemperature);
+        void setMinTemperature(int minTemperature);
+
+        /**
+         * @brief Returns the maximum temperature of the day
+         *
+         * @return the maximum temperature in 1/100 °C.
+         */
+        int maxTemperature() const;
 
         /**
          * @brief Returns the maximum temperature of the day
          *
          * @return the maximum temperature in °C.
          */
-        double maxTemperature() const;
+        double maxTemperatureReal() const;
 
         /**
          * @brief Sets the maximum temperature of the day
          *
-         * @param[in] maxTemperature the maximum temperature in °C.
+         * @param[in] maxTemperature the maximum temperature in 1/00 °C.
          */
-        void setMaxTemperature(double maxTemperature);
+        void setMaxTemperature(int maxTemperature);
+
+        /** @} */                                                                          /* }}} */
+
+        /** @name Humidity and Dewpoint */                                                 /* {{{ */
+        /** @{ */
 
         /**
          * @brief Returns the current humidity
          *
-         * @return the current humidity in %
+         * @return the current humidity in 1/100 %
          */
         int humidity() const;
 
         /**
+         * @brief Returns the current humidity as floating-point
+         *
+         * @return the current humidity in %
+         */
+        double humidityReal() const;
+
+        /**
          * @brief Sets the current humidity
          *
-         * @param[in] humidity the humidity in %
+         * @param[in] humidity the humidity in 1/100 %
          */
         void setHumidity(int humidity);
 
         /**
          * @brief Returns the current dew point
          *
+         * @return the current dew point in 1/100 °C.
+         */
+        int dewpoint() const;
+
+        /**
+         * @brief Returns the current dew point as floating-point
+         *
          * @return the current dew point in °C.
          */
-        double dewpoint() const;
+        double dewpointReal() const;
 
         /**
          * @brief Sets the current dew point
          *
-         * @param[in] dewpoint the dew point in °C.
+         * @param[in] dewpoint the dew point in 1/100 °C.
          */
-        void setDewpoint(double dewpoint);
+        void setDewpoint(int dewpoint);
+
+        /** @} */                                                                          /* }}} */
+
+        /** @name Wind */                                                                  /* {{{ */
+        /** @{ */
 
         /**
-         * @brief Returns the current wind speed in km/h
+         * @brief Returns the current wind speed in 1/100 km/h
+         *
+         * @return the current wind speed in 1/100 km/h
+         */
+        int windSpeed() const;
+
+        /**
+         * @brief Returns the current wind speed as floating-point
          *
          * @return the current wind speed in km/h
          */
-        double windSpeed() const;
+        double windSpeedReal() const;
 
         /**
-         * @brief Sets the current wind speed in km/h
+         * @brief Sets the current wind speed in 1/100 km/h
          *
-         * @param[in] windSpeed the current wind speed in km/h
+         * @param[in] windSpeed the current wind speed in 1/100 km/h
          */
-        void setWindSpeed(double windSpeed);
+        void setWindSpeed(int windSpeed);
 
         /**
          * @brief Returns the wind speed in Beaufort
@@ -344,18 +405,32 @@ class CurrentWeather
         int windBeaufort() const;
 
         /**
+         * @brief Sets the wind strength in Beaufort
+         *
+         * @param[in] bft a number between 0 and 12
+         */
+        void setWindBeaufort(int bft);
+
+        /**
          * @brief Returns the maximum wind speed
          *
          * @return the wind maximum speed in km/h.
          */
-        double maxWindSpeed() const;
+        int maxWindSpeed() const;
+
+        /**
+         * @brief Returns the maximum wind speed as floating-point
+         *
+         * @return the wind maximum speed in km/h.
+         */
+        double maxWindSpeedReal() const;
 
         /**
          * @brief Set the maximum wind speed
          *
          * @param[in] windSpeed the maximum wind speed in km/h.
          */
-        void setMaxWindSpeed(double windSpeed);
+        void setMaxWindSpeed(int windSpeed);
 
         /**
          * @brief Returns the maximum wind speed
@@ -365,32 +440,39 @@ class CurrentWeather
         int maxWindBeaufort() const;
 
         /**
+         * @brief Returns the maximum wind speed
+         *
+         * @param[in] bft the wind maximum speed in Beaufort.
+         */
+        void setMaxWindBeaufort(int bft);
+
+        /** @} */                                                                          /* }}} */
+
+        /** @name Rain */                                                                  /* {{{ */
+        /** @{ */
+
+        /**
          * @brief Returns the accumulated rain amount
          *
-         * @return the rain amount of the day in mm (= l/m²)
+         * @return the rain amount of the day in 1/1000 l/m²
          */
-        double rain() const;
+        int rain() const;
+
+        /**
+         * @brief Returns the accumulated rain amount as floating point
+         *
+         * @return the rain amount of the day in l/m²
+         */
+        double rainReal() const;
 
         /**
          * @brief Sets the accumulated rain amount
          *
-         * @param[in] rain the rain amount of the day in mm (= l/m²)
+         * @param[in] rain the rain amount of the day in 1/1000 l/m²
          */
-        void setRain(double rain);
+        void setRain(int  rain);
 
-        /**
-         * @brief Returns the rain status.
-         *
-         * @return @c true if it's raining, @c false if not.
-         */
-        bool isRain() const;
-
-        /**
-         * @brief Sets the rain status
-         *
-         * @param[in] rain @c true if it rains, @c false otherwise.
-         */
-        void setIsRain(bool rain);
+        /** @} */                                                                          /* }}} */
 
         /**
          * @brief Creates a string-represenation of the object
@@ -404,12 +486,10 @@ class CurrentWeather
 
     private:
         bw::Datetime m_timestamp;
-        double m_temperature, m_minTemperature, m_maxTemperature;
-        int m_humidity;
-        double m_dewpoint;
-        double m_windSpeed, m_maxWindSpeed;
-        double m_rain;
-        bool m_IsRain;
+        int m_temperature, m_minTemperature, m_maxTemperature;
+        int m_humidity, m_dewpoint;
+        int m_windSpeed, m_maxWindSpeed, m_windBft, m_maxWindBft;
+        int m_rain;
 };
 
 /**

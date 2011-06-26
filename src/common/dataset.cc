@@ -14,10 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#include <limits>
 #include <iostream>
 #include <sstream>
-#include <cmath>
 
 #include "dataset.h"
 #include "utils.h"
@@ -30,13 +28,25 @@ namespace common {
 
 // -------------------------------------------------------------------------------------------------
 UsbWde1Dataset::UsbWde1Dataset()
-    : m_temperature(std::numeric_limits<double>::min())
-    , m_humidity(std::numeric_limits<int>::min())
-    , m_dewpoint(std::numeric_limits<double>::min())
-    , m_windSpeed(std::numeric_limits<double>::min())
-    , m_rainGauge(std::numeric_limits<unsigned long long>::max())
+    : m_sensorType(SensorInvalid)
+    , m_temperature(0)
+    , m_humidity(0)
+    , m_windSpeed(0)
+    , m_rainGauge(0)
     , m_IsRain(false)
 {}
+
+// -------------------------------------------------------------------------------------------------
+UsbWde1Dataset::SensorType UsbWde1Dataset::sensorType() const
+{
+    return m_sensorType;
+}
+
+// -------------------------------------------------------------------------------------------------
+void UsbWde1Dataset::setSensorType(UsbWde1Dataset::SensorType type)
+{
+    m_sensorType = type;
+}
 
 // -------------------------------------------------------------------------------------------------
 bw::Datetime UsbWde1Dataset::timestamp() const
@@ -51,13 +61,13 @@ void UsbWde1Dataset::setTimestamp(const bw::Datetime &time)
 }
 
 // -------------------------------------------------------------------------------------------------
-double UsbWde1Dataset::temperature() const
+int UsbWde1Dataset::temperature() const
 {
     return m_temperature;
 }
 
 // -------------------------------------------------------------------------------------------------
-void UsbWde1Dataset::setTemperature(double temperature)
+void UsbWde1Dataset::setTemperature(int temperature)
 {
     m_temperature = temperature;
 }
@@ -75,37 +85,25 @@ void UsbWde1Dataset::setHumidity(int humidity)
 }
 
 // -------------------------------------------------------------------------------------------------
-double UsbWde1Dataset::dewpoint() const
-{
-    return m_dewpoint;
-}
-
-// -------------------------------------------------------------------------------------------------
-void UsbWde1Dataset::setDewpoint(double dewpoint)
-{
-    m_dewpoint = dewpoint;
-}
-
-// -------------------------------------------------------------------------------------------------
-double UsbWde1Dataset::windSpeed() const
+int UsbWde1Dataset::windSpeed() const
 {
     return m_windSpeed;
 }
 
 // -------------------------------------------------------------------------------------------------
-void UsbWde1Dataset::setWindSpeed(double windSpeed)
+void UsbWde1Dataset::setWindSpeed(int windSpeed)
 {
     m_windSpeed = windSpeed;
 }
 
 // -------------------------------------------------------------------------------------------------
-unsigned long long UsbWde1Dataset::rainGauge() const
+int UsbWde1Dataset::rainGauge() const
 {
     return m_rainGauge;
 }
 
 // -------------------------------------------------------------------------------------------------
-void UsbWde1Dataset::setRainGauge(unsigned long long rainGauge)
+void UsbWde1Dataset::setRainGauge(int rainGauge)
 {
     m_rainGauge = rainGauge;
 }
@@ -129,7 +127,6 @@ std::string UsbWde1Dataset::str() const
     ss << "time="       << timestamp() << ", "
        << "temp="       << temperature() << "C, "
        << "humid="      << humidity() << "%, "
-       << "dewpoint="   << dewpoint() << "C, "
        << "wind="       << windSpeed() << "km/h, "
        << "rainGauge="  << rainGauge() << ", "
        << "rain="       << std::boolalpha << isRain();
@@ -148,15 +145,16 @@ std::ostream &operator<<(std::ostream &os, const UsbWde1Dataset &dataset)
 
 // -------------------------------------------------------------------------------------------------
 CurrentWeather::CurrentWeather()
-    : m_temperature(std::numeric_limits<double>::min())
-    , m_minTemperature(std::numeric_limits<double>::min())
-    , m_maxTemperature(std::numeric_limits<double>::min())
-    , m_humidity(std::numeric_limits<int>::min())
-    , m_dewpoint(std::numeric_limits<double>::min())
-    , m_windSpeed(std::numeric_limits<double>::min())
-    , m_maxWindSpeed(std::numeric_limits<double>::min())
-    , m_rain(std::numeric_limits<double>::min())
-    , m_IsRain(false)
+    : m_temperature(0)
+    , m_minTemperature(0)
+    , m_maxTemperature(0)
+    , m_humidity(0)
+    , m_dewpoint(0)
+    , m_windSpeed(0)
+    , m_maxWindSpeed(0)
+    , m_windBft(0)
+    , m_maxWindBft(0)
+    , m_rain(0)
 {}
 
 // -------------------------------------------------------------------------------------------------
@@ -171,46 +169,75 @@ void CurrentWeather::setTimestamp(const bw::Datetime &time)
     m_timestamp = time;
 }
 
+/* Temperature {{{ */
+
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::temperature() const
+int CurrentWeather::temperature() const
 {
     return m_temperature;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setTemperature(double temperature)
+double CurrentWeather::temperatureReal() const
+{
+    return m_temperature/100.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setTemperature(int temperature)
 {
     m_temperature = temperature;
 }
 
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::minTemperature() const
+int CurrentWeather::minTemperature() const
 {
     return m_minTemperature;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setMinTemperature(double minTemperature)
+double CurrentWeather::minTemperatureReal() const
+{
+    return m_minTemperature/100.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setMinTemperature(int minTemperature)
 {
     m_minTemperature = minTemperature;
 }
 
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::maxTemperature() const
+int CurrentWeather::maxTemperature() const
 {
     return m_maxTemperature;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setMaxTemperature(double maxTemperature)
+double CurrentWeather::maxTemperatureReal() const
+{
+    return m_maxTemperature/100.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setMaxTemperature(int maxTemperature)
 {
     m_maxTemperature = maxTemperature;
 }
+
+/* }}} */
+/* Humidity and Dewpoint {{{ */
 
 // -------------------------------------------------------------------------------------------------
 int CurrentWeather::humidity() const
 {
     return m_humidity;
+}
+
+// -------------------------------------------------------------------------------------------------
+double CurrentWeather::humidityReal() const
+{
+    return m_humidity/100.0;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -220,25 +247,40 @@ void CurrentWeather::setHumidity(int humidity)
 }
 
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::dewpoint() const
+int CurrentWeather::dewpoint() const
 {
     return m_dewpoint;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setDewpoint(double dewpoint)
+double CurrentWeather::dewpointReal() const
+{
+    return m_dewpoint/100.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setDewpoint(int dewpoint)
 {
     m_dewpoint = dewpoint;
 }
 
+/* }}} */
+/* Wind {{{ */
+
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::windSpeed() const
+int CurrentWeather::windSpeed() const
 {
     return m_windSpeed;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setWindSpeed(double windSpeed)
+double CurrentWeather::windSpeedReal() const
+{
+    return m_windSpeed/100.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setWindSpeed(int windSpeed)
 {
     m_windSpeed = windSpeed;
 }
@@ -246,17 +288,29 @@ void CurrentWeather::setWindSpeed(double windSpeed)
 // -------------------------------------------------------------------------------------------------
 int CurrentWeather::windBeaufort() const
 {
-    return Weather::windSpeedToBft(m_windSpeed);
+    return m_windBft;
 }
 
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::maxWindSpeed() const
+void CurrentWeather::setWindBeaufort(int bft)
+{
+    m_windBft = bft;
+}
+
+// -------------------------------------------------------------------------------------------------
+int CurrentWeather::maxWindSpeed() const
 {
     return m_maxWindSpeed;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setMaxWindSpeed(double windSpeed)
+double CurrentWeather::maxWindSpeedReal() const
+{
+    return m_maxWindSpeed/100.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setMaxWindSpeed(int windSpeed)
 {
     m_maxWindSpeed = windSpeed;
 }
@@ -268,28 +322,33 @@ int CurrentWeather::maxWindBeaufort() const
 }
 
 // -------------------------------------------------------------------------------------------------
-double CurrentWeather::rain() const
+void CurrentWeather::setMaxWindBeaufort(int bft)
+{
+    m_maxWindBft = bft;
+}
+
+/* }}} */
+/* Rain {{{ */
+
+// -------------------------------------------------------------------------------------------------
+int CurrentWeather::rain() const
 {
     return m_rain;
 }
 
 // -------------------------------------------------------------------------------------------------
-void CurrentWeather::setRain(double rain)
+double CurrentWeather::rainReal() const
+{
+    return m_rain/1000.0;
+}
+
+// -------------------------------------------------------------------------------------------------
+void CurrentWeather::setRain(int rain)
 {
     m_rain = rain;
 }
 
-// -------------------------------------------------------------------------------------------------
-bool CurrentWeather::isRain() const
-{
-    return m_IsRain;
-}
-
-// -------------------------------------------------------------------------------------------------
-void CurrentWeather::setIsRain(bool rain)
-{
-    m_IsRain = rain;
-}
+/* }}} */
 
 // -------------------------------------------------------------------------------------------------
 std::string CurrentWeather::str() const
@@ -304,8 +363,7 @@ std::string CurrentWeather::str() const
        << "windSpeed="          << windBeaufort() << " Bft, "
        << "maxWindSpeed="       << maxWindSpeed() << ", "
        << "maxWindSpeed="       << maxWindBeaufort() << " Bft, "
-       << "rain="               << rain() << ", "
-       << "isRain="             << std::boolalpha << isRain();
+       << "rain="               << rain() << ", ";
     return ss.str();
 }
 

@@ -18,6 +18,7 @@
 #ifndef INDEXGENERATOR_H_
 #define INDEXGENERATOR_H_
 
+#include "common/dbaccess.h"
 #include "reportgenerator.h"
 #include "htmldocument.h"
 
@@ -82,17 +83,14 @@ class IndexGenerator: public ReportGenerator
          *
          * @param[in] year the 4-digit year
          * @param[in] month the month from 1 to 12
-         * @return the number of days which have data in the given month
+         * @return @c true if there's weather data available, @c false otherwise
          */
-        int dataInMonth(int year, int month);
+        bool dataInMonth(int year, int month);
 
-        /**
-         * @brief Retrieves the year range in which data is available
-         *
-         * @param[out] firstYear the first year for which data is available (as 4-digit year)
-         * @param[out] lastYear the last year for which data is available (as 4-digit year)
-         */
-        void getYearRange(int &firstYear, int &lastYear);
+    private:
+        common::DbAccess m_dbAccess;
+        std::vector<std::string> m_dataMonths;
+        std::vector<std::string> m_dataDays;
 };
 
 } // end namespace reportgen

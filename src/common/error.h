@@ -114,6 +114,36 @@ class SystemError : public ApplicationError {
 };
 
 /* }}} */
+/* DatabaseError {{{ */
+
+/**
+ * @class DatabaseError
+ * @brief Exception class used in the database code.
+ *
+ * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup common
+ */
+class DatabaseError : public ApplicationError {
+
+    public:
+        /**
+         * @brief Constructor
+         *
+         * Creates a new DatabaseError.
+         *
+         * @param[in] string the error string
+         */
+        DatabaseError(const std::string &string)
+            : ApplicationError(string) {}
+
+        /**
+         * @brief Destructor
+         */
+        virtual ~DatabaseError()
+        throw () {}
+};
+
+/* }}} */
 
 } // end namespace vetero
 } // end namespace common

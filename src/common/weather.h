@@ -49,6 +49,14 @@ class Weather
         static int windSpeedToBft(double kmh);
 
         /**
+         * @brief Integer version of windSpeedToBft()
+         *
+         * @param[in] kmh the wind speed in 1/100 km/h
+         * @return a value between 0 and 12
+         */
+        static int windSpeedToBft(int kmh);
+
+        /**
          * @brief Calculates the dewpoint
          *
          * @param[in] temp the temperature in degrees Celsius
@@ -56,6 +64,15 @@ class Weather
          * @return the dewpoint in degrees Celsius
          */
         static double dewpoint(double temp, double humid);
+
+        /**
+         * @brief Integer version of dewpoint()
+         *
+         * @param[in] temp the temperature in 1/100 degrees Celsius
+         * @param[in] humid the humidity in 1/100 %
+         * @return the dewpiont in 1/100 degrees Celsius
+         */
+        static int dewpoint(int temp, int humid);
 };
 
 } // end namespace common

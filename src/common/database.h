@@ -26,6 +26,7 @@
 
 #include <sqlite3.h>
 
+#include "error.h"
 #include "dataset.h"
 
 /**
@@ -39,36 +40,6 @@
 namespace vetero {
 namespace common {
 
-/* DatabaseError {{{ */
-
-/**
- * @class DatabaseError
- * @brief Exception class used in the database code.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
- */
-class DatabaseError : public std::runtime_error {
-
-    public:
-        /**
-         * @brief Constructor
-         *
-         * Creates a new DatabaseError.
-         *
-         * @param[in] string the error string
-         */
-        DatabaseError(const std::string &string)
-            : std::runtime_error(string) {}
-
-        /**
-         * @brief Destructor
-         */
-        virtual ~DatabaseError()
-        throw () {}
-};
-
-/* }}} */
 /* Database {{{ */
 
 /**
@@ -305,5 +276,18 @@ class Sqlite3Database : public Database {
 
 } // end namespace common
 } // end namespace vetero
+
+/* Print result vector {{{ */
+
+/**
+ * @brief Converts a DB result vector in something printable
+ *
+ * @param[in] os the output stream
+ * @param[in] vector the database result vector
+ * @return @p os
+ */
+std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbResultVector &vector);
+
+/* }}} */
 
 #endif // DATABASE_H

@@ -48,7 +48,16 @@ namespace daemon {
  * @author Bernhard Walle <bernhard@bwalle.de>
  * @ingroup daemon
  */
-class Veterod {
+class Veterod
+{
+    public:
+        /**
+         * @brief Describes the action veterod performs
+         */
+        enum Action {
+            ActionCollectWeatherdata, ///! collect weatherdata, this is the default
+            ActionRegenerateMetadata  ///! regenerate the metadata in the DB
+        };
 
     public:
         /**
@@ -119,6 +128,20 @@ class Veterod {
 
     protected:
         /**
+         * @brief Main loop of the application
+         *
+         * This is the main part of the application.
+         */
+        void execCollectWeatherdata()
+        throw (common::ApplicationError);
+
+        /**
+         * @brief Special main loop which only regenerates metadata and exists.
+         */
+        void execRegenerateMetadata()
+        throw (common::ApplicationError);
+
+        /**
          * @brief Setup debug logging for the application
          *
          * @param[in] loglevel the minimum loglevel that gets logged. Valid values are @c "trace",
@@ -175,6 +198,7 @@ class Veterod {
         void notifyDisplay();
 
     private:
+        Action m_action;
         bool m_daemonize;
         FILE *m_logfile;
         std::string m_errorLogfile;

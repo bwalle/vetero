@@ -64,7 +64,8 @@ static void quit_display_daemon()
 
 // -------------------------------------------------------------------------------------------------
 Veterod::Veterod()
-    : m_daemonize(true)
+    : m_action(ActionCollectWeatherdata)
+    , m_daemonize(true)
     , m_logfile(NULL)
     , m_errorLogfile("stderr")
     , m_noConfigFatal(false)
@@ -104,10 +105,15 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
     configurationGroup.addOption("configfile", 'c', bw::OT_STRING,
                                  "Use the provided configuration file rather than '" + m_configfile + "'");
 
+    bw::OptionGroup actionGroups("Actions (replaces the default action to collect weatherdata)");
+    actionGroups.addOption("regenerate-metadata", 'M', bw::OT_FLAG,
+                                 "Regenerate all cached values in the database. This may take some time.");
+
     bw::OptionParser op;
     op.addOptions(generalGroup);
     op.addOptions(loggingGroup);
     op.addOptions(configurationGroup);
+    op.addOptions(actionGroups);
 
     // do the parsing
     if (!op.parse(argc, argv))
@@ -121,6 +127,10 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
         std::cerr << "veterod " << VERSION << std::endl;
         return false;
     }
+
+    // actions
+    if (op.getValue("regenerate-metadata"))
+        m_action = ActionRegenerateMetadata;
 
     // debug logging
     std::string debugLoglevel("none");
@@ -194,8 +204,6 @@ void Veterod::openDatabase()
             BW_DEBUG_INFO("Database doesn't exist, creating tables...");
             dbAccess.initTables();
         }
-
-        dbAccess.initViews();
     } catch (const vetero::common::DatabaseError &err) {
         throw common::ApplicationError("Unable to init DB: " + std::string(err.what()) );
     }
@@ -344,6 +352,21 @@ void Veterod::createPidfile()
 void Veterod::exec()
     throw (common::ApplicationError)
 {
+    switch (m_action) {
+        case ActionCollectWeatherdata:
+            execCollectWeatherdata();
+            break;
+
+        case ActionRegenerateMetadata:
+            execRegenerateMetadata();
+            break;
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+void Veterod::execCollectWeatherdata()
+throw (common::ApplicationError)
+{
     BW_DEBUG_INFO("Starting application.");
 
     if (m_daemonize) {
@@ -354,13 +377,16 @@ void Veterod::exec()
     DataReader reader(m_configuration->getSerialDevice(), m_configuration->getSerialBaud());
     reader.openConnection();
     startDisplay();
-    vetero::common::DbAccess dbAccess(&m_database);
-    bw::Datetime lastInserted = bw::Datetime::now(); // don't assume we need to regenerate everything on startup
+    common::DbAccess dbAccess(&m_database);
+    // don't assume we need to regenerate everything on startup
+    bw::Datetime lastInserted = bw::Datetime::now();
 
     while (true) {
         try {
             vetero::common::UsbWde1Dataset dataset = reader.read();
             dbAccess.insertUsbWde1Dataset(dataset);
+            dbAccess.updateDayStatistics(dataset.timestamp().strftime("%Y-%m-%d"));
+            dbAccess.updateMonthStatistics(dataset.timestamp().strftime("%Y-%m"));
             notifyDisplay();
 
             std::vector<std::string> jobs;
@@ -373,10 +399,19 @@ void Veterod::exec()
             lastInserted = dataset.timestamp();
         } catch (const common::ApplicationError &err) {
             BW_ERROR_ERR("%s", err.what());
-        } catch (const vetero::common::DatabaseError &err) {
-            BW_ERROR_ERR("%s", err.what());
         }
     }
+}
+
+// -------------------------------------------------------------------------------------------------
+void Veterod::execRegenerateMetadata()
+    throw (common::ApplicationError)
+{
+    BW_DEBUG_INFO("Regenerating metadata.");
+
+    common::DbAccess dbAccess(&m_database);
+    dbAccess.updateDayStatistics("");
+    dbAccess.updateMonthStatistics("");
 }
 
 /* }}} */

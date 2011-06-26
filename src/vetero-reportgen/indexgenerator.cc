@@ -17,8 +17,10 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 
 #include <libbw/stringutil.h>
+#include <libbw/log/debug.h>
 
 #include "common/utils.h"
 #include "common/translation.h"
@@ -32,12 +34,15 @@ namespace reportgen {
 // -------------------------------------------------------------------------------------------------
 IndexGenerator::IndexGenerator(VeteroReportgen *reportGenerator)
     : ReportGenerator(reportGenerator)
+    , m_dbAccess(&reportGenerator->database())
 {}
 
 // -------------------------------------------------------------------------------------------------
 void IndexGenerator::generateReports()
     throw (common::ApplicationError)
 {
+    BW_DEBUG_INFO("Generating index");
+
     HtmlDocument html(reportgen());
     html.setTitle(_("Overview Weather data"));
     html.setDisplayTitle(false);
@@ -48,14 +53,14 @@ void IndexGenerator::generateReports()
     html << "</a>\n";
 
     try {
-        int minYear, maxYear;
-        getYearRange(minYear, maxYear);
+        std::vector<std::string> dataYears = m_dbAccess.dataYears();
 
-        for (int year = maxYear; year >= minYear; --year) {
-            std::string yearStr = bw::str(year);
-            html.addSection(yearStr, yearStr, yearStr);
+        std::vector<std::string>::const_iterator it;
+        for (it = dataYears.begin(); it != dataYears.end(); ++it) {
+            std::string year = *it;
+            html.addSection(year, year, year);
 
-            generateYear(html, year);
+            generateYear(html, bw::from_str<int>(year));
             html.addTopLink();
         }
     } catch (const common::DatabaseError &err) {
@@ -70,6 +75,8 @@ void IndexGenerator::generateReports()
 // -------------------------------------------------------------------------------------------------
 void IndexGenerator::generateYear(HtmlDocument &html, int year)
 {
+    BW_DEBUG_TRACE("Index: Generate year %d", year);
+
     const int ROWS = 3, COLUMNS = 4;
 
     html << "<table>";
@@ -91,15 +98,15 @@ void IndexGenerator::generateYear(HtmlDocument &html, int year)
 // -------------------------------------------------------------------------------------------------
 void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
 {
-    int numDataDaysInMonth = dataInMonth(year, month);
+    BW_DEBUG_TRACE("Index: Generate month %d-%02d", year, month);
 
     std::string monthString;
-    if (numDataDaysInMonth > 0)
+    bool haveData = dataInMonth(year, month);
+    if (haveData)
         monthString = "<a href=\"" + common::str_printf("%04d-%02d.xhtml", year, month) + "\">" +
                       Calendar::monthName(month) + "</a>";
     else
         monthString = Calendar::monthName(month);
-
 
     html << "<table style=\"border:thin solid black;border-spacing:5px\" >\n"
          << "<tr>\n"
@@ -123,7 +130,7 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
             std::string dayString = "&nbsp;";
 
             if (!(currentDay == 1 && wday < weekdayOfFirst) && (currentDay <= lastDay)) {
-                if (numDataDaysInMonth == lastDay || (numDataDaysInMonth > 0 && dataAtDay(year, month, currentDay)))
+                if (haveData && dataAtDay(year, month, currentDay))
                     dayString = "<a href=\"" + common::str_printf("%04d-%02d-%02d.xhtml", year, month, currentDay) +
                                 "\">" + bw::str(currentDay) + "</a>";
                 else
@@ -143,44 +150,21 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
 // -------------------------------------------------------------------------------------------------
 bool IndexGenerator::dataAtDay(int year, int month, int day)
 {
+    if (m_dataDays.empty())
+        m_dataDays = m_dbAccess.dataDays();
+
     std::string dayStr = common::str_printf("%04d-%02d-%02d", year, month, day);
-
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT COUNT(*) "
-            "FROM   weatherdata "
-            "WHERE  date(timestamp) = date(?, 'localtime')", dayStr.c_str());
-
-    int count = std::atoi(result.at(0).at(0).c_str());
-
-    return count > 0;
+    return std::binary_search(m_dataDays.begin(), m_dataDays.end(), dayStr);
 }
 
 // -------------------------------------------------------------------------------------------------
-int IndexGenerator::dataInMonth(int year, int month)
+bool IndexGenerator::dataInMonth(int year, int month)
 {
-    std::string monthStr = common::str_printf("%04d-%02d-", year, month);
-    std::string firstDay = monthStr + "01";
-    std::string lastDay = monthStr + bw::str(Calendar::daysPerMonth(year, month));
+    if (m_dataMonths.empty())
+        m_dataMonths = m_dbAccess.dataMonths();
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT COUNT(DISTINCT(date(timestamp))) "
-            "FROM   weatherdata "
-            "WHERE  date(timestamp) BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            firstDay.c_str(), lastDay.c_str());
-
-    return std::atoi(result.at(0).at(0).c_str());
-}
-
-// -------------------------------------------------------------------------------------------------
-void IndexGenerator::getYearRange(int &firstYear, int &lastYear)
-{
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT strftime('%%Y', datetime(MIN(timestamp), 'utc')), "
-            "       strftime('%%Y', datetime(MAX(timestamp), 'utc')) "
-            "FROM   weatherdata");
-
-    firstYear = std::atoi(result.at(0).at(0).c_str());
-    lastYear = std::atoi(result.at(0).at(1).c_str());
+    std::string monthStr = common::str_printf("%04d-%02d", year, month);
+    return std::binary_search(m_dataMonths.begin(), m_dataMonths.end(), monthStr);
 }
 
 } // end namespace reportgen

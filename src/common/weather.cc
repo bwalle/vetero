@@ -56,11 +56,25 @@ int Weather::windSpeedToBft(double windspeed)
 }
 
 // -------------------------------------------------------------------------------------------------
+int Weather::windSpeedToBft(int windspeed)
+{
+    return windSpeedToBft(windspeed/100.0);
+}
+
+// -------------------------------------------------------------------------------------------------
 double Weather::dewpoint(double temp, double humid)
 {
     return (241.2 * std::log(humid/100.0) + ((4222.03716*temp)/(241.2+temp))) /
             (17.5043 - log(humid/100.0) - ((17.5043*temp)/(241.2+temp)));
 }
+
+// -------------------------------------------------------------------------------------------------
+int Weather::dewpoint(int temp, int humid)
+{
+    double dp = dewpoint(temp/100.0, humid/100.0);
+    return static_cast<int>(round(dp*100.0));
+}
+
 
 } // end namespace common
 } // end namespace vetero

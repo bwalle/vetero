@@ -352,11 +352,11 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
         /**
          * @brief Sets the current charset used for text rendering
          *
-         * @param[in] charset the character set in which @p text in renderText() is encoded. If <tt>""</tt>
-         *            is given (the default), then the native character set as returned by
-         *            queryNativeCharset() is used. Be aware that <tt>setlocale(LC_CTYPE, "")</tt>
-         *            has to be invoked by the application before calling setLineText(), otherwise
-         *            the "native" character set is @b always us-ascii.
+         * @param[in] charset the character set in which @p text in renderText() is encoded. If
+         *            <tt>""</tt> is given (the default), then the native character set as returned
+         *            by queryNativeCharset() is used. Be aware that <tt>setlocale(LC_CTYPE,
+         *            "")</tt> has to be invoked by the application before calling setLineText(),
+         *            otherwise the "native" character set is @b always us-ascii.
          */
         void setCharset(const std::string &charset);
 
@@ -373,7 +373,8 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
         /**
          * @brief Renders text in the specified line
          *
-         * @note The builtin font can render only a subset of latin1, mostly ascii and German umlauts.
+         * @note The builtin font can render only a subset of latin1, mostly ascii and German
+         *       umlauts.
          *
          * @param[in] line the line number, starting with 0
          * @param[in] startColumn the column to start with rendering

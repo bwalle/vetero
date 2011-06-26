@@ -80,6 +80,7 @@ vetero::common::UsbWde1Dataset DataReader::read()
 
     vetero::common::UsbWde1Dataset data = parseDataset(line);
     data.setTimestamp(bw::Datetime::now());
+    data.setSensorType(vetero::common::UsbWde1Dataset::SensorKombi);
 
     BW_DEBUG_DBG("Read dataset: %s", data.str().c_str());
 
@@ -105,17 +106,17 @@ vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line)
 
     // temperature
     std::string temperature = parts[TEMPERATURE_INDEX];
-    temperature = bw::replace_char(temperature, ',', ".");
-    data.setTemperature( bw::from_str<double>(temperature) );
+    temperature = bw::replace_char(temperature, ',', "");
+    data.setTemperature( bw::from_str<int>(temperature) * 10 );
 
     // humidity
     std::string humidity = parts[HUMIDITY_INDEX];
-    data.setHumidity( bw::from_str<int>(humidity) );
+    data.setHumidity( bw::from_str<int>(humidity) * 100 );
 
     // wind
     std::string wind = parts[WIND_INDEX];
-    wind = bw::replace_char(wind, ',', ".");
-    data.setWindSpeed( bw::from_str<double>(wind) );
+    wind = bw::replace_char(wind, ',', "");
+    data.setWindSpeed( bw::from_str<int>(wind) * 10 );
 
     // rain
     std::string rain = parts[RAIN_INDEX];

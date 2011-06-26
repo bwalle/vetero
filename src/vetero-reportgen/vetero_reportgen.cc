@@ -86,7 +86,6 @@ void VeteroReportgen::openDatabase()
 
     try {
         vetero::common::DbAccess dbAccess(&m_database);
-        dbAccess.initViews();
     } catch (const vetero::common::DatabaseError &err) {
         throw common::ApplicationError("Unable to init DB: " + std::string(err.what()) );
     }

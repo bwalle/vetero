@@ -30,33 +30,6 @@
 namespace vetero {
 namespace common {
 
-/* log function for the database {{{ */
-
-// -------------------------------------------------------------------------------------------------
-static void sqlite3_dewpoint(sqlite3_context* ctx, int number, sqlite3_value **values)
-{
-    assert(number == 2);
-    assert(values != NULL);
-    assert(values[0] != NULL);
-    assert(values[1] != NULL);
-
-    double temp = sqlite3_value_double(values[0]);
-    int humid = sqlite3_value_int(values[1]);
-
-    sqlite3_result_double(ctx, Weather::dewpoint(temp, humid));
-}
-
-// -------------------------------------------------------------------------------------------------
-static void sqlite3_beaufort(sqlite3_context* ctx, int number, sqlite3_value **values)
-{
-    assert(number == 1);
-    assert(values != NULL);
-    assert(values[0] != NULL);
-
-    sqlite3_result_int(ctx, Weather::windSpeedToBft(sqlite3_value_double(values[0])));
-}
-
-/* }}} */
 /* Database {{{ */
 
 // -------------------------------------------------------------------------------------------------
@@ -81,6 +54,19 @@ Database::DbResultVector Database::executeSqlQuery(const char *sql, ...)
     va_end(ap);
 
     return ret;
+}
+
+/* }}} */
+/* function for the database {{{ */
+
+// -------------------------------------------------------------------------------------------------
+static void sqlite3_beaufort(sqlite3_context* ctx, int number, sqlite3_value **values)
+{
+    assert(number == 1);
+    assert(values != NULL);
+    assert(values[0] != NULL);
+
+    sqlite3_result_int(ctx, Weather::windSpeedToBft(sqlite3_value_int(values[0])));
 }
 
 /* }}} */
@@ -183,28 +169,18 @@ Database::DbResultVector Sqlite3Database::vexecuteSqlQuery(const char *sql, va_l
 void Sqlite3Database::registerCustomFunctions()
     throw (DatabaseError)
 {
-    // register 'VETERO_DEWPOINT' function
-    int err = sqlite3_create_function(m_connection,       // handle
-                                      "VETERO_DEWPOINT",  // function name
-                                      2,                  // number of arguments
-                                      SQLITE_UTF8,        // preferred encoding
-                                      NULL,               // cookie pointer
-                                      sqlite3_dewpoint,   // xFunc
-                                      NULL,               // xStep (aggregate only)
-                                      NULL);              // xFinal (aggregate only)
-    if (err != SQLITE_OK)
-        throw DatabaseError("Unable to register 'LOG' function: " +
-                            std::string(sqlite3_errmsg(m_connection)) );
-
     // register 'VETERO_BEAUFORT' function
-    err = sqlite3_create_function(m_connection,         // handle
-                                  "VETERO_BEAUFORT",    // function name
-                                  1,                    // number of arguments
-                                  SQLITE_UTF8,          // preferred encoding
-                                  NULL,                 // cookie pointer
-                                  sqlite3_beaufort,     // xFunc
-                                  NULL,                 // xStep (aggregate only)
-                                  NULL);                // xFinal (aggregate only)
+    int err = sqlite3_create_function(
+        m_connection,         // handle
+        "VETERO_BEAUFORT",    // function name
+        1,                    // number of arguments
+        SQLITE_UTF8,          // preferred encoding
+        NULL,                 // cookie pointer
+        sqlite3_beaufort,     // xFunc
+        NULL,                 // xStep (aggregate only)
+        NULL                  // xFinal (aggregate only)
+    );
+
     if (err != SQLITE_OK)
         throw DatabaseError("Unable to register 'BEAUFORT' function: " +
                             std::string(sqlite3_errmsg(m_connection)) );
@@ -214,3 +190,23 @@ void Sqlite3Database::registerCustomFunctions()
 
 } // end namespace common
 } // end namespace vetero
+
+/* Print result vector {{{ */
+
+// -------------------------------------------------------------------------------------------------
+std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbResultVector &vector)
+{
+    for (int i = 0; i < vector.size(); i++) {
+        for (int j = 0; j < vector[i].size(); j++) {
+            os << vector[i][j];
+            if (j + 1 != vector[i].size())
+                os << "|";
+        }
+        if (i + 1 != vector.size())
+            os << std::endl;
+    }
+
+    return os;
+}
+
+/* }}} */

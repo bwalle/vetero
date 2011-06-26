@@ -22,6 +22,7 @@
 
 #include "common/utils.h"
 #include "common/translation.h"
+#include "common/dbaccess.h"
 #include "monthreportgenerator.h"
 #include "calendar.h"
 #include "gnuplot.h"
@@ -41,19 +42,14 @@ MonthReportGenerator::MonthReportGenerator(VeteroReportgen    *reportGenerator,
 void MonthReportGenerator::generateReports()
     throw (common::ApplicationError)
 {
-    BW_DEBUG_INFO("Generating monthly report for %s",
-                  m_monthString.empty() ? "every month" : m_monthString.c_str());
-
     try {
         if (m_monthString.empty()) {
-            common::Database::DbResultVector dates = reportgen()->database().executeSqlQuery(
-                    "SELECT     DISTINCT strftime('%%Y-%%m', timestamp) AS m "
-                    "FROM       weatherdata "
-                    "ORDER BY   m");
+            common::DbAccess dbAccess(&reportgen()->database());
+            std::vector<std::string> dates = dbAccess.dataMonths();
 
-            common::Database::DbResultVector::const_iterator it;
+            std::vector<std::string>::const_iterator it;
             for (it = dates.begin(); it != dates.end(); ++it)
-                generateOneReport(it->at(0));
+                generateOneReport(*it);
         } else
             generateOneReport(m_monthString);
     } catch (const common::DatabaseError &err) {
@@ -65,6 +61,8 @@ void MonthReportGenerator::generateReports()
 void MonthReportGenerator::generateOneReport(const std::string &date)
     throw (common::ApplicationError, common::DatabaseError)
 {
+    BW_DEBUG_INFO("Generating month report for %s", date.c_str());
+
     m_monthString = date;
     m_year = bw::from_str<int>(m_monthString.substr(0, 4));
     m_month = bw::from_str<int>(m_monthString.substr(5, 2));
@@ -85,11 +83,11 @@ void MonthReportGenerator::createTemperatureDiagram()
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT date, temp_min, temp_max, temp_avg "
-            "FROM   day_statistics "
-            "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            firstDay.c_str(), lastDay.c_str());
-
+        "SELECT date, temp_min, temp_max, temp_avg "
+        "FROM   day_statistics_float "
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        firstDay.c_str(), lastDay.c_str()
+    );
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
@@ -100,13 +98,17 @@ void MonthReportGenerator::createTemperatureDiagram()
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
     plot << "set timefmt '%Y-%m-%d'\n";
-    plot << "set xrange ['" << m_monthString << "-01' : '" << m_monthString << "-" << lastDay.substr(8, 2) << "']\n";
+    plot << "set xrange ['" << m_monthString << "-01' : '" << m_monthString << "-"
+         << lastDay.substr(8, 2) << "']\n";
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines title 'Min' linecolor rgb '#0022FF' lw 2, "
-         << "'" << Gnuplot::PLACEHOLDER << "' using 1:3 with lines title 'Max' linecolor rgb '#FF0000' lw 2, "
-         << "'" << Gnuplot::PLACEHOLDER << "' using 1:4 with lines title 'Avg' linecolor rgb '#555555' lw 2\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with lines title 'Min' linecolor rgb '#0022FF' lw 2, "
+         << "'" << Gnuplot::PLACEHOLDER
+         << "' using 1:3 with lines title 'Max' linecolor rgb '#FF0000' lw 2, "
+         << "'" << Gnuplot::PLACEHOLDER
+         << "' using 1:4 with lines title 'Avg' linecolor rgb '#555555' lw 2\n";
     plot.plot(result);
 }
 
@@ -120,15 +122,17 @@ void MonthReportGenerator::createWindDiagram()
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT date, wind_max "
-            "FROM   day_statistics "
-            "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            firstDay.c_str(), lastDay.c_str());
+        "SELECT date, wind_max "
+        "FROM   day_statistics_float "
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        firstDay.c_str(), lastDay.c_str()
+    );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
-            "SELECT ROUND(MAX(wind_max)) "
-            "FROM   day_statistics "
-            "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            firstDay.c_str(), lastDay.c_str());
+        "SELECT ROUND(MAX(wind_max)) "
+        "FROM   day_statistics_float "
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        firstDay.c_str(), lastDay.c_str()
+    );
 
     std::string max = maxResult.at(0).at(0);
 
@@ -162,10 +166,18 @@ void MonthReportGenerator::createRainDiagram()
     std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT date, rain, rain_month "
-            "FROM   day_statistics "
-            "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            firstDay.c_str(), lastDay.c_str());
+        "SELECT date, rain, rain "
+        "FROM   day_statistics_float "
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        firstDay.c_str(), lastDay.c_str()
+    );
+
+    // accumulate the rain
+    double sum = 0.0;
+    for (int i = 0; i < result.size(); ++i) {
+        sum += bw::from_str<double>( result[i].at(2) );
+        result[i].at(2) = bw::str(sum);
+    }
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
@@ -182,8 +194,10 @@ void MonthReportGenerator::createRainDiagram()
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
     plot << "set style fill solid 1.0 border\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:3 with boxes notitle linecolor rgb '#ADD0FF' lw 1, "
-         << " '" << Gnuplot::PLACEHOLDER << "' using 1:2 with impulses notitle linecolor rgb '#0000FF' lw 4\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:3 with boxes notitle linecolor rgb '#ADD0FF' lw 1, "
+         << " '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with impulses notitle linecolor rgb '#0000FF' lw 4\n";
 
     plot.plot(result);
 }
@@ -239,17 +253,25 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     };
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT strftime('%%s', date), "
-            "       temp_avg, "
-            "       temp_min, "
-            "       temp_max, "
-            "       wind_max, "
-            "       wind_max_beaufort, "
-            "       rain, "
-            "       rain_month "
-            "FROM   day_statistics "
-            "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
-            firstDay.c_str(), lastDay.c_str());
+        "SELECT strftime('%%s', date), "
+        "       temp_avg, "
+        "       temp_min, "
+        "       temp_max, "
+        "       wind_max, "
+        "       wind_bft_max, "
+        "       rain, "
+        "       rain "
+        "FROM   day_statistics_float "
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        firstDay.c_str(), lastDay.c_str()
+    );
+
+    // accumulate the rain
+    double sum = 0.0;
+    for (int i = 0; i < result.size(); ++i) {
+        sum += bw::from_str<double>( result[i].at(7) );
+        result[i].at(7) = bw::str(sum);
+    }
 
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
          << "<tr bgcolor='#FFFFFF'>\n"
@@ -291,7 +313,8 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
 
                 if (desc->precision > 0) {
                     double numericValue = bw::from_str<double>(value, std::locale::classic());
-                    value = common::str_printf_l("%.*lf", localeStr.c_str(), desc->precision, numericValue);
+                    value = common::str_printf_l("%.*lf", localeStr.c_str(), desc->precision,
+                                                 numericValue);
                 }
                 if (desc->unit)
                     value += " " + std::string(desc->unit);
