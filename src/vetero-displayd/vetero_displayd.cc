@@ -22,6 +22,7 @@
 
 #include <libbw/optionparser.h>
 #include <libbw/log/errorlog.h>
+#include <libbw/log/debug.h>
 #include <libbw/os.h>
 
 #include "common/dbaccess.h"
@@ -36,11 +37,13 @@ namespace display {
 
 /* Signal handlers {{{ */
 
+static volatile sig_atomic_t s_quit = false;
+
 // -------------------------------------------------------------------------------------------------
 static void veterodisplayd_sighandler(int signal)
 {
-    BW_ERROR_WARNING("Signal %d (%s) received. Terminating.", signal, strsignal(signal));
-    std::exit(0);
+    BW_ERROR_WARNING("Signal %d (%s) received. Starting shutdown.", signal, strsignal(signal));
+    s_quit = true;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -242,26 +245,41 @@ void VeteroDisplayd::exec()
 {
     common::DbAccess dbAccess(&m_database);
 
-    while (true) {
-        common::CurrentWeather weather;
+    bool new_data = true;
+    while (!s_quit) {
 
-        try {
-            weather = dbAccess.queryCurrentWeather();
-        } catch (const vetero::common::DatabaseError &err) {
-            BW_ERROR_ERR("DB error: %s", err.what());
+        if (new_data) {
+            common::CurrentWeather weather;
+
+            try {
+                weather = dbAccess.queryCurrentWeather();
+            } catch (const vetero::common::DatabaseError &err) {
+                BW_ERROR_ERR("DB error: %s", err.what());
+            }
+
+            updateDisplay(weather);
         }
-
-        updateDisplay(weather);
 
         // wait for the next signal
         sigset_t set;
         sigemptyset(&set);
         sigaddset(&set, SIGUSR1);
-        int signal_received;
-        int err = sigwait(&set, &signal_received);
-        if (err < 0)
-            throw common::SystemError("Problem when waiting for signal SIGUSR1", errno);
+
+        siginfo_t info;
+        struct timespec timeout = { 2, 0 };
+        int err = sigtimedwait(&set, &info, &timeout);
+        if (err < 0) {
+            if (errno == EAGAIN) {
+                new_data = false;
+                continue;
+            } else if (errno != EINTR)
+                throw common::SystemError("Problem when waiting for signal SIGUSR1", errno);
+        }
+
+        new_data = true;
     }
+
+    BW_DEBUG_INFO("Shutting down vetero-displayd");
 }
 
 /* }}} */
