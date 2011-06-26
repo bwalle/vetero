@@ -102,7 +102,7 @@ void Sqlite3Database::open(const std::string &connection, int flags)
             throw std::bad_alloc();
     }
 
-    err = sqlite3_busy_timeout(m_connection, 2000);
+    err = sqlite3_busy_timeout(m_connection, 20000);
     if (err != SQLITE_OK)
         throw DatabaseError("Unable to call sqlite3_busy_timeout(): " +
                             std::string(sqlite3_errmsg(m_connection)) );
