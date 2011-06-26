@@ -60,7 +60,7 @@ void DayReportGenerator::generateReports()
 void DayReportGenerator::generateOneReport(const std::string &date)
     throw (common::ApplicationError, common::DatabaseError)
 {
-    BW_DEBUG_INFO("Generating daily report for %s", m_date.c_str());
+    BW_DEBUG_INFO("Generating daily report for %s", date.c_str());
     m_date = date;
 
     createTemperatureDiagram();
