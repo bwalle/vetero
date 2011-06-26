@@ -149,12 +149,14 @@ void DayReportGenerator::createWindDiagram()
         "WHERE  date(timestamp) = ?", m_date.c_str()
     );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
-        "SELECT ROUND(MAX(wind)) "
-        "FROM   weatherdata_float "
-        "WHERE  date(timestamp) = ?", m_date.c_str()
+        "SELECT ROUND(wind_max) + 1 "
+        "FROM   day_statistics_float "
+        "WHERE  date = ?", m_date.c_str()
     );
 
-    std::string max = maxResult.at(0).at(0);
+    std::string max = "0.0";
+    if (maxResult.size() > 0 && maxResult.front().size() > 0)
+        max = maxResult.front().front();
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
