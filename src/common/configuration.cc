@@ -15,6 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 #include <cstdio>
+#include <sstream>
 #include <unistd.h>
 
 #include <confuse.h>
@@ -185,26 +186,8 @@ void Configuration::read(const std::string &filename)
 
     m_configurationRead = true;
 
-    BW_DEBUG_DBG("Parsing of configuration file '%s' finished: "
-                 "serial_device=%s, "
-                 "serial_baud=%d, "
-                 "database_path=%s"
-                 "report_directory=%s"
-                 "report_upload_command=%s"
-                 "location_string=%s"
-                 "display_name=%s"
-                 "display_connection=%s"
-                 "locale=%s",
-                 filename.c_str(),
-                 m_serialDevice.c_str(),
-                 m_serialBaud,
-                 m_databasePath.c_str(),
-                 m_reportDirectory.c_str(),
-                 m_reportUploadCommand.c_str(),
-                 m_locationString.c_str(),
-                 m_displayName.c_str(),
-                 m_displayConnection.c_str(),
-                 m_locale.c_str() );
+    BW_DEBUG_DBG("Parsing of configuration file '%s' finished: %s",
+                 filename.c_str(), str().c_str());
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -267,8 +250,30 @@ std::string Configuration::getLocale() const
     return m_locale;
 }
 
+// -------------------------------------------------------------------------------------------------
+std::string Configuration::str() const
+{
+    std::stringstream ss;
+    ss << std::boolalpha
+       << "serialDevice="         << m_serialDevice           << ", "
+       << "serialBaud="           << m_serialBaud             << ", "
+       << "reportDirectory="      << m_reportDirectory        << ", "
+       << "reportUploadCommand="  << m_reportUploadCommand    << ", "
+       << "locationString="       << m_locationString         << ", "
+       << "databasePath="         << m_databasePath           << ", "
+       << "displayName="          << m_displayName            << ", "
+       << "displayConnection="    << m_displayConnection      << ", "
+       << "locale="               << m_locale;
+    return ss.str();
+}
 
 /* }}} */
 
 } // end namespace vetero
 } // end namespace common
+
+/* Output operator {{{ */
+std::ostream &operator<<(std::ostream &os, vetero::common::Configuration &config)
+{
+    return os << config.str();
+}

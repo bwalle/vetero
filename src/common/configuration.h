@@ -164,6 +164,15 @@ class Configuration
          */
         std::string getLocale() const;
 
+        /**
+         * @brief Converts the object to a human-readable string
+         *
+         * Mainly for debug output
+         *
+         * @return the string
+         */
+        std::string str() const;
+
     protected:
         /**
          * @brief Parses the given configuration files
@@ -193,5 +202,20 @@ class Configuration
 
 } // end namespace common
 } // end namespace vetero
+
+/* Output operator {{{ */
+
+/**
+ * @brief Prints a configuration to the given output stream
+ *
+ * Calls Configuration::str() internally.
+ *
+ * @param[in] os the output stream
+ * @param[in] config the configuration to dump
+ * @return @p os
+ */
+std::ostream &operator<<(std::ostream &os, vetero::common::Configuration &config);
+
+/* }}} */
 
 #endif // CONFIGURATION_H
