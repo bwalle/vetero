@@ -154,9 +154,9 @@ void HtmlDocument::write(std::ostream &os)
        << "       Vetero"
        << "    </div>";
 
-    if (!m_reportgen->configuration().getLocationString().empty()) {
+    if (!m_reportgen->configuration().locationString().empty()) {
         os << "    <div align=\"right\" style=\"color: #ffffff; font-size: 13pt; font-style:italic;\">"
-           << "       Daten für " << replaceHtml(m_reportgen->configuration().getLocationString())
+           << "       Daten für " << replaceHtml(m_reportgen->configuration().locationString())
            << "    </div>";
     }
 

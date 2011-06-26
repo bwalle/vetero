@@ -188,7 +188,7 @@ void Veterod::readConfiguration()
 void Veterod::openDatabase()
     throw (common::ApplicationError)
 {
-    std::string dbPath = m_configuration->getDatabasePath();
+    std::string dbPath = m_configuration->databasePath();
     bool initNeeded = access(dbPath.c_str(), F_OK) != 0;
 
     try {
@@ -213,7 +213,7 @@ void Veterod::openDatabase()
 void Veterod::startDisplay()
     throw (common::ApplicationError)
 {
-    if (m_configuration->getDisplayName().empty() || m_configuration->getDisplayConnection().empty()) {
+    if (m_configuration->displayName().empty() || m_configuration->displayConnection().empty()) {
         BW_DEBUG_INFO("'display_name' or 'display_connection' not set. Not starting displayd.");
         return;
     }
@@ -233,7 +233,7 @@ void Veterod::startDisplay()
 // -------------------------------------------------------------------------------------------------
 void Veterod::updateReports(const std::vector<std::string> &jobs, bool upload)
 {
-    if (m_configuration->getReportDirectory().empty()) {
+    if (m_configuration->reportDirectory().empty()) {
         BW_DEBUG_INFO("'report_directory' not set. Updating of reports disabled.");
         return;
     }
@@ -374,7 +374,7 @@ throw (common::ApplicationError)
         createPidfile();
     }
 
-    DataReader reader(m_configuration->getSerialDevice(), m_configuration->getSerialBaud());
+    DataReader reader(m_configuration->serialDevice(), m_configuration->serialBaud());
     reader.openConnection();
     startDisplay();
     common::DbAccess dbAccess(&m_database);

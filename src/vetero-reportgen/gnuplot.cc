@@ -38,7 +38,7 @@ std::string Gnuplot::PLACEHOLDER = "@TEMPFILE@";
 Gnuplot::Gnuplot(const common::Configuration &config)
     : m_config(config)
 {
-    *this << "set locale '" << m_config.getLocale() << "'\n";
+    *this << "set locale '" << m_config.locale() << "'\n";
     *this << "set terminal svg size 1000 400 font 'Arial,9'\n";
     *this << "set lmargin 10\n";
     *this << "set rmargin 10\n";

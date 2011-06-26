@@ -87,7 +87,7 @@ class Configuration
          *
          * @return the path to the serial device, e.g. @c /dev/ttyS0
          */
-        std::string getSerialDevice() const;
+        std::string serialDevice() const;
 
         /**
          * @brief Returns the baudrate
@@ -96,7 +96,7 @@ class Configuration
          *
          * @return the baudrate
          */
-        int getSerialBaud() const;
+        int serialBaud() const;
 
         /**
          * @brief Returns the path to the database
@@ -106,21 +106,21 @@ class Configuration
          *
          * @return the database path, either absolute or relative.
          */
-        std::string getDatabasePath() const;
+        std::string databasePath() const;
 
         /**
          * @brief Returns the HTML reports are put into
          *
          * @return the full path to the directory
          */
-        std::string getReportDirectory() const;
+        std::string reportDirectory() const;
 
         /**
          * @brief Returns the command that uploads the HTML reports
          *
          * @return the command
          */
-        std::string getReportUploadCommand() const;
+        std::string reportUploadCommand() const;
 
         /**
          * @brief Returns the location string
@@ -129,13 +129,13 @@ class Configuration
          *
          * @return the location string
          */
-        std::string getLocationString() const;
+        std::string locationString() const;
 
         /**
          * @brief Sets the location string
          *
          * @param[in] locationString the new location
-         * @sa getLocationString()
+         * @sa locationString()
          */
         void setLocationString(const std::string &locationString);
 
@@ -146,7 +146,7 @@ class Configuration
          *
          * @return the display name, e.g. <tt>'CTINCLUD'</tt>.
          */
-        std::string getDisplayName() const;
+        std::string displayName() const;
 
         /**
          * @brief Returns the display connection for serdisplib.
@@ -155,14 +155,14 @@ class Configuration
          *
          * @return the display connection, e.g. <tt>'USB:7c0/1501'</tt>.
          */
-        std::string getDisplayConnection() const;
+        std::string displayConnection() const;
 
         /**
          * @brief Returns the locale
          *
          * @return the locale like <tt>"de_DE.utf-8"</tt>.
          */
-        std::string getLocale() const;
+        std::string locale() const;
 
         /**
          * @brief Converts the object to a human-readable string

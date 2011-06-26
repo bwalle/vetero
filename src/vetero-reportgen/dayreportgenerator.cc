@@ -86,7 +86,7 @@ void DayReportGenerator::createTemperatureDiagram()
     );
 
     Gnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_temperatureFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
@@ -119,7 +119,7 @@ void DayReportGenerator::createHumidityDiagram()
     );
 
     Gnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_humidityFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Humidity [%]") << "'\n";
@@ -159,7 +159,7 @@ void DayReportGenerator::createWindDiagram()
         max = maxResult.front().front();
 
     WeatherGnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_windFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -199,7 +199,7 @@ void DayReportGenerator::createRainDiagram()
     }
 
     Gnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_rainFileName);
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
@@ -228,7 +228,7 @@ void DayReportGenerator::createRainDiagram()
 void DayReportGenerator::createHtml()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    std::string filename(reportgen()->configuration().getReportDirectory() + "/" + m_date + ".xhtml");
+    std::string filename(reportgen()->configuration().reportDirectory() + "/" + m_date + ".xhtml");
 
     int year = bw::from_str<int>(m_date.substr(0, 4));
     int month = bw::from_str<int>(m_date.substr(5, 2));

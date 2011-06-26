@@ -191,37 +191,37 @@ void Configuration::read(const std::string &filename)
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getSerialDevice() const
+std::string Configuration::serialDevice() const
 {
     return m_serialDevice;
 }
 
 // -------------------------------------------------------------------------------------------------
-int Configuration::getSerialBaud() const
+int Configuration::serialBaud() const
 {
     return m_serialBaud;
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getDatabasePath() const
+std::string Configuration::databasePath() const
 {
     return m_databasePath;
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getReportDirectory() const
+std::string Configuration::reportDirectory() const
 {
     return m_reportDirectory;
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getReportUploadCommand() const
+std::string Configuration::reportUploadCommand() const
 {
     return m_reportUploadCommand;
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getLocationString() const
+std::string Configuration::locationString() const
 {
     return m_locationString;
 }
@@ -233,19 +233,19 @@ void Configuration::setLocationString(const std::string &locationString)
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getDisplayName() const
+std::string Configuration::displayName() const
 {
     return m_displayName;
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getDisplayConnection() const
+std::string Configuration::displayConnection() const
 {
     return m_displayConnection;
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string Configuration::getLocale() const
+std::string Configuration::locale() const
 {
     return m_locale;
 }

@@ -68,7 +68,7 @@ void VeteroReportgen::readConfiguration()
     if (!m_configuration->configurationRead() && m_noConfigFatal)
         throw common::ApplicationError(m_configuration->error());
 
-    setlocale(LC_ALL, m_configuration->getLocale().c_str());
+    setlocale(LC_ALL, m_configuration->locale().c_str());
     setlocale(LC_NUMERIC, "C");
     bindtextdomain("vetero-reportgen", INSTALL_PREFIX "/share/locale");
     textdomain("vetero-reportgen");
@@ -79,7 +79,7 @@ void VeteroReportgen::openDatabase()
     throw (common::ApplicationError)
 {
     try {
-        m_database.open(m_configuration->getDatabasePath(), common::Sqlite3Database::FLAG_READONLY);
+        m_database.open(m_configuration->databasePath(), common::Sqlite3Database::FLAG_READONLY);
     } catch (const vetero::common::DatabaseError &err) {
         throw common::ApplicationError("Unable to open DB: " + std::string(err.what()) );
     }
@@ -208,11 +208,11 @@ void VeteroReportgen::setupErrorLogging(const std::string &logfile)
 // -------------------------------------------------------------------------------------------------
 void VeteroReportgen::uploadReports()
 {
-    std::string command(m_configuration->getReportUploadCommand());
+    std::string command(m_configuration->reportUploadCommand());
     if (command.empty())
         return;
 
-    common::LockFile lock(m_configuration->getReportDirectory());
+    common::LockFile lock(m_configuration->reportDirectory());
     if (!lock.lockExclusive()) {
         BW_ERROR_ERR("Unable to retrieve lock: %s", lock.error().c_str());
         return;

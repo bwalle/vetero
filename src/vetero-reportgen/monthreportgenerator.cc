@@ -90,7 +90,7 @@ void MonthReportGenerator::createTemperatureDiagram()
     );
 
     Gnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_temperatureFileName);
     plot << "set xlabel '" << _("Day") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
@@ -138,7 +138,7 @@ void MonthReportGenerator::createWindDiagram()
         max = maxResult.front().front();
 
     WeatherGnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_windFileName);
     plot << "set xlabel '" << _("Day") <<"'\n";
     plot << "set grid\n";
@@ -181,7 +181,7 @@ void MonthReportGenerator::createRainDiagram()
     }
 
     Gnuplot plot(reportgen()->configuration());
-    plot.setWorkingDirectory(reportgen()->configuration().getReportDirectory());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
     plot.setOutputFile(m_rainFileName);
     plot << "set xlabel '" << _("Day") << "'\n";
     plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
@@ -207,7 +207,7 @@ void MonthReportGenerator::createRainDiagram()
 void MonthReportGenerator::createHtml()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    std::string filename(reportgen()->configuration().getReportDirectory() + "/" + m_monthString + ".xhtml");
+    std::string filename(reportgen()->configuration().reportDirectory() + "/" + m_monthString + ".xhtml");
     HtmlDocument html(reportgen());
 
     html.setTitle(bw::Datetime(m_year, m_month, 1, 0, 0, 0, false).strftime("%B %Y"));
@@ -291,7 +291,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
          << "  <th style='padding: 5px'><b>Summe</b></th>\n"
          << "</tr>\n";
 
-    std::string localeStr = reportgen()->configuration().getLocale();
+    std::string localeStr = reportgen()->configuration().locale();
     for (size_t i = 0; i < result.size(); i++) {
         html << "<tr bgcolor='#FFFFFF'>\n";
 

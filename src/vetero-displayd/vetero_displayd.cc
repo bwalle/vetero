@@ -146,7 +146,7 @@ void VeteroDisplayd::readConfiguration()
     if (!m_configuration->configurationRead() && m_noConfigFatal)
         throw common::ApplicationError(m_configuration->error());
 
-    setlocale(LC_ALL, m_configuration->getLocale().c_str());
+    setlocale(LC_ALL, m_configuration->locale().c_str());
     setlocale(LC_NUMERIC, "C");
     bindtextdomain("vetero-displayd", INSTALL_PREFIX "/share/locale");
     textdomain("vetero-displayd");
@@ -157,7 +157,7 @@ void VeteroDisplayd::openDatabase()
     throw (common::ApplicationError)
 {
     try {
-        m_database.open(m_configuration->getDatabasePath(), common::Sqlite3Database::FLAG_READONLY);
+        m_database.open(m_configuration->databasePath(), common::Sqlite3Database::FLAG_READONLY);
     } catch (const vetero::common::DatabaseError &err) {
         throw common::ApplicationError("Unable to open DB: " + std::string(err.what()) );
     }
@@ -174,13 +174,13 @@ void VeteroDisplayd::openDisplay()
     throw (common::ApplicationError)
 {
     try {
-        std::string displayName = m_configuration->getDisplayName();
-        std::string displayConnection = m_configuration->getDisplayConnection();
+        std::string displayName = m_configuration->displayName();
+        std::string displayConnection = m_configuration->displayConnection();
 
         m_serdispConnection = new SerdisplibConnection(displayConnection);
         m_display = new SerdisplibTextDisplay(m_serdispConnection, displayName, "");
         m_display->setCharset("utf-8");
-        m_display->setLocale(m_configuration->getLocale());
+        m_display->setLocale(m_configuration->locale());
     } catch (const DisplayError &err) {
         throw common::ApplicationError("Unable to open display: " + std::string(err.what()));
     }

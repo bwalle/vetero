@@ -67,7 +67,7 @@ void IndexGenerator::generateReports()
         throw common::ApplicationError("DB error: " + std::string(err.what()));
     }
 
-    std::string indexHtml = reportgen()->configuration().getReportDirectory() + "/index.xhtml";
+    std::string indexHtml = reportgen()->configuration().reportDirectory() + "/index.xhtml";
     if (!html.write(indexHtml))
         throw common::ApplicationError("Unable to write " + indexHtml);
 }

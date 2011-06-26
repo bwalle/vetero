@@ -58,7 +58,7 @@ void CurrentReportGenerator::generateReports()
         throw common::ApplicationError("Unable to find SVG template");
 
     std::ifstream input(templateFile.c_str());
-    std::string reportDir(reportgen()->configuration().getReportDirectory());
+    std::string reportDir(reportgen()->configuration().reportDirectory());
     std::string outputfilename = reportDir + "/current_weather.svgz";
 
     std::ofstream output(outputfilename.c_str());
@@ -69,7 +69,7 @@ void CurrentReportGenerator::generateReports()
     while (std::getline(input, line)) {
         std::string::size_type pos;
 
-        std::string loc = reportgen()->configuration().getLocale();
+        std::string loc = reportgen()->configuration().locale();
         std::string value;
 
         pos = line.find("TT.T");

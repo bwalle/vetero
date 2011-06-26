@@ -23,7 +23,7 @@ namespace reportgen {
 // -------------------------------------------------------------------------------------------------
 ReportGenerator::ReportGenerator(VeteroReportgen *reportgen)
     : m_reportgen(reportgen)
-    , m_lockfile(reportgen->configuration().getReportDirectory())
+    , m_lockfile(reportgen->configuration().reportDirectory())
 {
     if (!m_lockfile.lockShared())
         throw common::ApplicationError("Unable to obtain lock: " + m_lockfile.error());
