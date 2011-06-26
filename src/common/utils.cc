@@ -70,8 +70,6 @@ std::string str_vprintf(const char *format, va_list ap)
 // -------------------------------------------------------------------------------------------------
 std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
 {
-    char *ret;
-
     // uselocale() is the thread-safe variant of setlocale()
     // The _l() functions of the printf() family are not available on Linux.
 
@@ -89,7 +87,8 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
         }
     }
 
-    vasprintf(&ret, format, ap);
+    char *ret_allocated;
+    vasprintf(&ret_allocated, format, ap);
 
     // restore locale
     if (oldlocale)
@@ -97,10 +96,13 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
     if (clocale)
         freelocale(clocale);
 
-    if (!ret)
+    if (!ret_allocated)
         throw std::bad_alloc();
 
-    return std::string(ret);
+    std::string ret(ret_allocated);
+    std::free(ret_allocated);
+
+    return ret;
 }
 
 // -------------------------------------------------------------------------------------------------
