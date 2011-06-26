@@ -80,6 +80,9 @@ class Configuration
          */
         std::string error() const;
 
+        /** @name Serial device access */                                                  /* {{{ */
+        /** @{ */
+
         /**
          * @brief Returns the serial device
          *
@@ -98,6 +101,11 @@ class Configuration
          */
         int serialBaud() const;
 
+        /** @} */                                                                          /* }}} */
+
+        /** @name Database */                                                              /* {{{ */
+        /** @{ */
+
         /**
          * @brief Returns the path to the database
          *
@@ -107,6 +115,25 @@ class Configuration
          * @return the database path, either absolute or relative.
          */
         std::string databasePath() const;
+
+        /** @} */                                                                          /* }}} */
+
+        /** @name Report generation */                                                     /* {{{ */
+        /** @{ */
+
+        /**
+         * @brief Returns the dark color of the title bar in the HTML reports
+         *
+         * @return the command
+         */
+        std::string reportTitleColor1() const;
+
+        /**
+         * @brief Returns the bright color of the title bar in the HTML reports
+         *
+         * @return the command
+         */
+        std::string reportTitleColor2() const;
 
         /**
          * @brief Returns the HTML reports are put into
@@ -132,12 +159,16 @@ class Configuration
         std::string locationString() const;
 
         /**
-         * @brief Sets the location string
+         * @brief Returns the locale
          *
-         * @param[in] locationString the new location
-         * @sa locationString()
+         * @return the locale like <tt>"de_DE.utf-8"</tt>.
          */
-        void setLocationString(const std::string &locationString);
+        std::string locale() const;
+
+        /** @} */                                                                          /* }}} */
+
+        /** @name LCD */                                                                   /* {{{ */
+        /** @{ */
 
         /**
          * @brief Returns the display name for serdisplib
@@ -157,12 +188,7 @@ class Configuration
          */
         std::string displayConnection() const;
 
-        /**
-         * @brief Returns the locale
-         *
-         * @return the locale like <tt>"de_DE.utf-8"</tt>.
-         */
-        std::string locale() const;
+        /** @} */                                                                          /* }}} */
 
         /**
          * @brief Converts the object to a human-readable string
@@ -187,6 +213,8 @@ class Configuration
     private:
         std::string m_serialDevice;
         int         m_serialBaud;
+        std::string m_reportTitleColor1;
+        std::string m_reportTitleColor2;
         std::string m_reportDirectory;
         std::string m_reportUploadCommand;
         std::string m_locationString;

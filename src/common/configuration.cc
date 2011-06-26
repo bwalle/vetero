@@ -57,6 +57,8 @@ Configuration::Configuration(const std::string &preferredFilename)
     , m_serialBaud(9600)
     , m_databasePath("vetero.db")
     , m_configurationRead(false)
+    , m_reportTitleColor1("#217808")
+    , m_reportTitleColor2("#91d007")
 {
     const std::string configfiles[] = {
             INSTALL_PREFIX "/etc/vetero.conf",
@@ -99,6 +101,7 @@ std::string Configuration::error() const
 void Configuration::read(const std::string &filename)
 {
     char *serial_device = NULL, *database_path = NULL;
+    char *report_title_color1 = NULL, *report_title_color2 = NULL;
     char *report_directory = NULL, *report_upload_command = NULL;
     char *display_name = NULL, *display_connection = NULL;
     char *location_string = NULL;
@@ -111,6 +114,8 @@ void Configuration::read(const std::string &filename)
         CFG_SIMPLE_STR(const_cast<char *>("database_path"),         &database_path),
 
         CFG_SIMPLE_STR(const_cast<char *>("report_directory"),      &report_directory),
+        CFG_SIMPLE_STR(const_cast<char *>("report_title_color1"),   &report_title_color1),
+        CFG_SIMPLE_STR(const_cast<char *>("report_title_color2"),   &report_title_color2),
         CFG_SIMPLE_STR(const_cast<char *>("report_upload_command"), &report_upload_command),
         CFG_SIMPLE_STR(const_cast<char *>("location_string"),       &location_string),
 
@@ -157,6 +162,16 @@ void Configuration::read(const std::string &filename)
             std::free(report_directory_real);
         }
         std::free(report_directory);
+    }
+
+    if (report_title_color1) {
+        m_reportTitleColor1 = report_title_color1;
+        std::free(report_title_color1);
+    }
+
+    if (report_title_color2) {
+        m_reportTitleColor2 = report_title_color2;
+        std::free(report_title_color2);
     }
 
     if (report_upload_command) {
@@ -215,6 +230,18 @@ std::string Configuration::reportDirectory() const
 }
 
 // -------------------------------------------------------------------------------------------------
+std::string Configuration::reportTitleColor1() const
+{
+    return m_reportTitleColor1;
+}
+
+// -------------------------------------------------------------------------------------------------
+std::string Configuration::reportTitleColor2() const
+{
+    return m_reportTitleColor2;
+}
+
+// -------------------------------------------------------------------------------------------------
 std::string Configuration::reportUploadCommand() const
 {
     return m_reportUploadCommand;
@@ -224,12 +251,6 @@ std::string Configuration::reportUploadCommand() const
 std::string Configuration::locationString() const
 {
     return m_locationString;
-}
-
-// -------------------------------------------------------------------------------------------------
-void Configuration::setLocationString(const std::string &locationString)
-{
-    m_locationString = locationString;
 }
 
 // -------------------------------------------------------------------------------------------------

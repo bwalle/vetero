@@ -129,6 +129,9 @@ bool HtmlDocument::write(const std::string &filename)
 // -------------------------------------------------------------------------------------------------
 void HtmlDocument::write(std::ostream &os)
 {
+    std::string titleColor1(m_reportgen->configuration().reportTitleColor1());
+    std::string titleColor2(m_reportgen->configuration().reportTitleColor2());
+
     os << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""
        << " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
        << "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
@@ -144,7 +147,8 @@ void HtmlDocument::write(std::ostream &os)
     os << "<body><a name=\"top\" />" << std::endl;
 
     // index table
-    os << "<table width=\"100%\" bgcolor=\"#217808\" align=\"center\" cellspacing=\"0\">"
+    os << "<table width=\"100%\" bgcolor='" << titleColor1 << "' "
+       << "       align=\"center\" cellspacing=\"0\">"
        << "<tr>"
        << "  <td style=\"padding: 10px;"
        << "       border-left-width:1px; border-left-color:#000000; border-left-style:solid;"
@@ -165,7 +169,8 @@ void HtmlDocument::write(std::ostream &os)
 
     // index entries
     os << "<tr>"
-       << "  <td bgcolor=\"#91d007\" style=\"border-width:1px; border-color:#000000; border-style:solid; padding: 5px;\">";
+       << "  <td bgcolor='" << titleColor2 << "'"
+       << "      style='border-width:1px; border-color:#000000; border-style:solid; padding: 5px;'>";
 
     os << " <a href=\"index.xhtml\"><b>Home</b></a>";
     for (std::vector<Section>::const_iterator it = m_sections.begin(); it != m_sections.end(); ++it) {
