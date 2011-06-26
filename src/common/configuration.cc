@@ -134,34 +134,54 @@ void Configuration::read(const std::string &filename)
 
     cfg_free(cfg);
 
-    if (serial_device)
-        m_serialDevice = std::string(serial_device);
+    if (serial_device) {
+        m_serialDevice = serial_device;
+        std::free(serial_device);
+    }
+
     if (serial_baud > 0)
         m_serialBaud = serial_baud;
-    if (database_path)
-        m_databasePath = std::string(database_path);
+
+    if (database_path) {
+        m_databasePath = database_path;
+        std::free(database_path);
+    }
 
     if (report_directory) {
         if (access(report_directory, W_OK) != 0)
             BW_ERROR_ERR("Directory '%s' not accessible writable. Disabling HTML reports.", report_directory);
         else {
             char *report_directory_real = realpath(report_directory, NULL);
-            m_reportDirectory = std::string(report_directory_real);
+            m_reportDirectory = report_directory_real;
             std::free(report_directory_real);
         }
+        std::free(report_directory);
     }
-    if (report_upload_command)
-        m_reportUploadCommand = std::string(report_upload_command);
-    if (location_string)
-        m_locationString = std::string(location_string);
 
-    if (display_name)
-        m_displayName = std::string(display_name);
-    if (display_connection)
-        m_displayConnection = std::string(display_connection);
+    if (report_upload_command) {
+        m_reportUploadCommand = report_upload_command;
+        std::free(report_upload_command);
+    }
 
-    if (locale)
-        m_locale = std::string(locale);
+    if (location_string) {
+        m_locationString = location_string;
+        std::free(location_string);
+    }
+
+    if (display_name) {
+        m_displayName = display_name;
+        std::free(display_name);
+    }
+
+    if (display_connection) {
+        m_displayConnection = display_connection;
+        std::free(display_connection);
+    }
+
+    if (locale) {
+        m_locale = locale;
+        std::free(locale);
+    }
 
     m_configurationRead = true;
 
