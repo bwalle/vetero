@@ -386,14 +386,16 @@ throw (common::ApplicationError)
             vetero::common::UsbWde1Dataset dataset = reader.read();
             dbAccess.insertUsbWde1Dataset(dataset);
             dbAccess.updateDayStatistics(dataset.timestamp().strftime("%Y-%m-%d"));
-            dbAccess.updateMonthStatistics(dataset.timestamp().strftime("%Y-%m"));
             notifyDisplay();
 
             std::vector<std::string> jobs;
             jobs.push_back("current");
             jobs.push_back("day:" + dataset.timestamp().dateStr());
-            if (dataset.timestamp().day() != lastInserted.day())
-                jobs.push_back("month:" + dataset.timestamp().strftime("%Y-%m"));
+            if (dataset.timestamp().day() != lastInserted.day()) {
+                std::string monthStr(dataset.timestamp().strftime("%Y-%m"));
+                dbAccess.updateMonthStatistics(monthStr);
+                jobs.push_back("month:" + monthStr);
+            }
             updateReports(jobs, true);
 
             lastInserted = dataset.timestamp();
