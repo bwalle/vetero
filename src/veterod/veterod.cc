@@ -121,10 +121,10 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
 
     // evaluate options
     if (op.getValue("help").getFlag()) {
-        op.printHelp(std::cerr, "veterod " VERSION);
+        op.printHelp(std::cerr, "veterod " GIT_VERSION);
         return false;
     } else if (op.getValue("version").getFlag()) {
-        std::cerr << "veterod " << VERSION << std::endl;
+        std::cerr << "veterod " << GIT_VERSION << std::endl;
         return false;
     }
 

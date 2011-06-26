@@ -127,10 +127,10 @@ bool VeteroReportgen::parseCommandLine(int argc, char *argv[])
 
     // evaluate options
     if (op.getValue("help").getFlag()) {
-        op.printHelp(std::cerr, "vetero-reportgen " VERSION " <current|day|month|year> [<date>|<month>|<year>]");
+        op.printHelp(std::cerr, "vetero-reportgen " GIT_VERSION " <current|day|month|year> [<date>|<month>|<year>]");
         return false;
     } else if (op.getValue("version").getFlag()) {
-        std::cerr << "veterod " << VERSION << std::endl;
+        std::cerr << "veterod " << GIT_VERSION << std::endl;
         return false;
     }
 
