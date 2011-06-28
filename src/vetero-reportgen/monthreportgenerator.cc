@@ -85,7 +85,8 @@ void MonthReportGenerator::createTemperatureDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, temp_min, temp_max, temp_avg "
         "FROM   day_statistics_float "
-        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
+        "       AND temp_min != temp_max",
         firstDay.c_str(), lastDay.c_str()
     );
 
@@ -124,7 +125,8 @@ void MonthReportGenerator::createWindDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, wind_max "
         "FROM   day_statistics_float "
-        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
+        "       AND temp_min != temp_max",
         firstDay.c_str(), lastDay.c_str()
     );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
@@ -169,7 +171,8 @@ void MonthReportGenerator::createRainDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, rain, rain "
         "FROM   day_statistics_float "
-        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
+        "       AND temp_min != temp_max",
         firstDay.c_str(), lastDay.c_str()
     );
 
@@ -263,7 +266,8 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
         "       rain, "
         "       rain "
         "FROM   day_statistics_float "
-        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')",
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
+        "       AND temp_min != temp_max",
         firstDay.c_str(), lastDay.c_str()
     );
 
