@@ -127,7 +127,8 @@ bool VeteroReportgen::parseCommandLine(int argc, char *argv[])
 
     // evaluate options
     if (op.getValue("help").getFlag()) {
-        op.printHelp(std::cerr, "vetero-reportgen " GIT_VERSION " <current|day|month|year> [<date>|<month>|<year>]");
+        op.printHelp(std::cerr, "vetero-reportgen " GIT_VERSION
+                     " <current|day|month|year> [<date>|<month>|<year>]");
         return false;
     } else if (op.getValue("version").getFlag()) {
         std::cerr << "veterod " << GIT_VERSION << std::endl;
@@ -241,30 +242,45 @@ void VeteroReportgen::exec()
         if (jobSplit.size() == 2)
             jobArgument = jobSplit.at(1);
 
-        try {
-            int jobsExecuted = 0;
+        int jobsExecuted = 0;
 
-            if (jobName == "current" || jobName == "all") {
+        if (jobName == "current" || jobName == "all") {
+            jobsExecuted++;
+            try {
+                jobsExecuted++;
                 CurrentReportGenerator(this).generateReports();
-                jobsExecuted++;
+            } catch (const common::ApplicationError &err) {
+                BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
             }
-
-            if (jobName == "day" || jobName == "all") {
-                DayReportGenerator(this, jobArgument).generateReports();
-                jobsExecuted++;
-            }
-
-            if (jobName == "month" || jobName == "all") {
-                MonthReportGenerator(this, jobArgument).generateReports();
-                IndexGenerator(this).generateReports();
-                jobsExecuted++;
-            }
-
-            if (jobsExecuted == 0)
-                BW_ERROR_ERR("Invalid job: '%s'", jobName.c_str());
-        } catch (const common::ApplicationError &err) {
-            BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
         }
+
+        if (jobName == "day" || jobName == "all") {
+            jobsExecuted++;
+            try {
+                jobsExecuted++;
+                DayReportGenerator(this, jobArgument).generateReports();
+            } catch (const common::ApplicationError &err) {
+                BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
+            }
+        }
+
+        if (jobName == "month" || jobName == "all") {
+            jobsExecuted++;
+            try {
+                MonthReportGenerator(this, jobArgument).generateReports();
+            } catch (const common::ApplicationError &err) {
+                BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
+            }
+
+            try {
+                IndexGenerator(this).generateReports();
+            } catch (const common::ApplicationError &err) {
+                BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
+            }
+        }
+
+        if (jobsExecuted == 0)
+            BW_ERROR_ERR("Invalid job: '%s'", jobName.c_str());
     }
 
     if (m_upload)
