@@ -120,8 +120,8 @@ endif (SERDISPLIB_FOUND)
 # libbw
 #
 
-add_subdirectory(ext/libbw)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext)
+include_directories(${vetero_SOURCE_DIR}/ext/libbw.git)
+add_subdirectory(ext/libbw.git/libbw)
 set (EXTRA_LIBS ${EXTRA_LIBS} bw)
 
 #
