@@ -120,7 +120,7 @@ void DbAccess::initTables() const
         "    round(dewpoint/100.0, 1)         AS dewpoint,"
         "    round(wind/100.0, 1)             AS wind,"
         "    wind_bft                         AS wind_bft,"
-        "    round(rain/1000.0, 1)            AS rain "
+        "    round(rain/1000.0, 3)            AS rain "
         "FROM weatherdata"
     );
 
