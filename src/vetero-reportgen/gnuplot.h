@@ -166,6 +166,13 @@ class Gnuplot
         void storeData(int fd, const StringStringVector &data)
         throw (common::ApplicationError);
 
+        /**
+         * \brief Dumps the error information from the given file descriptor to the logging system
+         *
+         * \param[in] fd the file descriptor
+         */
+        void dumpError(int fd);
+
     private:
         const common::Configuration &m_config;
         std::stringstream m_stream;

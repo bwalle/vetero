@@ -15,12 +15,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
+#include <iostream>
 #include <cstdlib>
+#include <vector>
 #include <cerrno>
 #include <cstdio>
 #include <limits.h>
+#include <unistd.h>
 
 #include <libbw/stringutil.h>
+#include <libbw/io/tempfile.h>
+#include <libbw/log/errorlog.h>
 
 #include "common/translation.h"
 #include "common/utils.h"
@@ -78,14 +83,15 @@ void Gnuplot::setOutputFile(const std::string &output)
 void Gnuplot::plot(const StringStringVector &data)
     throw (common::ApplicationError)
 {
-    char tempname[] = "/tmp/vetero-plot-XXXXXX";
-    int tempfd = mkstemp(tempname);
-    if (tempfd < 0)
-        throw common::SystemError("Unable to create temporary file", errno);
+    if (data.empty() || data[0].empty()) {
+        BW_ERROR_WARNING("Gnuplot: No data to plot for '%s'", m_outputFile.c_str());
+        return;
+    }
 
     char oldWorkingdir[PATH_MAX] = "";
     try {
-        storeData(tempfd, data);
+        bw::io::TempFile tempfile("vetero-plot", bw::io::TempFile::DeleteOnExit);
+        storeData(tempfile.nativeHandle(), data);
         std::string gnuplotCommands = m_stream.str();
 
         // replace the placeholder
@@ -93,7 +99,7 @@ void Gnuplot::plot(const StringStringVector &data)
         do {
             tempPos = gnuplotCommands.find(PLACEHOLDER, tempPos+1);
             if (tempPos != std::string::npos)
-                gnuplotCommands.replace(tempPos, PLACEHOLDER.size(), tempname);
+                gnuplotCommands.replace(tempPos, PLACEHOLDER.size(), tempfile.name());
         } while (tempPos != std::string::npos);
 
         // change to the working directory as popen() doesn't have the possibility to set
@@ -107,7 +113,11 @@ void Gnuplot::plot(const StringStringVector &data)
                                           m_workingDirectory + "'", errno);
         }
 
-        std::FILE *gnuplotProcess = popen("gnuplot", "w");
+        bw::io::TempFile errorTempfile("vetero-plot-error", bw::io::TempFile::DeleteOnExit);
+        std::string gnuplotCommand("gnuplot");
+        gnuplotCommand += " 2>" + errorTempfile.name();
+
+        std::FILE *gnuplotProcess = popen(gnuplotCommand.c_str(), "w");
         if (!gnuplotProcess)
             throw common::SystemError("Unable to execute 'gnuplot'", errno);
 
@@ -115,12 +125,14 @@ void Gnuplot::plot(const StringStringVector &data)
             throw common::SystemError("Unable to write to gnuplot", errno);
 
         int ret = pclose(gnuplotProcess);
-        if (ret != 0)
+        if (ret != 0) {
+            dumpError(errorTempfile.nativeHandle());
             throw common::ApplicationError("Unable to generate diagram, Gnuplot terminated with " +
                                            bw::str(WEXITSTATUS(ret)));
+        }
+    } catch (const bw::IOError &err) {
+        throw common::ApplicationError(err.what());
     } catch (...) {
-        unlink(tempname);
-        close(tempfd);
         if (*oldWorkingdir)
             chdir(oldWorkingdir);
         throw;
@@ -128,8 +140,6 @@ void Gnuplot::plot(const StringStringVector &data)
 
     std::string outputfile = common::realpath(m_outputFile);
 
-    unlink(tempname);
-    close(tempfd);
     if (*oldWorkingdir)
         chdir(oldWorkingdir);
 
@@ -143,7 +153,8 @@ void Gnuplot::storeData(int fd, const StringStringVector &data)
     std::stringstream ss;
 
     bool firstLine = true;
-    for (StringStringVector::const_iterator lineIter = data.begin(); lineIter != data.end(); ++lineIter) {
+    StringStringVector::const_iterator lineIter;
+    for (lineIter = data.begin(); lineIter != data.end(); ++lineIter) {
         const StringVector &line = *lineIter;
 
         if (firstLine)
@@ -152,7 +163,8 @@ void Gnuplot::storeData(int fd, const StringStringVector &data)
             ss << "\n";
 
         bool firstCol = true;
-        for (StringVector::const_iterator colIter = line.begin(); colIter != line.end(); ++colIter) {
+        StringVector::const_iterator colIter;
+        for (colIter = line.begin(); colIter != line.end(); ++colIter) {
             if (firstCol)
                 firstCol = false;
             else
@@ -166,6 +178,33 @@ void Gnuplot::storeData(int fd, const StringStringVector &data)
     ssize_t ret = write(fd, contents.c_str(), contents.size());
     if (ret != static_cast<ssize_t>(contents.size()))
         throw common::SystemError("Unable to write all bytes to the temporary file", errno);
+}
+
+// -------------------------------------------------------------------------------------------------
+void Gnuplot::dumpError(int fd)
+{
+    off_t ret = lseek(fd, 0, SEEK_SET);
+    if (ret == (off_t)-1) {
+        BW_ERROR_WARNING("%s: Unable to seek fd %d: %s", __func__, fd, std::strerror(errno));
+        return;
+    }
+
+    std::string errors;
+    char buffer[BUFSIZ];
+    ssize_t nbytes;
+    while ((nbytes = read(fd, buffer, BUFSIZ-1)) > 0) {
+        buffer[nbytes] = '\0';
+        errors += buffer;
+    }
+
+    std::vector<std::string> lines = bw::stringsplit(errors, "\n");
+    std::vector<std::string>::const_iterator lineIter;
+    for (lineIter = lines.begin(); lineIter != lines.end(); ++lineIter) {
+        std::string stripped = bw::strip(*lineIter);
+        if (stripped.empty() || stripped == "^")
+            continue;
+        BW_ERROR_WARNING("Error output of gnuplot: %s", lineIter->c_str());
+    }
 }
 
 /* }}} */
