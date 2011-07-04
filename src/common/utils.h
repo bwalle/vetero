@@ -34,14 +34,6 @@
  * @ingroup common
  */
 
-/**
- * @brief Returns the size of a statically defined array
- *
- * @param[in] array the array
- */
-#define ARRAY_SIZE(array) \
-    (sizeof(array)/sizeof((array)[0]))
-
 namespace vetero {
 namespace common {
 

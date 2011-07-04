@@ -313,7 +313,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
                      << date << "</a></td>\n";
 
             } else {
-                assert(j < ARRAY_SIZE(format));
+                assert(j < BW_ARRAY_SIZE(format));
                 FormatDescription *desc = &format[j];
 
                 if (desc->precision > 0) {
