@@ -392,7 +392,9 @@ throw (common::ApplicationError)
             jobs.push_back("current");
             jobs.push_back("day:" + dataset.timestamp().dateStr());
             if (dataset.timestamp().day() != lastInserted.day()) {
-                std::string monthStr(dataset.timestamp().strftime("%Y-%m"));
+                bw::Datetime lastDay(dataset.timestamp());
+                lastDay.addDays(-1);
+                std::string monthStr(lastDay.strftime("%Y-%m"));
                 dbAccess.updateMonthStatistics(monthStr);
                 jobs.push_back("month:" + monthStr);
             }
