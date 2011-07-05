@@ -107,7 +107,7 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
 
     bw::OptionGroup actionGroups("Actions (replaces the default action to collect weatherdata)");
     actionGroups.addOption("regenerate-metadata", 'M', bw::OT_FLAG,
-                                 "Regenerate all cached values in the database. This may take some time.");
+                           "Regenerate all cached values in the database. This may take some time.");
 
     bw::OptionParser op;
     op.addOptions(generalGroup);
