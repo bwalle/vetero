@@ -69,29 +69,8 @@ class IndexGenerator: public ReportGenerator
          */
         void generateMonth(HtmlDocument &html, int year, int month);
 
-        /**
-         * \brief Checks if there is data available at the given day
-         *
-         * \param[in] year the 4-digit year
-         * \param[in] month the month from 1 to 12
-         * \param[in] day the day from 1 to 31
-         * \return \c true if there's weather data available, \c false otherwise
-         */
-        bool dataAtDay(int year, int month, int day);
-
-        /**
-         * \brief Checks if there is data available at the given month
-         *
-         * \param[in] year the 4-digit year
-         * \param[in] month the month from 1 to 12
-         * \return \c true if there's weather data available, \c false otherwise
-         */
-        bool dataInMonth(int year, int month);
-
     private:
         common::DbAccess m_dbAccess;
-        std::vector<std::string> m_dataMonths;
-        std::vector<std::string> m_dataDays;
 };
 
 } // end namespace reportgen

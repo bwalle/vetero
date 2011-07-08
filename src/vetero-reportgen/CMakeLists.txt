@@ -26,6 +26,7 @@ set(VETERO_REPORTGEN_SRCS
     indexgenerator.cc
     main.cc
     calendar.cc
+    validdatacache.cc
 )
 
 add_executable(vetero-reportgen ${VETERO_REPORTGEN_SRCS})

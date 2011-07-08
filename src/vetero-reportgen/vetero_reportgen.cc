@@ -61,6 +61,12 @@ const vetero::common::Configuration &VeteroReportgen::configuration() const
 }
 
 // -------------------------------------------------------------------------------------------------
+const ValidDataCache &VeteroReportgen::validDataCache() const
+{
+    return *m_validDataCache;
+}
+
+// -------------------------------------------------------------------------------------------------
 void VeteroReportgen::readConfiguration()
     throw (common::ApplicationError)
 {
@@ -84,8 +90,9 @@ void VeteroReportgen::openDatabase()
         throw common::ApplicationError("Unable to open DB: " + std::string(err.what()) );
     }
 
+    m_dbAccess.reset(new common::DbAccess(&m_database));
     try {
-        vetero::common::DbAccess dbAccess(&m_database);
+        m_validDataCache.reset(new ValidDataCache(*m_dbAccess));
     } catch (const vetero::common::DatabaseError &err) {
         throw common::ApplicationError("Unable to init DB: " + std::string(err.what()) );
     }

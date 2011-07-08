@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <libbw/stringutil.h>
+#include <libbw/noncopyable.h>
 
 #include "database.h"
 #include "common/error.h"
@@ -36,8 +37,8 @@ namespace common {
  * \author Bernhard Walle <bernhard@bwalle.de>
  * \ingroup common
  */
-class DbAccess {
-
+class DbAccess : private bw::Noncopyable
+{
     public:
         /// Constant to query the last rain gauge in ticks with readMiscEntry()
         static const char *LastRain;
@@ -54,6 +55,20 @@ class DbAccess {
         DbAccess(Database *db);
 
     public:
+        /**
+         * \brief Returns a reference to the database object
+         *
+         * \return the DB object
+         */
+        Database &database();
+
+        /**
+         * \brief Returns a reference to the database object (const version)
+         *
+         * \return the DB object
+         */
+        const Database &database() const;
+
         /**
          * \brief Initializes the tables
          *

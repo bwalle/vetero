@@ -17,7 +17,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <algorithm>
 
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
@@ -101,8 +100,9 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
 {
     BW_DEBUG_TRACE("Index: Generate month %d-%02d", year, month);
 
+    const ValidDataCache &dataCache = reportgen()->validDataCache();
     std::string monthString;
-    bool haveData = dataInMonth(year, month);
+    bool haveData = dataCache.dataInMonth(year, month);
 
     html << "<table style=\"border:thin solid black;border-spacing:5px\" >\n"
          << "<tr>\n"
@@ -135,7 +135,7 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
             html << "<td align='right'>";
 
             if (!(currentDay == 1 && wday < weekdayOfFirst) && (currentDay <= lastDay)) {
-                bool active = haveData && dataAtDay(year, month, currentDay);
+                bool active = haveData && dataCache.dataAtDay(year, month, currentDay);
                 html.link(common::str_printf("%04d-%02d-%02d.xhtml", year, month, currentDay),
                           bw::str(currentDay), active);
                 currentDay++;
@@ -151,25 +151,6 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
     html << "</table>";
 }
 
-// -------------------------------------------------------------------------------------------------
-bool IndexGenerator::dataAtDay(int year, int month, int day)
-{
-    if (m_dataDays.empty())
-        m_dataDays = m_dbAccess.dataDays();
-
-    std::string dayStr = common::str_printf("%04d-%02d-%02d", year, month, day);
-    return std::binary_search(m_dataDays.begin(), m_dataDays.end(), dayStr);
-}
-
-// -------------------------------------------------------------------------------------------------
-bool IndexGenerator::dataInMonth(int year, int month)
-{
-    if (m_dataMonths.empty())
-        m_dataMonths = m_dbAccess.dataMonths();
-
-    std::string monthStr = common::str_printf("%04d-%02d", year, month);
-    return std::binary_search(m_dataMonths.begin(), m_dataMonths.end(), monthStr);
-}
 
 } // end namespace reportgen
 } // end namespace vetero

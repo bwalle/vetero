@@ -23,6 +23,7 @@
 #include "common/error.h"
 #include "common/configuration.h"
 #include "common/database.h"
+#include "validdatacache.h"
 
 namespace vetero {
 namespace reportgen {
@@ -70,6 +71,13 @@ class VeteroReportgen {
          * \return the reference
          */
         vetero::common::Configuration &configuration();
+
+        /**
+         * \brief Returns the valid data cache object
+         *
+         * \return a reference to the object
+         */
+        const ValidDataCache &validDataCache() const;
 
         /**
          * \brief Returns a reference to the configuration object
@@ -156,7 +164,9 @@ class VeteroReportgen {
         void uploadReports();
 
     private:
-        vetero::common::Sqlite3Database m_database;
+        common::Sqlite3Database m_database;
+        std::auto_ptr<common::DbAccess> m_dbAccess;
+        std::auto_ptr<ValidDataCache> m_validDataCache;
         std::vector<std::string> m_jobs;
         FILE *m_logfile;
 
