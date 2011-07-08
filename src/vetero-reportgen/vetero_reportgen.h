@@ -24,16 +24,6 @@
 #include "common/configuration.h"
 #include "common/database.h"
 
-/**
- * @file
- * @brief Contains the main class for the report generator
- *
- * This files contains the main class of the HTML report generator application.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
- */
-
 namespace vetero {
 namespace reportgen {
 

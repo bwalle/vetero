@@ -26,14 +26,6 @@
 
 #include "common/error.h"
 
-/**
- * @file
- * @brief Contains utility functions used in Vetero.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 namespace vetero {
 namespace common {
 
@@ -49,6 +41,7 @@ namespace common {
  * @param[in] format the format string
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
+ * @ingroup common
  */
 std::string str_printf(const char *format, ...)
     BW_COMPILER_PRINTF_FORMAT(1, 2);
@@ -71,6 +64,7 @@ std::string str_printf(const char *format, ...)
  *            See locale(3), xlocale(3) and setlocale(3) manual pages.
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
+ * @ingroup common
  */
 std::string str_printf_l(const char *format, const char *locale,  ...)
     BW_COMPILER_PRINTF_FORMAT(1, 3);
@@ -86,8 +80,10 @@ std::string str_printf_l(const char *format, const char *locale,  ...)
  * calls str_vprintf_l() with NULL as second parameter.
  *
  * @param[in] format the format string
+ * @param[in] ap the argument list
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
+ * @ingroup common
  */
 std::string str_vprintf(const char *format, va_list ap)
     BW_COMPILER_PRINTF_FORMAT(1, 0);
@@ -107,8 +103,10 @@ std::string str_vprintf(const char *format, va_list ap)
  *            <tt>""</tt> means that the system should find out the locale
  *            from the environemnt variables <tt>LANG</tt> and <tt>LC_</tt>.
  *            See locale(3), xlocale(3) and setlocale(3) manual pages.
+ * @param[in] ap the argument list
  * @return the formated string
  * @exception std::bad_alloc if it was not possible to allocate memory
+ * @ingroup common
  */
 std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
     BW_COMPILER_PRINTF_FORMAT(1, 0);
@@ -120,6 +118,7 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
  * @param[in] args the process' argument
  * @return the PID of the started process (the caller has to handle <tt>SIGCHLD</tt>)
  * @exception common::ApplicationError if the process cannot be started
+ * @ingroup common
  */
 pid_t start_background(const std::string &process, const std::vector<std::string> &args)
 throw (common::ApplicationError);
@@ -134,6 +133,7 @@ throw (common::ApplicationError);
  *
  * @param[in] filename the name of the file
  * @exception common::ApplicationError if reading the file or writing the file fails.
+ * @ingroup common
  */
 void compress_file(const std::string &filename)
 throw (common::ApplicationError);
@@ -142,7 +142,9 @@ throw (common::ApplicationError);
  * @brief Wrapper around POSIX realpath()
  *
  * @param[in] filename the name of the file that should be resolved
+ * @return the path
  * @exception common::ApplicationError on error
+ * @ingroup common
  */
 std::string realpath(const std::string &filename)
 throw (common::ApplicationError);

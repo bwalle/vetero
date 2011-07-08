@@ -24,16 +24,6 @@
 #include "common/configuration.h"
 #include "serdisplibdisplay.h"
 
-/**
- * @file
- * @brief Contains the main class
- *
- * This files contains the main class of the display application.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup display
- */
-
 namespace vetero {
 namespace display {
 

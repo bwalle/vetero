@@ -20,16 +20,6 @@
 #include <stdexcept>
 #include <cstring>
 
-/**
- * @file
- * @brief Contains exception classes
- *
- * This files contains all exception classes used in all Veterod application.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 namespace vetero {
 namespace common {
 

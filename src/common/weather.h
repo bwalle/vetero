@@ -21,14 +21,6 @@
 #include <string>
 #include <cstdarg>
 
-/**
- * @file
- * @brief Contains utility functions used in Vetero.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 namespace vetero {
 namespace common {
 
@@ -36,6 +28,7 @@ namespace common {
  * @brief Weather-related mathematical  functions
  *
  * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup common
  */
 class Weather
 {

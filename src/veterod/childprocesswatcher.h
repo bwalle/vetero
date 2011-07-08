@@ -23,16 +23,6 @@
 
 #include "common/error.h"
 
-/**
- * @file
- * @brief Contains the SIGCHILD handler of the application
- *
- * This files contains the ChildProcessWatcher singleton.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
- */
-
 namespace vetero {
 namespace daemon {
 
@@ -43,6 +33,7 @@ namespace daemon {
  * that it maintains in a list. This makes it possible to deal with other processes synchronously.
  *
  * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup daemon
  */
 class ChildProcessWatcher {
 

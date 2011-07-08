@@ -21,13 +21,6 @@
 #include "common/database.h"
 #include "reportgenerator.h"
 
-/**
- * @file dayreportgenerator.h
- * @brief Contains the DayReportGenerator
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- */
-
 namespace vetero {
 namespace reportgen {
 

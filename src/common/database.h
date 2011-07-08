@@ -29,14 +29,6 @@
 #include "error.h"
 #include "dataset.h"
 
-/**
- * @file
- * @brief Contains the Vetero database access
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 namespace vetero {
 namespace common {
 

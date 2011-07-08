@@ -21,13 +21,6 @@
 #include "common/lockfile.h"
 #include "vetero_reportgen.h"
 
-/**
- * @file reportgenerator.h
- * @brief Contains the base class for report generation
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- */
-
 namespace vetero {
 namespace reportgen {
 

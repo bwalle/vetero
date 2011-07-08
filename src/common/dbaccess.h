@@ -24,14 +24,6 @@
 #include "database.h"
 #include "common/error.h"
 
-/**
- * @file
- * @brief Read and write values from/to the DB
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 namespace vetero {
 namespace common {
 

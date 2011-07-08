@@ -20,13 +20,6 @@
 
 #include <string>
 
-/**
- * @file calendar.h
- * @brief Contains calendar utils
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- */
-
 namespace vetero {
 namespace reportgen {
 
@@ -34,6 +27,7 @@ namespace reportgen {
  * @brief Simple helper class with static methods with some Calendar information
  *
  * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup report
  */
 class Calendar
 {

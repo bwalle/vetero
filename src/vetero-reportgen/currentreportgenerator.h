@@ -22,14 +22,6 @@
 #include "common/error.h"
 #include "reportgenerator.h"
 
-/**
- * @file
- * @brief Generates the current weather report
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
- */
-
 namespace vetero {
 namespace reportgen {
 

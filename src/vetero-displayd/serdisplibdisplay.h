@@ -25,14 +25,6 @@
 
 #include <serdisplib/serdisp.h>
 
-/**
- * @file
- * @brief Contains the SerdisplibDisplay class
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup display
- */
-
 namespace vetero {
 namespace display {
 
@@ -415,6 +407,7 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
  * @param[in] value the numeric value to check for
  * @param[in] bit the number of the bit
  * @return @c true if the bit is set, @c false otherwise.
+ * @ingroup display
  */
 template <typename T>
 static bool bit_is_set(const T &value, size_t bit)

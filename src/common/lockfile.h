@@ -21,13 +21,6 @@
 #include <string>
 #include <sstream>
 
-/**
- * @file lockfile.h
- * @brief Contains LockFile
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- */
-
 namespace vetero {
 namespace common {
 
@@ -41,6 +34,7 @@ namespace common {
  * the flock() system call, so read the manpage for details.
  *
  * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup common
  */
 class LockFile
 {

@@ -20,14 +20,6 @@
 #include <stdexcept>
 #include <string>
 
-/**
- * @file
- * @brief Contains functions to convert between character sets
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup display
- */
-
 namespace vetero {
 namespace display {
 
@@ -121,6 +113,7 @@ throw (CharsetError);
  *
  * @param[in] latin1 the iso-8859-1 encoded input string
  * @return the HD44780-encoded output
+ * @ingroup display
  */
 std::string latin12hd44780(const std::string &latin1);
 

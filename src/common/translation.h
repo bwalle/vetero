@@ -17,14 +17,6 @@
 #ifndef TRANSLATION_H
 #define TRANSLATION_H
 
-/**
- * @file
- * @brief Contains gettext macros
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 #include <libintl.h>
 
 /**
@@ -33,6 +25,7 @@
  * Common wrapper around gettext().
  *
  * @param[in] str the string that needs to be translated
+ * @ingroup common
  */
 #define _(str) gettext(str)
 

@@ -23,16 +23,6 @@
 
 #include "database.h"
 
-/**
- * @file
- * @brief Contains a container classes.
- *
- * This files contains container classes for weather data.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
- */
-
 namespace vetero {
 namespace common {
 

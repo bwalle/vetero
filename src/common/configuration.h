@@ -21,14 +21,6 @@
 
 #include <common/error.h>
 
-/**
- * @file
- * @brief Contains the configuration singleton
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
- */
-
 namespace vetero {
 namespace common {
 
@@ -43,7 +35,7 @@ namespace common {
  * Otherwise the default values are used.
  *
  * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
+ * @ingroup common
  */
 class Configuration
 {

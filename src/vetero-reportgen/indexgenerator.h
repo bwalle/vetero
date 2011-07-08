@@ -31,6 +31,7 @@ namespace reportgen {
  * This page contains calendars with links to the weather data.
  *
  * @author Bernhard Walle <bernhard@bwalle.de>
+ * @ingroup report
  */
 class IndexGenerator: public ReportGenerator
 {

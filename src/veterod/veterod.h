@@ -24,16 +24,6 @@
 #include "common/configuration.h"
 #include "common/database.h"
 
-/**
- * @file
- * @brief Contains the main class
- *
- * This files contains the main class of the application.
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
- */
-
 namespace vetero {
 namespace daemon {
 

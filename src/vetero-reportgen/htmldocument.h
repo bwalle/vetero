@@ -23,13 +23,6 @@
 
 #include "vetero_reportgen.h"
 
-/**
- * @file htmldocument.h
- * @brief Contains a simple class to generate HTML documents in C++
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
- */
 namespace vetero {
 namespace reportgen {
 

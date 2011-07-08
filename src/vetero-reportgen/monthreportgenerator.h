@@ -18,13 +18,6 @@
 #ifndef MONTHREPORTGENERATOR_H_
 #define MONTHREPORTGENERATOR_H_
 
-/**
- * @file monthreportgenerator.h
- * @brief Generates monthly reports
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- */
-
 #include "reportgenerator.h"
 #include "htmldocument.h"
 

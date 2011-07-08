@@ -25,14 +25,6 @@
 #include "common/error.h"
 #include "common/configuration.h"
 
-/**
- * @file gnuplot.h
- * @brief Contains the Gnuplot diagram generator class
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
- */
-
 namespace vetero {
 namespace reportgen {
 
