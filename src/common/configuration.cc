@@ -61,9 +61,9 @@ Configuration::Configuration(const std::string &preferredFilename)
     , m_reportTitleColor2("#91d007")
 {
     const std::string configfiles[] = {
-            INSTALL_PREFIX "/etc/vetero.conf",
-            "/etc/vetero.conf",
-            std::string(getpwuid(getuid())->pw_dir) + "/.vetero.conf"
+            INSTALL_PREFIX "/etc/veterorc",
+            "/etc/veterorc",
+            std::string(getpwuid(getuid())->pw_dir) + "/.veterorc"
     };
 
     std::string filename;
