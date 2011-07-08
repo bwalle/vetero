@@ -25,45 +25,45 @@ namespace vetero {
 namespace common {
 
 /**
- * @brief Weather-related mathematical  functions
+ * \brief Weather-related mathematical  functions
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
  */
 class Weather
 {
     public:
         /**
-         * @brief Convets a wind speed to a wind force in Beaufort
+         * \brief Convets a wind speed to a wind force in Beaufort
          *
-         * @param[in] kmh the wind speed in kmh
-         * @return a value between 0 and 12
+         * \param[in] kmh the wind speed in kmh
+         * \return a value between 0 and 12
          */
         static int windSpeedToBft(double kmh);
 
         /**
-         * @brief Integer version of windSpeedToBft()
+         * \brief Integer version of windSpeedToBft()
          *
-         * @param[in] kmh the wind speed in 1/100 km/h
-         * @return a value between 0 and 12
+         * \param[in] kmh the wind speed in 1/100 km/h
+         * \return a value between 0 and 12
          */
         static int windSpeedToBft(int kmh);
 
         /**
-         * @brief Calculates the dewpoint
+         * \brief Calculates the dewpoint
          *
-         * @param[in] temp the temperature in degrees Celsius
-         * @param[in] humid the humidity in %
-         * @return the dewpoint in degrees Celsius
+         * \param[in] temp the temperature in degrees Celsius
+         * \param[in] humid the humidity in %
+         * \return the dewpoint in degrees Celsius
          */
         static double dewpoint(double temp, double humid);
 
         /**
-         * @brief Integer version of dewpoint()
+         * \brief Integer version of dewpoint()
          *
-         * @param[in] temp the temperature in 1/100 degrees Celsius
-         * @param[in] humid the humidity in 1/100 %
-         * @return the dewpiont in 1/100 degrees Celsius
+         * \param[in] temp the temperature in 1/100 degrees Celsius
+         * \param[in] humid the humidity in 1/100 %
+         * \return the dewpiont in 1/100 degrees Celsius
          */
         static int dewpoint(int temp, int humid);
 };

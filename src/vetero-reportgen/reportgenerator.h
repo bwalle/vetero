@@ -25,46 +25,46 @@ namespace vetero {
 namespace reportgen {
 
 /**
- * @brief Base class for all report generator classes
+ * \brief Base class for all report generator classes
  *
  * All report generators should inherit from ReportGenerator.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup report
  */
 class ReportGenerator
 {
     public:
         /**
-         * @brief C'tor
+         * \brief C'tor
          *
          * Creates a new instance of ReportGenerator.
          *
-         * @param[in] reportgen the application's main class. This object must be valid
+         * \param[in] reportgen the application's main class. This object must be valid
          *            during the whole lifetime of ReportGenerator.
          */
         ReportGenerator(VeteroReportgen *reportgen);
 
         /**
-         * @brief Virtual D'tor
+         * \brief Virtual D'tor
          */
         virtual ~ReportGenerator();
 
     protected:
         /**
-         * @brief Returns the pointer to the main class of the application.
+         * \brief Returns the pointer to the main class of the application.
          *
          * This is just the pointer set in the C'tor.
          *
-         * @return the main class
+         * \return the main class
          */
         VeteroReportgen *reportgen() const;
 
     public:
         /**
-         * @brief Does the work.
+         * \brief Does the work.
          *
-         * @exception common::ApplicationError if something failed
+         * \exception common::ApplicationError if something failed
          */
         virtual void generateReports()
         throw (common::ApplicationError) = 0;

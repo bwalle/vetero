@@ -29,11 +29,11 @@
 #include "config.h"
 
 /**
- * @file
- * @brief Contains the configuration singleton
+ * \file
+ * \brief Contains the configuration singleton
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup daemon
  */
 
 namespace vetero {

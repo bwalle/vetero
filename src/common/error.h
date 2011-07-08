@@ -26,27 +26,27 @@ namespace common {
 /* ApplicationError {{{ */
 
 /**
- * @class ApplicationError
- * @brief General exception class in the Vetero application
+ * \class ApplicationError
+ * \brief General exception class in the Vetero application
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
  */
 class ApplicationError : public std::runtime_error {
 
     public:
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * Creates a new ApplicationError.
          *
-         * @param[in] string the error string
+         * \param[in] string the error string
          */
         ApplicationError(const std::string &string)
             : std::runtime_error(string) {}
 
         /**
-         * @brief Destructor
+         * \brief Destructor
          */
         virtual ~ApplicationError()
         throw () {}
@@ -56,26 +56,26 @@ class ApplicationError : public std::runtime_error {
 /* SystemError {{{ */
 
 /**
- * @class SystemError
+ * \class SystemError
  *
- * @brief Exception class for system errors
+ * \brief Exception class for system errors
  *
  * A system error is an error triggered by the operating system with an appropriate
- * @c errno value.
+ * \c errno value.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
  */
 class SystemError : public ApplicationError {
     public:
 
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * Creates a new instance of SystemError.
          *
-         * @param[in] msg the error string
-         * @param[in] err the system errno value (positive), e.g. @c EINVAL.
+         * \param[in] msg the error string
+         * \param[in] err the system errno value (positive), e.g. \c EINVAL.
          */
         SystemError(const std::string &msg, int err)
             : ApplicationError(msg)
@@ -87,11 +87,11 @@ class SystemError : public ApplicationError {
         throw () {}
 
         /**
-         * @brief Formats the error.
+         * \brief Formats the error.
          *
          * Overwritten member function (std::runtime_error::what()).
          *
-         * @return the error message as pointer to an internal string buffer. The string is
+         * \return the error message as pointer to an internal string buffer. The string is
          *         only valid until this SystemError is freed.
          */
         virtual const char *what() const throw ()
@@ -107,27 +107,27 @@ class SystemError : public ApplicationError {
 /* DatabaseError {{{ */
 
 /**
- * @class DatabaseError
- * @brief Exception class used in the database code.
+ * \class DatabaseError
+ * \brief Exception class used in the database code.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
  */
 class DatabaseError : public ApplicationError {
 
     public:
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * Creates a new DatabaseError.
          *
-         * @param[in] string the error string
+         * \param[in] string the error string
          */
         DatabaseError(const std::string &string)
             : ApplicationError(string) {}
 
         /**
-         * @brief Destructor
+         * \brief Destructor
          */
         virtual ~DatabaseError()
         throw () {}

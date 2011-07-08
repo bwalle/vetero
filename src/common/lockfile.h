@@ -25,7 +25,7 @@ namespace vetero {
 namespace common {
 
 /**
- * @brief Locking resources with lock files
+ * \brief Locking resources with lock files
  *
  * This class can lock a ressource shared between multiple processes by using a lock file.
  * The lock file must already exist and can also be a directory.
@@ -33,23 +33,23 @@ namespace common {
  * The lock is released when the object is destroyed. The implementation is done with
  * the flock() system call, so read the manpage for details.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
  */
 class LockFile
 {
     public:
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * This doesn't create the lock, it just opens a file descriptor.
          *
-         * @param[in] filename
+         * \param[in] filename
          */
         LockFile(const std::string &filename);
 
         /**
-         * @brief Destructor
+         * \brief Destructor
          *
          * Releases the lock.
          */
@@ -57,34 +57,34 @@ class LockFile
 
     public:
         /**
-         * @brief Performs a shared lock
+         * \brief Performs a shared lock
          *
          * This function blocks until the lock is available.
          *
-         * @return @c true on success, @c false on failure.
+         * \return \c true on success, \c false on failure.
          */
         bool lockShared();
 
         /**
-         * @brief Performs an exclusive lock
+         * \brief Performs an exclusive lock
          *
          * This function blocks until the lock is available.
          *
-         * @return @c true on success, @c false on failure.
+         * \return \c true on success, \c false on failure.
          */
         bool lockExclusive();
 
         /**
-         * @brief Unlocks the file
+         * \brief Unlocks the file
          *
-         * @return @c true on success, @c false on failure.
+         * \return \c true on success, \c false on failure.
          */
         bool unlock();
 
         /**
-         * @brief Returns a human-readable error message whenever functions fail.
+         * \brief Returns a human-readable error message whenever functions fail.
          *
-         * @return the error text
+         * \return the error text
          */
         std::string error() const;
 

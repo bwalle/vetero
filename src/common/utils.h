@@ -30,7 +30,7 @@ namespace vetero {
 namespace common {
 
 /**
- * @brief printf() implementation that allocates the result string automatically
+ * \brief printf() implementation that allocates the result string automatically
  *
  * Don't need a static buffer but still having the advantage of the simplicity
  * of printf().
@@ -38,39 +38,39 @@ namespace common {
  * This function uses the default locale and is a convenience function that
  * calls str_printf_l() with NULL as second parameter.
  *
- * @param[in] format the format string
- * @return the formated string
- * @exception std::bad_alloc if it was not possible to allocate memory
- * @ingroup common
+ * \param[in] format the format string
+ * \return the formated string
+ * \exception std::bad_alloc if it was not possible to allocate memory
+ * \ingroup common
  */
 std::string str_printf(const char *format, ...)
     BW_COMPILER_PRINTF_FORMAT(1, 2);
 
 /**
- * @brief printf_l() implementation that allocates the result string
+ * \brief printf_l() implementation that allocates the result string
  *        automatically 
  *
  * Don't need a static buffer but still having the advantage of the simplicity
  * of printf(). The function is even available on systems without printf_l()
  * implementation like Linux.
  *
- * @param[in] format the ofrmat string
- * @param[in] locale a string that describes the locale to be used instead of
- *            the global locale. Unlike the system functions, @c NULL means
+ * \param[in] format the ofrmat string
+ * \param[in] locale a string that describes the locale to be used instead of
+ *            the global locale. Unlike the system functions, \c NULL means
  *            to use the global locale. If you want the traditional C locale
- *            to be used, pass <tt>"C"</tt> for @p locale. The empty string
+ *            to be used, pass <tt>"C"</tt> for \p locale. The empty string
  *            <tt>""</tt> means that the system should find out the locale
  *            from the environemnt variables <tt>LANG</tt> and <tt>LC_</tt>.
  *            See locale(3), xlocale(3) and setlocale(3) manual pages.
- * @return the formated string
- * @exception std::bad_alloc if it was not possible to allocate memory
- * @ingroup common
+ * \return the formated string
+ * \exception std::bad_alloc if it was not possible to allocate memory
+ * \ingroup common
  */
 std::string str_printf_l(const char *format, const char *locale,  ...)
     BW_COMPILER_PRINTF_FORMAT(1, 3);
 
 /**
- * @brief printf() implementation that allocates the result string automatically
+ * \brief printf() implementation that allocates the result string automatically
  *        (va_list variant)
  *
  * Don't need a static buffer but still having the advantage of the simplicity
@@ -79,72 +79,72 @@ std::string str_printf_l(const char *format, const char *locale,  ...)
  * This function uses the default locale and is a convenience function that
  * calls str_vprintf_l() with NULL as second parameter.
  *
- * @param[in] format the format string
- * @param[in] ap the argument list
- * @return the formated string
- * @exception std::bad_alloc if it was not possible to allocate memory
- * @ingroup common
+ * \param[in] format the format string
+ * \param[in] ap the argument list
+ * \return the formated string
+ * \exception std::bad_alloc if it was not possible to allocate memory
+ * \ingroup common
  */
 std::string str_vprintf(const char *format, va_list ap)
     BW_COMPILER_PRINTF_FORMAT(1, 0);
 
 /**
- * @brief printf() implementation that allocates the result string automatically
+ * \brief printf() implementation that allocates the result string automatically
  *        (va_list variant)
  *
  * Don't need a static buffer but still having the advantage of the simplicity
  * of printf().
  *
- * @param[in] format the format string
- * @param[in] locale a string that describes the locale to be used instead of
- *            the global locale. Unlike the system functions, @c NULL means
+ * \param[in] format the format string
+ * \param[in] locale a string that describes the locale to be used instead of
+ *            the global locale. Unlike the system functions, \c NULL means
  *            to use the global locale. If you want the traditional C locale
- *            to be used, pass <tt>"C"</tt> for @p locale. The empty string
+ *            to be used, pass <tt>"C"</tt> for \p locale. The empty string
  *            <tt>""</tt> means that the system should find out the locale
  *            from the environemnt variables <tt>LANG</tt> and <tt>LC_</tt>.
  *            See locale(3), xlocale(3) and setlocale(3) manual pages.
- * @param[in] ap the argument list
- * @return the formated string
- * @exception std::bad_alloc if it was not possible to allocate memory
- * @ingroup common
+ * \param[in] ap the argument list
+ * \return the formated string
+ * \exception std::bad_alloc if it was not possible to allocate memory
+ * \ingroup common
  */
 std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
     BW_COMPILER_PRINTF_FORMAT(1, 0);
 
 /**
- * @brief Starts a process in the background
+ * \brief Starts a process in the background
  *
- * @param[in] process the name of the process (can be in <tt>PATH</tt>)
- * @param[in] args the process' argument
- * @return the PID of the started process (the caller has to handle <tt>SIGCHLD</tt>)
- * @exception common::ApplicationError if the process cannot be started
- * @ingroup common
+ * \param[in] process the name of the process (can be in <tt>PATH</tt>)
+ * \param[in] args the process' argument
+ * \return the PID of the started process (the caller has to handle <tt>SIGCHLD</tt>)
+ * \exception common::ApplicationError if the process cannot be started
+ * \ingroup common
  */
 pid_t start_background(const std::string &process, const std::vector<std::string> &args)
 throw (common::ApplicationError);
 
 /**
- * @brief Compresses @p filename with gzip
+ * \brief Compresses \p filename with gzip
  *
  * The function replaces the file contents. The extension doesn't matter.
  *
- * @warning Use the function only for small files since the whole contents of the source
+ * \warning Use the function only for small files since the whole contents of the source
  *          file will be read into memory.
  *
- * @param[in] filename the name of the file
- * @exception common::ApplicationError if reading the file or writing the file fails.
- * @ingroup common
+ * \param[in] filename the name of the file
+ * \exception common::ApplicationError if reading the file or writing the file fails.
+ * \ingroup common
  */
 void compress_file(const std::string &filename)
 throw (common::ApplicationError);
 
 /**
- * @brief Wrapper around POSIX realpath()
+ * \brief Wrapper around POSIX realpath()
  *
- * @param[in] filename the name of the file that should be resolved
- * @return the path
- * @exception common::ApplicationError on error
- * @ingroup common
+ * \param[in] filename the name of the file that should be resolved
+ * \return the path
+ * \exception common::ApplicationError on error
+ * \ingroup common
  */
 std::string realpath(const std::string &filename)
 throw (common::ApplicationError);

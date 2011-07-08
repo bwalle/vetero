@@ -27,178 +27,178 @@ namespace common {
 /* Configuration {{{ */
 
 /**
- * @class Configuration
- * @brief Singleton configuration object for the daemon
+ * \class Configuration
+ * \brief Singleton configuration object for the daemon
  *
  * This class is implemented as singleton and represents the configuration of the application.
  * The configuration need to be read by parsing the configuration file with Configuration::read().
  * Otherwise the default values are used.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup common
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
  */
 class Configuration
 {
     public:
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * Creates a new Veterod instance. Parses the given configuration file.
          *
-         * @param[in] filename the name of the configuration file that should be read. If no file name is
+         * \param[in] filename the name of the configuration file that should be read. If no file name is
          *            specified, the default search is used.
          */
         Configuration(const std::string &filename="");
 
         /**
-         * @brief Destructor.
+         * \brief Destructor.
          */
         virtual ~Configuration() {}
 
     public:
         /**
-         * @brief Checks if the configuration was read in the C'tor
+         * \brief Checks if the configuration was read in the C'tor
          *
-         * @return @c true if the configuration was read, @c false otherwise
+         * \return \c true if the configuration was read, \c false otherwise
          */
         bool configurationRead() const;
 
         /**
-         * @brief Returns the error string
+         * \brief Returns the error string
          *
-         * If configurationRead() returns @c false, this function returns an error string.
+         * If configurationRead() returns \c false, this function returns an error string.
          *
-         * @return the human-readable error
+         * \return the human-readable error
          */
         std::string error() const;
 
-        /** @name Serial device access */                                                  /* {{{ */
-        /** @{ */
+        /** \name Serial device access */                                                  /* {{{ */
+        /** \{ */
 
         /**
-         * @brief Returns the serial device
+         * \brief Returns the serial device
          *
-         * The default device is @c "/dev/ttyS0".
+         * The default device is \c "/dev/ttyS0".
          *
-         * @return the path to the serial device, e.g. @c /dev/ttyS0
+         * \return the path to the serial device, e.g. \c /dev/ttyS0
          */
         std::string serialDevice() const;
 
         /**
-         * @brief Returns the baudrate
+         * \brief Returns the baudrate
          *
          * The default baudrate is 9600.
          *
-         * @return the baudrate
+         * \return the baudrate
          */
         int serialBaud() const;
 
-        /** @} */                                                                          /* }}} */
+        /** \} */                                                                          /* }}} */
 
-        /** @name Database */                                                              /* {{{ */
-        /** @{ */
+        /** \name Database */                                                              /* {{{ */
+        /** \{ */
 
         /**
-         * @brief Returns the path to the database
+         * \brief Returns the path to the database
          *
-         * The default path is @c "vetero.db" which depends on the current working directory of the
+         * The default path is \c "vetero.db" which depends on the current working directory of the
          * application.
          *
-         * @return the database path, either absolute or relative.
+         * \return the database path, either absolute or relative.
          */
         std::string databasePath() const;
 
-        /** @} */                                                                          /* }}} */
+        /** \} */                                                                          /* }}} */
 
-        /** @name Report generation */                                                     /* {{{ */
-        /** @{ */
+        /** \name Report generation */                                                     /* {{{ */
+        /** \{ */
 
         /**
-         * @brief Returns the dark color of the title bar in the HTML reports
+         * \brief Returns the dark color of the title bar in the HTML reports
          *
-         * @return the command
+         * \return the command
          */
         std::string reportTitleColor1() const;
 
         /**
-         * @brief Returns the bright color of the title bar in the HTML reports
+         * \brief Returns the bright color of the title bar in the HTML reports
          *
-         * @return the command
+         * \return the command
          */
         std::string reportTitleColor2() const;
 
         /**
-         * @brief Returns the HTML reports are put into
+         * \brief Returns the HTML reports are put into
          *
-         * @return the full path to the directory
+         * \return the full path to the directory
          */
         std::string reportDirectory() const;
 
         /**
-         * @brief Returns the command that uploads the HTML reports
+         * \brief Returns the command that uploads the HTML reports
          *
-         * @return the command
+         * \return the command
          */
         std::string reportUploadCommand() const;
 
         /**
-         * @brief Returns the location string
+         * \brief Returns the location string
          *
          * This string is shown in the HTML pages.
          *
-         * @return the location string
+         * \return the location string
          */
         std::string locationString() const;
 
         /**
-         * @brief Returns the locale
+         * \brief Returns the locale
          *
-         * @return the locale like <tt>"de_DE.utf-8"</tt>.
+         * \return the locale like <tt>"de_DE.utf-8"</tt>.
          */
         std::string locale() const;
 
-        /** @} */                                                                          /* }}} */
+        /** \} */                                                                          /* }}} */
 
-        /** @name LCD */                                                                   /* {{{ */
-        /** @{ */
+        /** \name LCD */                                                                   /* {{{ */
+        /** \{ */
 
         /**
-         * @brief Returns the display name for serdisplib
+         * \brief Returns the display name for serdisplib
          *
          * Used to start the display program (if available).
          *
-         * @return the display name, e.g. <tt>'CTINCLUD'</tt>.
+         * \return the display name, e.g. <tt>'CTINCLUD'</tt>.
          */
         std::string displayName() const;
 
         /**
-         * @brief Returns the display connection for serdisplib.
+         * \brief Returns the display connection for serdisplib.
          *
          * Used to start the display program (if available).
          *
-         * @return the display connection, e.g. <tt>'USB:7c0/1501'</tt>.
+         * \return the display connection, e.g. <tt>'USB:7c0/1501'</tt>.
          */
         std::string displayConnection() const;
 
-        /** @} */                                                                          /* }}} */
+        /** \} */                                                                          /* }}} */
 
         /**
-         * @brief Converts the object to a human-readable string
+         * \brief Converts the object to a human-readable string
          *
          * Mainly for debug output
          *
-         * @return the string
+         * \return the string
          */
         std::string str() const;
 
     protected:
         /**
-         * @brief Parses the given configuration files
+         * \brief Parses the given configuration files
          *
-         * Reads the configuration file @p filename.
+         * Reads the configuration file \p filename.
          *
-         * @param[in] filename the name of the configuration file that should be read
-         * @exception ApplicationError if the file cannot be parsed.
+         * \param[in] filename the name of the configuration file that should be read
+         * \exception ApplicationError if the file cannot be parsed.
          */
         void read(const std::string &filename);
 
@@ -226,13 +226,13 @@ class Configuration
 /* Output operator {{{ */
 
 /**
- * @brief Prints a configuration to the given output stream
+ * \brief Prints a configuration to the given output stream
  *
  * Calls Configuration::str() internally.
  *
- * @param[in] os the output stream
- * @param[in] config the configuration to dump
- * @return @p os
+ * \param[in] os the output stream
+ * \param[in] config the configuration to dump
+ * \return \p os
  */
 std::ostream &operator<<(std::ostream &os, vetero::common::Configuration &config);
 

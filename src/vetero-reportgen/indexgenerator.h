@@ -26,65 +26,65 @@ namespace vetero {
 namespace reportgen {
 
 /**
- * @brief Generates the index page
+ * \brief Generates the index page
  *
  * This page contains calendars with links to the weather data.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup report
  */
 class IndexGenerator: public ReportGenerator
 {
     public:
         /**
-         * @brief C'tor
+         * \brief C'tor
          *
-         * @param[in] reportGenerator the appliation's main class
+         * \param[in] reportGenerator the appliation's main class
          */
         IndexGenerator(VeteroReportgen *reportGenerator);
 
         /**
-         * @brief Does the work.
+         * \brief Does the work.
          *
-         * @exception common::ApplicationError if something failed
+         * \exception common::ApplicationError if something failed
          */
         virtual void generateReports()
         throw (common::ApplicationError);
 
     protected:
         /**
-         * @brief Generates the HTML for a given year
+         * \brief Generates the HTML for a given year
          *
-         * @param[in] html the stream to which the HTML is written
-         * @param[in] year the year
+         * \param[in] html the stream to which the HTML is written
+         * \param[in] year the year
          */
         void generateYear(HtmlDocument &html, int year);
 
         /**
-         * @brief Generates the HTML for a given month
+         * \brief Generates the HTML for a given month
          *
-         * @param[in] html the stream to which the HTML is written
-         * @param[in] year the year
-         * @param[in] month the month
+         * \param[in] html the stream to which the HTML is written
+         * \param[in] year the year
+         * \param[in] month the month
          */
         void generateMonth(HtmlDocument &html, int year, int month);
 
         /**
-         * @brief Checks if there is data available at the given day
+         * \brief Checks if there is data available at the given day
          *
-         * @param[in] year the 4-digit year
-         * @param[in] month the month from 1 to 12
-         * @param[in] day the day from 1 to 31
-         * @return @c true if there's weather data available, @c false otherwise
+         * \param[in] year the 4-digit year
+         * \param[in] month the month from 1 to 12
+         * \param[in] day the day from 1 to 31
+         * \return \c true if there's weather data available, \c false otherwise
          */
         bool dataAtDay(int year, int month, int day);
 
         /**
-         * @brief Checks if there is data available at the given month
+         * \brief Checks if there is data available at the given month
          *
-         * @param[in] year the 4-digit year
-         * @param[in] month the month from 1 to 12
-         * @return @c true if there's weather data available, @c false otherwise
+         * \param[in] year the 4-digit year
+         * \param[in] month the month from 1 to 12
+         * \return \c true if there's weather data available, \c false otherwise
          */
         bool dataInMonth(int year, int month);
 

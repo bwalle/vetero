@@ -20,12 +20,12 @@
 #include <libintl.h>
 
 /**
- * @brief Marks a runtime-translated string
+ * \brief Marks a runtime-translated string
  *
  * Common wrapper around gettext().
  *
- * @param[in] str the string that needs to be translated
- * @ingroup common
+ * \param[in] str the string that needs to be translated
+ * \ingroup common
  */
 #define _(str) gettext(str)
 

@@ -20,14 +20,6 @@
 
 #include "datareader.h"
 
-/**
- * @file
- * @brief Contains the weather data reader (serial device)
- *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
- */
-
 namespace vetero {
 namespace daemon {
 

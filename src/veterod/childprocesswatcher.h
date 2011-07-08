@@ -27,26 +27,26 @@ namespace vetero {
 namespace daemon {
 
 /**
- * @brief Singleton to monitor child processes on Unix
+ * \brief Singleton to monitor child processes on Unix
  *
  * The special thing about this class is that it only calls waitpid() on the processes
  * that it maintains in a list. This makes it possible to deal with other processes synchronously.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup daemon
  */
 class ChildProcessWatcher {
 
     private:
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * Use ChildProcessWatcher::instance(). Registers the child handler.
          */
         ChildProcessWatcher();
 
         /**
-         * @brief Destructor
+         * \brief Destructor
          *
          * Unregisters the signal handler for SIGCHLD.
          */
@@ -54,24 +54,24 @@ class ChildProcessWatcher {
 
     public:
         /**
-         * @brief Singleton accessor
+         * \brief Singleton accessor
          *
-         * @return the only instance of ChildProcessWatcher.
+         * \return the only instance of ChildProcessWatcher.
          */
         static ChildProcessWatcher *instance();
 
         /**
-         * @brief Adds a child to monitor
+         * \brief Adds a child to monitor
          *
          * Handles also the case that SIGCHLD was already called for that process.
          *
-         * @param[in] pid the PID of the child process
+         * \param[in] pid the PID of the child process
          */
         void addChild(pid_t pid)
         throw (common::ApplicationError);
 
         /**
-         * @brief Calls waitpid() on all monitored chilren.
+         * \brief Calls waitpid() on all monitored chilren.
          *
          * Prints an error in the error log if the process exited with a status unequal to zero.
          */
@@ -79,12 +79,12 @@ class ChildProcessWatcher {
 
     protected:
         /**
-         * @brief Calls waitpid() for @p pid
+         * \brief Calls waitpid() for \p pid
          *
          * This function does the error logging and removes the pid from the list.
          *
-         * @param[in] pid the pid to watch for
-         * @return @c true if @p pid has terminated and the zombie was deleted, @c false otherwise
+         * \param[in] pid the pid to watch for
+         * \return \c true if \p pid has terminated and the zombie was deleted, \c false otherwise
          */
         bool wait(pid_t pid);
 

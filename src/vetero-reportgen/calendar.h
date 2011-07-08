@@ -24,46 +24,46 @@ namespace vetero {
 namespace reportgen {
 
 /**
- * @brief Simple helper class with static methods with some Calendar information
+ * \brief Simple helper class with static methods with some Calendar information
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup report
  */
 class Calendar
 {
     public:
         /**
-         * @brief Returns the number of days in the given month
+         * \brief Returns the number of days in the given month
          *
-         * @param[in] year the 4-digit year, e.g. 2010
-         * @param[in] month the month where 1 = January and 12 = December
-         * @return the number of days between 28 and 31.
+         * \param[in] year the 4-digit year, e.g. 2010
+         * \param[in] month the month where 1 = January and 12 = December
+         * \return the number of days between 28 and 31.
          */
         static int daysPerMonth(int year, int month);
 
         /**
-         * @brief Returns the locale-specific day abbreviation
+         * \brief Returns the locale-specific day abbreviation
          *
          * The global locale is used.
          *
-         * @param[in] wday the weekday according to enum Weekday
-         * @return the two or three letter abbreviation, e.g. <tt>"Mo"</tt> for Monday.
+         * \param[in] wday the weekday according to enum Weekday
+         * \return the two or three letter abbreviation, e.g. <tt>"Mo"</tt> for Monday.
          */
         static std::string dayAbbreviation(int wday);
 
         /**
-         * @brief Returns the locale-specific month name
+         * \brief Returns the locale-specific month name
          *
-         * @param[in] month the month from 1 to 12
-         * @return the month name, e.g. <tt>"Juni"</tt> for 6 and a German locale.
+         * \param[in] month the month from 1 to 12
+         * \return the month name, e.g. <tt>"Juni"</tt> for 6 and a German locale.
          */
         static std::string monthName(int month);
 
         /**
-         * @brief Checks if @p year is a leap year
+         * \brief Checks if \p year is a leap year
          *
-         * @param[in] year the 4-digit year, e.g. 2010
-         * @return @c true if the year is a leap year, @c false otherwise
+         * \param[in] year the 4-digit year, e.g. 2010
+         * \return \c true if the year is a leap year, \c false otherwise
          */
         static bool isLeapYear(int year);
 };

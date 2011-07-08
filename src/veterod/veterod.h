@@ -30,19 +30,19 @@ namespace daemon {
 /* Veterod {{{ */
 
 /**
- * @class Veterod
- * @brief Main class for the vetero daemon
+ * \class Veterod
+ * \brief Main class for the vetero daemon
  *
  * Main class of the application.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup daemon
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup daemon
  */
 class Veterod
 {
     public:
         /**
-         * @brief Describes the action veterod performs
+         * \brief Describes the action veterod performs
          */
         enum Action {
             ActionCollectWeatherdata, ///! collect weatherdata, this is the default
@@ -51,65 +51,65 @@ class Veterod
 
     public:
         /**
-         * @brief Constructor
+         * \brief Constructor
          *
          * Creates a new Veterod instance.
          */
         Veterod();
 
         /**
-         * @brief Destructor.
+         * \brief Destructor.
          */
         virtual ~Veterod();
 
         /**
-         * @brief Parse the command line
+         * \brief Parse the command line
          *
-         * @param[in] argc the number of arguments
-         * @param[in] argv the arguments
-         * @return @c true if the application should be continued,
-         *         @c false if the application should be quit
-         * @exception common::ApplicationError if parsing the command line failed.
+         * \param[in] argc the number of arguments
+         * \param[in] argv the arguments
+         * \return \c true if the application should be continued,
+         *         \c false if the application should be quit
+         * \exception common::ApplicationError if parsing the command line failed.
          */
         bool parseCommandLine(int argc, char *argv[])
         throw (common::ApplicationError);
 
         /**
-         * @brief Installs the termination signal handlers
+         * \brief Installs the termination signal handlers
          *
-         * @exception common::ApplicationError if registering the signal handlers failed.
+         * \exception common::ApplicationError if registering the signal handlers failed.
          */
         void installSignalhandlers()
         throw (common::ApplicationError);
 
         /**
-         * @brief Reads the configuration file
+         * \brief Reads the configuration file
          *
          * If a configuration file has been specified on the command line, read the
          * configuration file and throw an exception if the configuration file cannot be
          * read. If no configuration file has been specified, check if the default configuration
          * file exists and if yes, read it. Only if the file exists and cannot be parsed, an
-         * @c common::ApplicationError is thrown.
+         * \c common::ApplicationError is thrown.
          *
-         * @exception common::ApplicationError if the configuration file cannot be read or parsed, see
+         * \exception common::ApplicationError if the configuration file cannot be read or parsed, see
          *            above for more information.
          */
         void readConfiguration()
         throw (common::ApplicationError);
 
         /**
-         * @brief Opens the database connection
+         * \brief Opens the database connection
          *
          * Opens the database as specified in the configuration file. If it doesn't exist, the
          * database will be created.
          *
-         * @exception common::ApplicationError if it's not possible to create the database.
+         * \exception common::ApplicationError if it's not possible to create the database.
          */
         void openDatabase()
         throw (common::ApplicationError);
 
         /**
-         * @brief Main loop of the application
+         * \brief Main loop of the application
          *
          * This is the main part of the application.
          */
@@ -118,7 +118,7 @@ class Veterod
 
     protected:
         /**
-         * @brief Main loop of the application
+         * \brief Main loop of the application
          *
          * This is the main part of the application.
          */
@@ -126,64 +126,64 @@ class Veterod
         throw (common::ApplicationError);
 
         /**
-         * @brief Special main loop which only regenerates metadata and exists.
+         * \brief Special main loop which only regenerates metadata and exists.
          */
         void execRegenerateMetadata()
         throw (common::ApplicationError);
 
         /**
-         * @brief Setup debug logging for the application
+         * \brief Setup debug logging for the application
          *
-         * @param[in] loglevel the minimum loglevel that gets logged. Valid values are @c "trace",
-         *            @c "debug", @c "info" and @c "none".  Logging includes the given priority,
-         *            i.e.  if @c debug is given, then messages of the severity @c debug and @c info
-         *            are logged. Pass @c "none" for silence.
-         * @param[in] filename if non-empty, log messages will not be printed to the console
-         *            but redirected into @p filename.
-         * @exception common::ApplicationError if the file cannot be created or if @p loglevel is invalid.
+         * \param[in] loglevel the minimum loglevel that gets logged. Valid values are \c "trace",
+         *            \c "debug", \c "info" and \c "none".  Logging includes the given priority,
+         *            i.e.  if \c debug is given, then messages of the severity \c debug and \c info
+         *            are logged. Pass \c "none" for silence.
+         * \param[in] filename if non-empty, log messages will not be printed to the console
+         *            but redirected into \p filename.
+         * \exception common::ApplicationError if the file cannot be created or if \p loglevel is invalid.
          */
         void setupDebugLogging(const std::string &loglevel, const std::string &filename)
         throw (common::ApplicationError);
 
         /**
-         * @brief Setup the error logging for the application
+         * \brief Setup the error logging for the application
          *
-         * @exception common::ApplicationError if @p logfile cannot be opened for writing
-         *            (if @p logfile is not a file but <tt>'syslog'</tt>, <tt>'stderr'</tt> or
+         * \exception common::ApplicationError if \p logfile cannot be opened for writing
+         *            (if \p logfile is not a file but <tt>'syslog'</tt>, <tt>'stderr'</tt> or
          *            <tt>'stdout'</tt>, then no exception can be thrown)
          */
         void setupErrorLogging()
         throw (common::ApplicationError);
 
         /**
-         * @brief Starts the display daemon
+         * \brief Starts the display daemon
          *
          * Starts the display daemon if both Configuration::getDisplayName() and
          * Configuration::getDisplayConnection() return non-zero strings.
          *
-         * @exception common::ApplicationError if the display daemon cannot be started.
+         * \exception common::ApplicationError if the display daemon cannot be started.
          */
         void startDisplay()
         throw (common::ApplicationError);
 
         /**
-         * @brief Updates the HTML reports
+         * \brief Updates the HTML reports
          *
          * Used the external program <tt>vetero-reportgen</tt>.
          *
-         * @param[in] jobs the jobs specification as accepted by <tt>vetero-reportgen</tt>
-         * @param[in] upload @c true if the files should also be uploaded, @c false otherwise.
-         * @exception common::ApplicationError if the program cannot be started
+         * \param[in] jobs the jobs specification as accepted by <tt>vetero-reportgen</tt>
+         * \param[in] upload \c true if the files should also be uploaded, \c false otherwise.
+         * \exception common::ApplicationError if the program cannot be started
          */
         void updateReports(const std::vector<std::string> &jobs, bool upload=false);
 
         /**
-         * @brief Creates the pidfile
+         * \brief Creates the pidfile
          */
         void createPidfile();
 
         /**
-         * @brief Notifies the display daemon about new data.
+         * \brief Notifies the display daemon about new data.
          */
         void notifyDisplay();
 

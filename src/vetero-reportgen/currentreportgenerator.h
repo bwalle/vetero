@@ -28,42 +28,42 @@ namespace reportgen {
 class VeteroReportgen;
 
 /**
- * @brief Generates the current report in the background. Also invokes the website upload.
+ * \brief Generates the current report in the background. Also invokes the website upload.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup report
  */
 class CurrentReportGenerator : public ReportGenerator {
 
     public:
         /**
-         * @brief Creates a new instance
+         * \brief Creates a new instance
          *
-         * @param[in] reportGenerator the current weather data
+         * \param[in] reportGenerator the current weather data
          */
         CurrentReportGenerator(VeteroReportgen *reportGenerator);
 
         /**
-         * @brief Does the work.
+         * \brief Does the work.
          *
-         * @exception common::ApplicationError if something failed
+         * \exception common::ApplicationError if something failed
          */
         void generateReports()
         throw (common::ApplicationError);
 
     protected:
         /**
-         * @brief Returns a rendered text of the current weather
+         * \brief Returns a rendered text of the current weather
          *
-         * @param[in] currentWeather the current weather which should be rendered
-         * @return the text
+         * \param[in] currentWeather the current weather which should be rendered
+         * \return the text
          */
         std::string renderText(const common::CurrentWeather &currentWeather) const;
 
         /**
-         * @brief Finds the template file on disk
+         * \brief Finds the template file on disk
          *
-         * @return the path to the template or an empty string if the template could not be found
+         * \return the path to the template or an empty string if the template could not be found
          */
         std::string findTemplate() const;
 };

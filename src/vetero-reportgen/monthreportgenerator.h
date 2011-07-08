@@ -25,85 +25,85 @@ namespace vetero {
 namespace reportgen {
 
 /**
- * @brief Creates the month statistics HTML page including the diagrams
+ * \brief Creates the month statistics HTML page including the diagrams
  *
  * Generates the month statistics page, including a diagram for the temperature, the
  * humidity, the wind and the rain.
  *
- * @author Bernhard Walle <bernhard@bwalle.de>
- * @ingroup report
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup report
  */
 class MonthReportGenerator : public ReportGenerator
 {
     public:
         /**
-         * @brief Creates a new instance
+         * \brief Creates a new instance
          *
-         * @param[in] reportGenerator the appliation's main class
-         * @param[in] month the month in ISO format (<tt>YYYY-MM</tt>)
+         * \param[in] reportGenerator the appliation's main class
+         * \param[in] month the month in ISO format (<tt>YYYY-MM</tt>)
          */
         MonthReportGenerator(VeteroReportgen    *reportGenerator,
                              const std::string  &month);
 
         /**
-         * @brief Does the work.
+         * \brief Does the work.
          *
-         * @exception common::ApplicationError if something failed
+         * \exception common::ApplicationError if something failed
          */
         virtual void generateReports()
         throw (common::ApplicationError);
 
     protected:
         /**
-         * @brief Generates one report
+         * \brief Generates one report
          *
-         * @param[in] month the date string
+         * \param[in] month the date string
          */
         void generateOneReport(const std::string &month)
         throw (common::ApplicationError, common::DatabaseError);
 
         /**
-         * @brief Creates the temperature diagram for one month
+         * \brief Creates the temperature diagram for one month
          *
-         * @exception common::ApplicationError on general error
-         * @exception common::DatabaseError if the SQL is invalid
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
          */
         void createTemperatureDiagram()
         throw (common::ApplicationError, common::DatabaseError);
 
         /**
-         * @brief Creates the wind diagram for one month
+         * \brief Creates the wind diagram for one month
          *
-         * @exception common::ApplicationError on general error
-         * @exception common::DatabaseError if the SQL is invalid
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
          */
         void createWindDiagram()
         throw (common::ApplicationError, common::DatabaseError);
 
         /**
-         * @brief Creates the rain diagram for one month
+         * \brief Creates the rain diagram for one month
          *
-         * @exception common::ApplicationError on general error
-         * @exception common::DatabaseError if the SQL is invalid
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
          */
         void createRainDiagram()
         throw (common::ApplicationError, common::DatabaseError);
 
         /**
-         * @brief Creates the HTML page
+         * \brief Creates the HTML page
          *
-         * @exception common::ApplicationError on general error
-         * @exception common::DatabaseError if the SQL is invalid
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
          */
         void createHtml()
         throw (common::ApplicationError, common::DatabaseError);
 
         /**
-         * @brief Creates the table with the numeric values
+         * \brief Creates the table with the numeric values
          *
-         * @param[in] html the HTML document that is used to write the HTML table
-         * @exception common::ApplicationError on general error
-         * @exception common::DatabaseError if the SQL is invalid
+         * \param[in] html the HTML document that is used to write the HTML table
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
          */
         void createTable(HtmlDocument &html)
         throw (common::ApplicationError, common::DatabaseError);
