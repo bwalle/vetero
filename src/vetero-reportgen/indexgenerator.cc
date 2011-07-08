@@ -44,6 +44,7 @@ void IndexGenerator::generateReports()
     BW_DEBUG_INFO("Generating index");
 
     HtmlDocument html(reportgen());
+    html.setAutoReload(5);
     html.setTitle(_("Overview Weather data"));
     html.setDisplayTitle(false);
 

@@ -241,6 +241,7 @@ void DayReportGenerator::createHtml()
     int day = bw::from_str<int>(m_date.substr(8, 2));
 
     HtmlDocument html(reportgen());
+    html.setAutoReload(5);
     html.setTitle(bw::Datetime(year, month, day, 0, 0, 0, false).strftime("%A, %d. %B %Y"));
 
     html.addSection("Temperaturverlauf", "Temperatur", "temperature");
