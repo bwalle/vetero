@@ -219,7 +219,7 @@ void MonthReportGenerator::createHtml()
     // navigation links
 
     bw::Datetime lastMonth(monthToGenerate);
-    lastMonth.addDays(-31);
+    lastMonth.addDays(-1);
     bw::Datetime nextMonth(monthToGenerate);
     nextMonth.addDays(31);
 
