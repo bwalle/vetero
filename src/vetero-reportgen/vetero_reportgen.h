@@ -83,8 +83,8 @@ class VeteroReportgen
          * file exists and if yes, read it. Only if the file exists and cannot be parsed, an
          * \c common::ApplicationError is thrown.
          *
-         * \exception common::ApplicationError if the configuration file cannot be read or parsed, see
-         *            above for more information.
+         * \exception common::ApplicationError if the configuration file cannot be read or parsed,
+         *            see above for more information.
          */
         void readConfiguration()
         throw (common::ApplicationError);
@@ -104,7 +104,8 @@ class VeteroReportgen
         /**
          * \brief Opens the database connection
          *
-         * Opens the database as specified on the command line. If it doesn't exist, the database will be created.
+         * Opens the database as specified on the command line. If it doesn't exist, the database
+         * will be created.
          *
          * \exception common::ApplicationError if it's not possible to create the database.
          */
@@ -141,7 +142,8 @@ class VeteroReportgen
          *            are logged. Pass \c "none" for silence.
          * \param[in] filename if non-empty, log messages will not be printed to the console
          *            but redirected into \p filename.
-         * \exception common::ApplicationError if the file cannot be created or if \p loglevel is invalid.
+         * \exception common::ApplicationError if the file cannot be created or if \p loglevel is
+         *            invalid.
          */
         void setupDebugLogging(const std::string &loglevel, const std::string &filename)
         throw (common::ApplicationError);
