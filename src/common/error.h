@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef ERROR_H
-#define ERROR_H
+#ifndef VETERO_COMMON_ERROR_H_
+#define VETERO_COMMON_ERROR_H_
 
 #include <stdexcept>
 #include <cstring>
@@ -138,4 +138,4 @@ class DatabaseError : public ApplicationError {
 } // end namespace vetero
 } // end namespace common
 
-#endif // ERROR_H
+#endif // VETERO_COMMON_ERROR_H_

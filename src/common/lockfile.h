@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef LOCKFILE_H_
-#define LOCKFILE_H_
+#ifndef VETERO_COMMON_LOCKFILE_H_
+#define VETERO_COMMON_LOCKFILE_H_
 
 #include <string>
 #include <sstream>
@@ -97,4 +97,4 @@ class LockFile
 } // end namespace common
 } // end namespace vetero
 
-#endif /* LOCKFILE_H_ */
+#endif // VETERO_COMMON_LOCKFILE_H_

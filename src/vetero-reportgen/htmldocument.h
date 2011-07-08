@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef HTMLDOCUMENT_H_
-#define HTMLDOCUMENT_H_
+#ifndef VETERO_REPORTGEN_HTMLDOCUMENT_H_
+#define VETERO_REPORTGEN_HTMLDOCUMENT_H_
 
 #include <string>
 #include <sstream>
@@ -239,4 +239,4 @@ HtmlDocument &HtmlDocument::operator<<(const T &t)
 } // end namespace daemon
 } // end namespace reportgen
 
-#endif /* HTMLDOCUMENT_H_ */
+#endif // VETERO_REPORTGEN_HTMLDOCUMENT_H_

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef DATASET_H
-#define DATASET_H
+#ifndef VETERO_COMMON_DATASET_H_
+#define VETERO_COMMON_DATASET_H_
 
 #include <iostream>
 
@@ -496,4 +496,4 @@ std::ostream &operator<<(std::ostream &os, const CurrentWeather &dataset);
 } // end namespace common
 } // end namespace vetero
 
-#endif // DATASET_H
+#endif // VETERO_COMMON_DATASET_H_

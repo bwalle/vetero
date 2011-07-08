@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef SERDISPLIBDISPLAY_H
-#define SERDISPLIBDISPLAY_H
+#ifndef VETERO_DISPLAYD_SERDISPLIBDISPLAY_H_
+#define VETERO_DISPLAYD_SERDISPLIBDISPLAY_H_
 
 #include <stdexcept>
 #include <string>
@@ -420,4 +420,4 @@ static bool bit_is_set(const T &value, size_t bit)
 } // end namespace vetero
 } // end namespace display
 
-#endif // SERDISPLIBDISPLAY_H
+#endif // VETERO_DISPLAYD_SERDISPLIBDISPLAY_H_

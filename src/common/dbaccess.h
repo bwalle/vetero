@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef DBACCESS_H
-#define DBACCESS_H
+#ifndef VETERO_COMMON_DBACCESS_H_
+#define VETERO_COMMON_DBACCESS_H_
 
 #include <vector>
 
@@ -228,4 +228,4 @@ T DbAccess::readMiscEntry(const std::string &key, const T &defaultValue) const
 } // end namespace common
 } // end namespace vetero
 
-#endif // DBACCESS_H
+#endif // VETERO_COMMON_DBACCESS_H_

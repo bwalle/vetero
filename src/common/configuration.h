@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef CONFIGURATION_H
-#define CONFIGURATION_H
+#ifndef VETERO_COMMON_CONFIGURATION_H_
+#define VETERO_COMMON_CONFIGURATION_H_
 
 #include <cstdio>
 
@@ -238,4 +238,4 @@ std::ostream &operator<<(std::ostream &os, vetero::common::Configuration &config
 
 /* }}} */
 
-#endif // CONFIGURATION_H
+#endif // VETERO_COMMON_CONFIGURATION_H_

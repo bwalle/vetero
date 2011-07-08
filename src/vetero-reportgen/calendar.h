@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef CALENDAR_H_
-#define CALENDAR_H_
+#ifndef VETERO_REPORTGEN_CALENDAR_H_
+#define VETERO_REPORTGEN_CALENDAR_H_
 
 #include <string>
 
@@ -71,4 +71,4 @@ class Calendar
 } // namespace reportgen
 } // namespace vetero
 
-#endif /* CALENDAR_H_ */
+#endif // VETERO_REPORTGEN_CALENDAR_H_

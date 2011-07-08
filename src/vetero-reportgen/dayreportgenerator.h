@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef DAYSTATISTICSREPORTGENERATOR_H_
-#define DAYSTATISTICSREPORTGENERATOR_H_
+#ifndef VETERO_REPORTGEN_DAYSTATISTICSREPORTGENERATOR_H_
+#define VETERO_REPORTGEN_DAYSTATISTICSREPORTGENERATOR_H_
 
 #include "common/database.h"
 #include "reportgenerator.h"
@@ -118,4 +118,4 @@ class DayReportGenerator : public ReportGenerator
 } // end namespace reportgen
 } // end namespace vetero
 
-#endif /* DAYSTATISTICSREPORTGENERATOR_H_ */
+#endif // VETERO_REPORTGEN_DAYSTATISTICSREPORTGENERATOR_H_

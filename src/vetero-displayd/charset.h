@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef CHARSET_H
-#define CHARSET_H
+#ifndef VETERO_DISPLAYD_CHARSET_H
+#define VETERO_DISPLAYD_CHARSET_H
 
 #include <stdexcept>
 #include <string>
@@ -120,4 +120,4 @@ std::string latin12hd44780(const std::string &latin1);
 } // end namespace vetero
 } // end namespace display
 
-#endif // CHARSET_H
+#endif // VETERO_DISPLAYD_CHARSET_H

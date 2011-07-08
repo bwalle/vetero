@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef FONT_6x8_H
-#define FONT_6x8_H
+#ifndef VETERO_DISPLAYD_FONT_6x8_H_
+#define VETERO_DISPLAYD_FONT_6x8_H_
 
 #define ______ 0x00
 #define _____O 0x01
@@ -2398,4 +2398,4 @@ const unsigned char Font_6x8[256][8] = {
 #undef _OOOO_
 #undef _OOOOO
 
-#endif // FONT_6x8_H
+#endif // VETERO_DISPLAYD_FONT_6x8_H_

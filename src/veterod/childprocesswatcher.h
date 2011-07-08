@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef CHILDPROCESSWATCHER_H_
-#define CHILDPROCESSWATCHER_H_
+#ifndef VETERO_VETEROD_CHILDPROCESSWATCHER_H_
+#define VETERO_VETEROD_CHILDPROCESSWATCHER_H_
 
 #include <set>
 #include <sys/types.h>
@@ -95,4 +95,4 @@ class ChildProcessWatcher {
 } // end namespace daemon
 } // end namespace vetero
 
-#endif /* CHILDPROCESSWATCHER_H_ */
+#endif // VETERO_VETEROD_CHILDPROCESSWATCHER_H_

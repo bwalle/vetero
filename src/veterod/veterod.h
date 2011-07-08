@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef VETEROD_H
-#define VETEROD_H
+#ifndef VETERO_VETEROD_VETEROD_H_
+#define VETERO_VETEROD_VETEROD_H_
 
 #include <cstdio>
 #include <memory>
@@ -203,4 +203,4 @@ class Veterod
 } // end namespace vetero
 } // end namespace daemon
 
-#endif // VETEROD_H
+#endif // VETERO_VETEROD_VETEROD_H_

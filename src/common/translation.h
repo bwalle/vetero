@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef TRANSLATION_H
-#define TRANSLATION_H
+#ifndef VETERO_COMMON_TRANSLATION_H_
+#define VETERO_COMMON_TRANSLATION_H_
 
 #include <libintl.h>
 
@@ -29,4 +29,4 @@
  */
 #define _(str) gettext(str)
 
-#endif // TRANSLATION_H
+#endif // VETERO_COMMON_TRANSLATION_H_

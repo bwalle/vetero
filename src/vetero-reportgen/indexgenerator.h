@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef INDEXGENERATOR_H_
-#define INDEXGENERATOR_H_
+#ifndef VETERO_REPORTGEN_INDEXGENERATOR_H_
+#define VETERO_REPORTGEN_INDEXGENERATOR_H_
 
 #include "common/dbaccess.h"
 #include "reportgenerator.h"
@@ -97,4 +97,4 @@ class IndexGenerator: public ReportGenerator
 } // end namespace reportgen
 } // end namespace vetero
 
-#endif /* INDEXGENERATOR_H_ */
+#endif // VETERO_REPORTGEN_INDEXGENERATOR_H_

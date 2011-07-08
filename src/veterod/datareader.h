@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef DATAREADER_H
-#define DATAREADER_H
+#ifndef VETERO_VETEROD_DATAREADER_H
+#define VETERO_VETEROD_DATAREADER_H
 
 #include <libbw/io/serialfile.h>
 
@@ -100,4 +100,4 @@ class DataReader
 } // end namespace vetero
 } // end namespace daemon
 
-#endif // DATAREADER_H
+#endif // VETERO_VETEROD_DATAREADER_H

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef VETERO_COMMON_DATABASE_H_
+#define VETERO_COMMON_DATABASE_H_
 
 #include <iostream>
 #include <stdexcept>
@@ -282,4 +282,4 @@ std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbRes
 
 /* }}} */
 
-#endif // DATABASE_H
+#endif // VETERO_COMMON_DATABASE_H_

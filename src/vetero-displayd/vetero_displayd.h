@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef VETERO_DISPLAYD_H
-#define VETERO_DISPLAYD_H
+#ifndef VETERO_DISPLAYD_VETERO_DISPLAYD_H_
+#define VETERO_DISPLAYD_VETERO_DISPLAYD_H_
 
 #include <memory>
 
@@ -151,4 +151,4 @@ class VeteroDisplayd {
 } // end namespace vetero
 } // end namespace display
 
-#endif // VETERO_DISPLAYD_H
+#endif // VETERO_DISPLAYD_VETERO_DISPLAYD_H_

@@ -23,7 +23,10 @@
  *
  */
 
-const unsigned char HD44780_charmap[] = {
+#ifndef VETERO_DISPLAYD_HD44780_CHARMAP_H_
+#define VETERO_DISPLAYD_HD44780_CHARMAP_H_
+
+static const unsigned char HD44780_charmap[] = {
   /* #0 */
     0,   1,   2,   3,   4,   5,   6,   7,
     8,   9,  10,  11,  12,  13,  14,  15,
@@ -65,3 +68,5 @@ const unsigned char HD44780_charmap[] = {
   111, 110, 111, 111, 111, 111, 239, 253,
    48, 117, 117, 117, 245, 121, 240, 255
 };
+
+#endif // VETERO_DISPLAYD_HD44780_CHARMAP_H_

@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef REPORTGENERATOR_H_
-#define REPORTGENERATOR_H_
+#ifndef VETERO_REPORTGEN_REPORTGENERATOR_H_
+#define VETERO_REPORTGEN_REPORTGENERATOR_H_
 
 #include "common/lockfile.h"
 #include "vetero_reportgen.h"
@@ -77,4 +77,4 @@ class ReportGenerator
 } // end namespace reportgen
 } // end namespace vetero
 
-#endif /* REPORTGENERATOR_H_ */
+#endif // VETERO_REPORTGEN_REPORTGENERATOR_H_

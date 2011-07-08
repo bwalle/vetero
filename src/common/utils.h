@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef VETERO_COMMON_UTILS_H_
+#define VETERO_COMMON_UTILS_H_
 
 #include <vector>
 #include <stdexcept>
@@ -152,4 +152,4 @@ throw (common::ApplicationError);
 } // end namespace common
 } // end namespace vetero
 
-#endif // UTILS_H
+#endif // VETERO_COMMON_UTILS_H_

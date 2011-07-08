@@ -23,8 +23,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
-#ifndef FONT_6x8_BOLD_H
-#define FONT_6x8_BOLD_H
+#ifndef VETERO_DISPLAYD_FONT_6x8_BOLD_H_
+#define VETERO_DISPLAYD_FONT_6x8_BOLD_H_
 
 #define ______ 0x00
 #define _____O 0x01
@@ -2462,4 +2462,4 @@ const unsigned char Font_6x8_bold[256][8] = {
 #undef OOOOOO
 
 
-#endif // FONT_6x8_BOLD_H
+#endif // VETERO_DISPLAYD_FONT_6x8_BOLD_H_

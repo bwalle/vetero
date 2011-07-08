@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef REPORT_CURRENT_H_
-#define REPORT_CURRENT_H_
+#ifndef VETERO_REPORTGEN_CURRENTREPORTGENERATOR_H_
+#define VETERO_REPORTGEN_CURRENTREPORTGENERATOR_H_
 
 #include "common/dataset.h"
 #include "common/error.h"
@@ -71,4 +71,4 @@ class CurrentReportGenerator : public ReportGenerator {
 } // end namespace vetero
 } // end namespace reportgen
 
-#endif /* REPORT_CURRENT_H_ */
+#endif /* VETERO_REPORTGEN_CURRENTREPORTGENERATOR_H_ */

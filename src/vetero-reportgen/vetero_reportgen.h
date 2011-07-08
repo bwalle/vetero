@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef VETERO_REPORTGEN_H_
-#define VETERO_REPORTGEN_H_
+#ifndef VETERO_REPORTGEN_VETERO_REPORTGEN_H_
+#define VETERO_REPORTGEN_VETERO_REPORTGEN_H_
 
 #include <string>
 #include <memory>
@@ -170,4 +170,4 @@ class VeteroReportgen {
 } // end namespace reportgen
 } // end namespace vetero
 
-#endif /* VETERO_REPORTGEN_H_ */
+#endif // VETERO_REPORTGEN_VETERO_REPORTGEN_H_

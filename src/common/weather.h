@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#ifndef WEATHER_H
-#define WEATHER_H
+#ifndef VETERO_COMMON_WEATHER_H_
+#define VETERO_COMMON_WEATHER_H_
 
 #include <stdexcept>
 #include <string>
@@ -71,4 +71,4 @@ class Weather
 } // end namespace common
 } // end namespace vetero
 
-#endif // WEATHER_H
+#endif // VETERO_COMMON_WEATHER_H_

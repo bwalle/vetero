@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
-#ifndef GNUPLOT_H_
-#define GNUPLOT_H_
+#ifndef VETERO_REPORTGEN_GNUPLOT_H_
+#define VETERO_REPORTGEN_GNUPLOT_H_
 
 #include <sstream>
 #include <string>
@@ -206,4 +206,4 @@ class WeatherGnuplot : public Gnuplot
 } // namespace vetero
 
 
-#endif /* GNUPLOT_H_ */
+#endif // VETERO_REPORTGEN_GNUPLOT_H_
