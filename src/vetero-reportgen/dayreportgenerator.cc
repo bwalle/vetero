@@ -79,9 +79,10 @@ void DayReportGenerator::createTemperatureDiagram()
     m_temperatureFileName = m_date + "_temperature.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-        "SELECT time(timestamp), temp, dewpoint "
-        "FROM   weatherdata_float "
-        "WHERE  date(timestamp) = ?",
+        "SELECT   time(timestamp), temp, dewpoint "
+        "FROM     weatherdata_float "
+        "WHERE    date(timestamp) = ? "
+        "ORDER BY timestamp",
         m_date.c_str()
     );
 
@@ -113,9 +114,11 @@ void DayReportGenerator::createHumidityDiagram()
     m_humidityFileName = m_date + "_humidity.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-        "SELECT time(timestamp), humid "
-        "FROM   weatherdata_float "
-        "WHERE  date(timestamp) = ?", m_date.c_str()
+        "SELECT   time(timestamp), humid "
+        "FROM     weatherdata_float "
+        "WHERE    date(timestamp) = ?"
+        "ORDER BY timestamp",
+        m_date.c_str()
     );
 
     Gnuplot plot(reportgen()->configuration());
@@ -144,9 +147,11 @@ void DayReportGenerator::createWindDiagram()
     m_windFileName = m_date + "_wind.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-        "SELECT time(timestamp), wind "
-        "FROM   weatherdata_float "
-        "WHERE  date(timestamp) = ?", m_date.c_str()
+        "SELECT   time(timestamp), wind "
+        "FROM     weatherdata_float "
+        "WHERE    date(timestamp) = ? "
+        "ORDER BY timestamp",
+        m_date.c_str()
     );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
         "SELECT ROUND(wind_max) + 1 "
@@ -185,9 +190,10 @@ void DayReportGenerator::createRainDiagram()
     m_rainFileName = m_date + "_rain.svgz";
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-        "SELECT time(timestamp), rain "
-        "FROM   weatherdata_float "
-        "WHERE  date(timestamp) = ?",
+        "SELECT   time(timestamp), rain "
+        "FROM     weatherdata_float "
+        "WHERE    date(timestamp) = ?"
+        "ORDER BY timestamp",
         m_date.c_str()
     );
 
