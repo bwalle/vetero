@@ -397,6 +397,8 @@ throw (common::ApplicationError)
                 std::string monthStr(lastDay.strftime("%Y-%m"));
                 dbAccess.updateMonthStatistics(monthStr);
                 jobs.push_back("month:" + monthStr);
+                // last day because of the next link
+                jobs.push_back("day:" + lastDay.strftime("%Y-%m-%d"));
             }
             updateReports(jobs, true);
 

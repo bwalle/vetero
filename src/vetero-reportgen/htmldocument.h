@@ -46,18 +46,23 @@ class HtmlDocument
 
     public:
         /**
-         * \brief Returns the title of the HTML document
-         *
-         * \return the title string set with setTitle()
-         */
-        std::string title() const;
-
-        /**
          * \brief Sets the title for the HTML document
          *
          * \param[in] title the new title for the document
          */
         void setTitle(const std::string &title);
+
+        /**
+         * \brief Sets the navigation links on the top
+         *
+         * The links are displayed as '<' and '>'.
+         *
+         * \param[in] forward the link target for the forward (<tt>'&gt;</tt>) link.
+         *            If empty, the forward link is displayed gray.
+         * \param[in] backward the link target for the backward (<tt>'&gt;</tt>) link.
+         *            If empty, the backward link is displayed gray.
+         */
+        void setNavigationLinks(const std::string &forward, const std::string &backward);
 
         /**
          * \brief Returns the auto-reload time
@@ -185,7 +190,7 @@ class HtmlDocument
          * \param[in] text the string that should be escaped
          * \return the resulting HTML
          */
-        std::string replaceHtml(const std::string &text) const;
+        static std::string replaceHtml(const std::string &text);
 
         /**
          * \brief Writes the final result to the specified file
@@ -210,13 +215,35 @@ class HtmlDocument
          */
         void writeCss(std::ostream &os);
 
+        /**
+         * \brief Generates a link
+         *
+         * Generates <tt>&lt;a href="target"&gt;name&lt;/a&gt;</tt>.
+         *
+         * \param[in] target the link target
+         * \param[in] name the human-readable link name, replaceHtml() is called.
+         * \param[in] active if \c false, then the link is not generated as link but as grey HTML
+         *            to show the difference between a link and no link
+         * \return a self reference
+         */
+        static std::string generateLink(const std::string &target,
+                                        const std::string &name,
+                                        bool              active);
+
     private:
-        const VeteroReportgen *m_reportgen;
+        struct HeaderInfo {
+            std::string forwardLink;
+            std::string backwardLink;
+            std::string title;
+        };
         struct Section {
             std::string id;
             std::string shortTitle;
         };
-        std::string m_title;
+
+    private:
+        const VeteroReportgen *m_reportgen;
+        HeaderInfo m_headerInfo;
         std::stringstream m_bodyStream;
         std::vector<Section> m_sections;
         bool m_displayTitle;

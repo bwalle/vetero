@@ -37,15 +37,16 @@ HtmlDocument::HtmlDocument(const VeteroReportgen *reportgen)
 {}
 
 // -------------------------------------------------------------------------------------------------
-std::string HtmlDocument::title() const
+void HtmlDocument::setTitle(const std::string &title)
 {
-    return m_title;
+    m_headerInfo.title = title;
 }
 
 // -------------------------------------------------------------------------------------------------
-void HtmlDocument::setTitle(const std::string &title)
+void HtmlDocument::setNavigationLinks(const std::string &forward, const std::string &backward)
 {
-    m_title = title;
+    m_headerInfo.forwardLink = generateLink(forward, "&rarr;", !forward.empty());
+    m_headerInfo.backwardLink = generateLink(backward, "&larr;", !backward.empty());
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -99,10 +100,7 @@ void HtmlDocument::endParagraph()
 // -------------------------------------------------------------------------------------------------
 void HtmlDocument::link(const std::string &target, const std::string &name, bool active)
 {
-    if (active)
-        m_bodyStream << "<a href='" << target << "'>" << replaceHtml(name) << "</a>";
-    else
-        m_bodyStream << "<div class='inactive'>" << replaceHtml(name) << "</div>";
+    m_bodyStream << generateLink(target, replaceHtml(name), active);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -111,7 +109,7 @@ void HtmlDocument::text(const std::string &text, bool active)
     if (active)
         m_bodyStream << replaceHtml(text);
     else
-        m_bodyStream << "<div class='inactive'>" << replaceHtml(text) << "</div>";
+        m_bodyStream << "<span class='inactive'>" << replaceHtml(text) << "</span>";
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -127,13 +125,13 @@ void HtmlDocument::addTopLink()
 }
 
 // -------------------------------------------------------------------------------------------------
-std::string HtmlDocument::replaceHtml(const std::string &text) const
+std::string HtmlDocument::replaceHtml(const std::string &text)
 {
     std::string ret(text);
 
+    ret = bw::replace_char(ret, '&', "&amp;");
     ret = bw::replace_char(ret, '<', "&lt;");
     ret = bw::replace_char(ret, '>', "&gt;");
-    ret = bw::replace_char(ret, '&', "&amp;");
 
     return ret;
 }
@@ -163,7 +161,7 @@ void HtmlDocument::write(std::ostream &os)
 
     // HTML header
     os << "<head>"
-       << "<title>Vetero: " << replaceHtml(m_title) << "</title>";
+       << "<title>Vetero: " << replaceHtml(m_headerInfo.title) << "</title>";
     writeCss(os);
     os << "<meta http-equiv='content-type' content='text/html; charset=utf-8' />";
     if (m_autoReload > 0)
@@ -205,12 +203,18 @@ void HtmlDocument::write(std::ostream &os)
         os << " | " << "<a href=\"#" << section.id << "\">" << replaceHtml(section.shortTitle) << "</a>";
     }
 
+    if (!m_headerInfo.forwardLink.empty() && !m_headerInfo.backwardLink.empty()) {
+        os << "<span style='position:absolute;right:2em'>"
+           << m_headerInfo.backwardLink << "&nbsp;&nbsp;" << m_headerInfo.forwardLink
+           << "</span>\n";
+    }
+
     os << "  </td>"
           "</tr>"
           "</table>";
 
     if (m_displayTitle)
-        os << "<h1>" << replaceHtml(m_title) << "</h1>";
+        os << "<h1>" << replaceHtml(m_headerInfo.title) << "</h1>";
 
     os << m_bodyStream.str();
 
@@ -241,7 +245,7 @@ void HtmlDocument::writeCss(std::ostream &os)
        << "    margin:           15px;\n"
        << "    background-color: #ffffff;\n"
        << "}\n"
-       << "div.inactive {\n"
+       << "span.inactive {\n"
        << "    color:            #888888;\n"
        << "}\n"
        << "h1 {\n"
@@ -263,6 +267,19 @@ void HtmlDocument::writeCss(std::ostream &os)
        << "}\n";
 
     os << "</style>" << std::endl;
+}
+
+// -------------------------------------------------------------------------------------------------
+std::string HtmlDocument::generateLink(const std::string &target,
+                                       const std::string &name,
+                                       bool              active)
+{
+    std::stringstream ss;
+    if (active)
+        ss << "<a href='" << target << "'>" << name << "</a>";
+    else
+        ss << "<span class='inactive'>" << name << "</span>";
+    return ss.str();
 }
 
 /* }}} */

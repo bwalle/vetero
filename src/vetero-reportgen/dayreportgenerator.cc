@@ -240,9 +240,29 @@ void DayReportGenerator::createHtml()
     int month = bw::from_str<int>(m_date.substr(5, 2));
     int day = bw::from_str<int>(m_date.substr(8, 2));
 
+    bw::Datetime dayToGenerate(year, month, day, 0, 0, 0, false);
+
     HtmlDocument html(reportgen());
     html.setAutoReload(5);
-    html.setTitle(bw::Datetime(year, month, day, 0, 0, 0, false).strftime("%A, %d. %B %Y"));
+    html.setTitle(dayToGenerate.strftime("%A, %d. %B %Y"));
+
+    // navigation links
+
+    bw::Datetime yesterday(dayToGenerate);
+    yesterday.addDays(-1);
+    bw::Datetime tomorrow(dayToGenerate);
+    tomorrow.addDays(1);
+
+    const ValidDataCache &validDataCache = reportgen()->validDataCache();
+
+    html.setNavigationLinks(
+        validDataCache.dataAtDay(tomorrow.year(), tomorrow.month(), tomorrow.day())
+            ? tomorrow.strftime("%Y-%m-%d.xhtml")
+            : "",
+        validDataCache.dataAtDay(yesterday.year(), yesterday.month(), yesterday.day())
+            ? yesterday.strftime("%Y-%m-%d.xhtml")
+            : ""
+    );
 
     html.addSection("Temperaturverlauf", "Temperatur", "temperature");
     html.img(m_temperatureFileName);

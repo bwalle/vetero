@@ -213,7 +213,26 @@ void MonthReportGenerator::createHtml()
     std::string filename(reportgen()->configuration().reportDirectory() + "/" + m_monthString + ".xhtml");
     HtmlDocument html(reportgen());
 
-    html.setTitle(bw::Datetime(m_year, m_month, 1, 0, 0, 0, false).strftime("%B %Y"));
+    bw::Datetime monthToGenerate(m_year, m_month, 1, 0, 0, 0, false);
+    html.setTitle(monthToGenerate.strftime("%B %Y"));
+
+    // navigation links
+
+    bw::Datetime lastMonth(monthToGenerate);
+    lastMonth.addDays(-31);
+    bw::Datetime nextMonth(monthToGenerate);
+    nextMonth.addDays(31);
+
+    const ValidDataCache &validDataCache = reportgen()->validDataCache();
+
+    html.setNavigationLinks(
+        validDataCache.dataInMonth(nextMonth.year(), nextMonth.month())
+            ? nextMonth.strftime("%Y-%m.xhtml")
+            : "",
+        validDataCache.dataInMonth(lastMonth.year(), lastMonth.month())
+            ? lastMonth.strftime("%Y-%m.xhtml")
+            : ""
+    );
 
     html.addSection(_("Temperature profile"), _("Temperature"), "temperature");
     html.img(m_temperatureFileName);
