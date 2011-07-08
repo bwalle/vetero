@@ -81,5 +81,4 @@ class ValidDataCache
 } // namespace reportgen
 } // namespace vetero
 
-
 #endif // VETERO_REPORTGEN_VALIDDATACACHE_H_

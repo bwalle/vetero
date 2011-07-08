@@ -37,20 +37,8 @@ namespace reportgen {
  * \author Bernhard Walle <bernhard@bwalle.de>
  * \ingroup report
  */
-class VeteroReportgen {
-
-    public:
-        /**
-         * \brief Enumeration type that describes the ports that can be generated
-         */
-        enum Report {
-            REPORT_CURRENT,             /**< the current weather including min/max of the day (i.e. basically
-                                             the same which is displayed on the LCD display */
-            REPORT_DAY,                 /**< the statistics for one day */
-            REPORT_MONTH,               /**< the statistics for one month */
-            REPORT_YEAR                 /**< the statistics for one year */
-        };
-
+class VeteroReportgen
+{
     public:
         /**
          * \brief Constructor
