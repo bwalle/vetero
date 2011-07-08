@@ -77,7 +77,7 @@ void HtmlDocument::addSection(const std::string &title,
                               const std::string &shortName,
                               const std::string &id)
 {
-    m_bodyStream << "<h2><a name=\"" << id << "\">" << replaceHtml(title) << "</a></h2>";
+    m_bodyStream << "<h2>" << replaceHtml(title) << "<a name='" << id << "'>&nbsp;</a>" << "</h2>";
     Section section;
     section.id = id;
     section.shortTitle = shortName;
@@ -97,9 +97,21 @@ void HtmlDocument::endParagraph()
 }
 
 // -------------------------------------------------------------------------------------------------
-void HtmlDocument::link(const std::string &target, const std::string &name)
+void HtmlDocument::link(const std::string &target, const std::string &name, bool active)
 {
-    m_bodyStream << "<a href=\"" << target << "\">" << replaceHtml(name) << "</a>";
+    if (active)
+        m_bodyStream << "<a href='" << target << "'>" << replaceHtml(name) << "</a>";
+    else
+        m_bodyStream << "<div class='inactive'>" << replaceHtml(name) << "</div>";
+}
+
+// -------------------------------------------------------------------------------------------------
+void HtmlDocument::text(const std::string &text, bool active)
+{
+    if (active)
+        m_bodyStream << replaceHtml(text);
+    else
+        m_bodyStream << "<div class='inactive'>" << replaceHtml(text) << "</div>";
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -229,6 +241,9 @@ void HtmlDocument::writeCss(std::ostream &os)
        << "    margin:           15px;\n"
        << "    background-color: #ffffff;\n"
        << "}\n"
+       << "div.inactive {\n"
+       << "    color:            #888888;\n"
+       << "}\n"
        << "h1 {\n"
        << "    margin-top:       30px;\n"
        << "    margin-bottom:    25px;\n"
@@ -236,6 +251,15 @@ void HtmlDocument::writeCss(std::ostream &os)
        << "}\n"
        << "a {\n"
        << "    color:            #000000;\n"
+       << "    text-decoration:  none;\n"
+       << "}\n"
+       << "a:active {\n"
+       << "    color:            #000000;\n"
+       << "    text-decoration:  underline;\n"
+       << "}\n"
+       << "a:hover {\n"
+       << "    color:            #000000;\n"
+       << "    text-decoration:  underline;\n"
        << "}\n";
 
     os << "</style>" << std::endl;

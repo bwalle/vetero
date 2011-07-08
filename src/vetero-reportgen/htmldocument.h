@@ -135,8 +135,19 @@ class HtmlDocument
          *
          * @param[in] target the link target
          * @param[in] name the human-readable link name, replaceHtml() is called.
+         * @param[in] active if @c false, then the link is not generated as link but as grey HTML
+         *            to show the difference between a link and no link
+         * @return a self reference
          */
-        void link(const std::string &target, const std::string &name);
+        void link(const std::string &target, const std::string &name, bool active=true);
+
+        /**
+         * @brief Makes it easy to print inactive text
+         *
+         * @param[in] text the text to print
+         * @param[in] active if @c false, then the text is gray
+         */
+        void text(const std::string &text, bool active=true);
 
         /**
          * @brief Inserts a image tage

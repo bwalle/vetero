@@ -103,21 +103,24 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
 
     std::string monthString;
     bool haveData = dataInMonth(year, month);
-    if (haveData)
-        monthString = "<a href=\"" + common::str_printf("%04d-%02d.xhtml", year, month) + "\">" +
-                      Calendar::monthName(month) + "</a>";
-    else
-        monthString = Calendar::monthName(month);
 
     html << "<table style=\"border:thin solid black;border-spacing:5px\" >\n"
          << "<tr>\n"
-         << "  <td colspan=\"7\" align=\"center\"><b><big>" << monthString << "</big></b></td>\n"
+         << "  <td colspan=\"7\" align=\"center\"><b><big>";
+
+    html.link(common::str_printf("%04d-%02d.xhtml", year, month),
+              Calendar::monthName(month), haveData);
+
+    html << "</big></b></td>\n"
          << "</tr>\n";
 
     // day names
     html << "<tr>\n";
-    for (int wday = 1; wday <= 7; wday++)
-        html << "<td align=\"center\"><b>" << Calendar::dayAbbreviation(wday) << "</b></td>\n";
+    for (int wday = 1; wday <= 7; wday++) {
+        html << "<td align=\"center\"><b>";
+        html.text(Calendar::dayAbbreviation(wday), haveData);
+        html << "</b></td>\n";
+    }
     html << "</tr>\n";
 
     // first weekday
@@ -128,18 +131,18 @@ void IndexGenerator::generateMonth(HtmlDocument &html, int year, int month)
         html << "<tr>\n";
 
         for (int wday = 1; wday <= 7; wday++) {
-            std::string dayString = "&nbsp;";
+
+            html << "<td align='right'>";
 
             if (!(currentDay == 1 && wday < weekdayOfFirst) && (currentDay <= lastDay)) {
-                if (haveData && dataAtDay(year, month, currentDay))
-                    dayString = "<a href=\"" + common::str_printf("%04d-%02d-%02d.xhtml", year, month, currentDay) +
-                                "\">" + bw::str(currentDay) + "</a>";
-                else
-                    dayString = bw::str(currentDay);
+                bool active = haveData && dataAtDay(year, month, currentDay);
+                html.link(common::str_printf("%04d-%02d-%02d.xhtml", year, month, currentDay),
+                          bw::str(currentDay), active);
                 currentDay++;
+            } else
+                html << "&nbsp;";
 
-            }
-            html << "<td align=\"right\">" << dayString << "</td>";
+            html << "</td>\n";
         }
 
         html << "</tr>\n";
