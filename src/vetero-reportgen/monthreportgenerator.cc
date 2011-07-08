@@ -328,7 +328,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
 
                 html << "<td align='left' style='padding: 5px'>" << weekday << "</td>\n";
                 html << "<td align='right' style='padding: 5px'>"
-                     << "<a style='text-decoration: none;' href='" << dateLink << ".xhtml'>"
+                     << "<a href='" << dateLink << ".xhtml'>"
                      << date << "</a></td>\n";
 
             } else {
