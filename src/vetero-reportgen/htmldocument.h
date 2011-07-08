@@ -67,6 +67,24 @@ class HtmlDocument
         void setTitle(const std::string &title);
 
         /**
+         * @brief Returns the auto-reload time
+         *
+         * @return -1 if auto-reload is disabled, else the auto-reload time in minutes.
+         */
+        int autoReload() const;
+
+        /**
+         * @brief Sets the auto-reload time
+         *
+         * Setting the auto-reload time generates a http-equiv tag which instructs the browser
+         * to automatically reload the given site.
+         *
+         * @param[in] reloadTime the auto-reload time in minutes or -1 to disable auto-reloading
+         *            (which is also the default setting)
+         */
+        void setAutoReload(int reloadTime);
+
+        /**
          * @brief Checks if the title is displayed
          *
          * If the property is set, then the title is not only set as HTML document title
@@ -198,6 +216,7 @@ class HtmlDocument
         std::stringstream m_bodyStream;
         std::vector<Section> m_sections;
         bool m_displayTitle;
+        int m_autoReload;
 };
 
 /* }}} */

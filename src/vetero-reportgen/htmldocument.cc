@@ -33,6 +33,7 @@ namespace reportgen {
 HtmlDocument::HtmlDocument(const VeteroReportgen *reportgen)
     : m_reportgen(reportgen)
     , m_displayTitle(true)
+    , m_autoReload(-1)
 {}
 
 // -------------------------------------------------------------------------------------------------
@@ -45,6 +46,18 @@ std::string HtmlDocument::title() const
 void HtmlDocument::setTitle(const std::string &title)
 {
     m_title = title;
+}
+
+// -------------------------------------------------------------------------------------------------
+int HtmlDocument::autoReload() const
+{
+    return m_autoReload;
+}
+
+// -------------------------------------------------------------------------------------------------
+void HtmlDocument::setAutoReload(int reloadTime)
+{
+    m_autoReload = reloadTime;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -140,8 +153,10 @@ void HtmlDocument::write(std::ostream &os)
     os << "<head>"
        << "<title>Vetero: " << replaceHtml(m_title) << "</title>";
     writeCss(os);
-    os << "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-       << "</head>" << std::endl;
+    os << "<meta http-equiv='content-type' content='text/html; charset=utf-8' />";
+    if (m_autoReload > 0)
+       os << "<meta http-equiv='refresh' content='" << (m_autoReload*60) << "' />";
+    os << "</head>" << std::endl;
 
     // body start
     os << "<body><a name=\"top\" />" << std::endl;
