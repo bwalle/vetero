@@ -45,8 +45,8 @@ void HtmlDocument::setTitle(const std::string &title)
 // -------------------------------------------------------------------------------------------------
 void HtmlDocument::setNavigationLinks(const std::string &forward, const std::string &backward)
 {
-    m_headerInfo.forwardLink = generateLink(forward, "&rarr;", !forward.empty());
-    m_headerInfo.backwardLink = generateLink(backward, "&larr;", !backward.empty());
+    m_headerInfo.forwardLink = generateLink(forward, "&#9658;", !forward.empty());
+    m_headerInfo.backwardLink = generateLink(backward, "&#9668;", !backward.empty());
 }
 
 // -------------------------------------------------------------------------------------------------
