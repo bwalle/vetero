@@ -47,6 +47,7 @@ void HtmlDocument::setForwardNavigation(const std::string &link, const std::stri
 {
     bool active = !link.empty();
     m_headerInfo.forwardLink = generateLink(link, "&#9658;", replaceHtml(linkTitle), active);
+    m_headerInfo.haveNavigation = true;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -54,6 +55,15 @@ void HtmlDocument::setBackwardNavigation(const std::string &link, const std::str
 {
     bool active = !link.empty();
     m_headerInfo.backwardLink = generateLink(link, "&#9668;", replaceHtml(linkTitle), active);
+    m_headerInfo.haveNavigation = true;
+}
+
+// -------------------------------------------------------------------------------------------------
+void HtmlDocument::setUpNavigation(const std::string &link, const std::string &linkTitle)
+{
+    bool active = !link.empty();
+    m_headerInfo.upLink = generateLink(link, "&#9650;", replaceHtml(linkTitle), active);
+    m_headerInfo.haveNavigation = true;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -210,9 +220,11 @@ void HtmlDocument::write(std::ostream &os)
         os << " | " << "<a href=\"#" << section.id << "\">" << replaceHtml(section.shortTitle) << "</a>";
     }
 
-    if (!m_headerInfo.forwardLink.empty() && !m_headerInfo.backwardLink.empty()) {
+    if (m_headerInfo.haveNavigation) {
         os << "<span style='position:absolute;right:2em'>"
-           << m_headerInfo.backwardLink << "&nbsp;&nbsp;" << m_headerInfo.forwardLink
+           << m_headerInfo.backwardLink << "&nbsp;&nbsp;"
+           << m_headerInfo.upLink << "&nbsp;&nbsp;"
+           << m_headerInfo.forwardLink
            << "</span>\n";
     }
 

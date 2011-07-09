@@ -267,6 +267,10 @@ void DayReportGenerator::createHtml()
             : "",
          yesterday.strftime("%A, %d. %B %Y")
     );
+    html.setUpNavigation(
+        dayToGenerate.strftime("%Y-%m.xhtml"),
+        dayToGenerate.strftime("%B %Y")
+    );
 
     html.addSection("Temperaturverlauf", "Temperatur", "temperature");
     html.img(m_temperatureFileName);

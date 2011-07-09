@@ -237,6 +237,7 @@ void MonthReportGenerator::createHtml()
             : "",
         lastMonth.strftime("%B %Y")
     );
+    html.setUpNavigation("", "");
 
     html.addSection(_("Temperature profile"), _("Temperature"), "temperature");
     html.img(m_temperatureFileName);

@@ -55,8 +55,8 @@ class HtmlDocument
         /**
          * \brief Sets the forward navigation link on the top
          *
-         * The link is displayed as right arrow. If both \p link and \p linkTitle
-         * are empty, an inactive (gray) arrow is displayed.
+         * The link is displayed as right arrow. If both \p link and \p linkTitle are empty, an
+         * inactive (gray) arrow is displayed.
          *
          * \param[in] link the link target
          * \param[in] linkTitle the link tooltip
@@ -66,13 +66,24 @@ class HtmlDocument
         /**
          * \brief Sets the backward navigation link on the top
          *
-         * The link is displayed as right arrow. If both \p link and \p linkTitle
-         * are empty, an inactive (gray) arrow is displayed.
+         * The link is displayed as left arrow. If both \p link and \p linkTitle are empty, an
+         * inactive (gray) arrow is displayed.
          *
          * \param[in] link the link target
          * \param[in] linkTitle the link tooltip
          */
         void setBackwardNavigation(const std::string &link, const std::string &linkTitle);
+
+        /**
+         * \brief Sets the up navigation link on the top
+         *
+         * The link is displayed as top arrow. If both \p link and \p linkTitle are empty, an
+         * inactive (gray) arrow is displayed.
+         *
+         * \param[in] link the link target
+         * \param[in] linkTitle the link tooltip
+         */
+        void setUpNavigation(const std::string &link, const std::string &linkTitle);
 
         /**
          * \brief Returns the auto-reload time
@@ -245,9 +256,15 @@ class HtmlDocument
 
     private:
         struct HeaderInfo {
+            HeaderInfo()
+                : haveNavigation(false)
+            {}
+
             std::string forwardLink;
             std::string backwardLink;
+            std::string upLink;
             std::string title;
+            bool haveNavigation;
         };
         struct Section {
             std::string id;
