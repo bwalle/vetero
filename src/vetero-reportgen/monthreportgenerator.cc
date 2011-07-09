@@ -225,13 +225,17 @@ void MonthReportGenerator::createHtml()
 
     const ValidDataCache &validDataCache = reportgen()->validDataCache();
 
-    html.setNavigationLinks(
+    html.setForwardNavigation(
         validDataCache.dataInMonth(nextMonth.year(), nextMonth.month())
             ? nextMonth.strftime("%Y-%m.xhtml")
             : "",
+        nextMonth.strftime("%B %Y")
+    );
+    html.setBackwardNavigation(
         validDataCache.dataInMonth(lastMonth.year(), lastMonth.month())
             ? lastMonth.strftime("%Y-%m.xhtml")
-            : ""
+            : "",
+        lastMonth.strftime("%B %Y")
     );
 
     html.addSection(_("Temperature profile"), _("Temperature"), "temperature");

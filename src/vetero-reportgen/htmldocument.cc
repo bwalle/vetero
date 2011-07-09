@@ -43,10 +43,17 @@ void HtmlDocument::setTitle(const std::string &title)
 }
 
 // -------------------------------------------------------------------------------------------------
-void HtmlDocument::setNavigationLinks(const std::string &forward, const std::string &backward)
+void HtmlDocument::setForwardNavigation(const std::string &link, const std::string &linkTitle)
 {
-    m_headerInfo.forwardLink = generateLink(forward, "&#9658;", !forward.empty());
-    m_headerInfo.backwardLink = generateLink(backward, "&#9668;", !backward.empty());
+    bool active = !link.empty();
+    m_headerInfo.forwardLink = generateLink(link, "&#9658;", replaceHtml(linkTitle), active);
+}
+
+// -------------------------------------------------------------------------------------------------
+void HtmlDocument::setBackwardNavigation(const std::string &link, const std::string &linkTitle)
+{
+    bool active = !link.empty();
+    m_headerInfo.backwardLink = generateLink(link, "&#9668;", replaceHtml(linkTitle), active);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -100,7 +107,7 @@ void HtmlDocument::endParagraph()
 // -------------------------------------------------------------------------------------------------
 void HtmlDocument::link(const std::string &target, const std::string &name, bool active)
 {
-    m_bodyStream << generateLink(target, replaceHtml(name), active);
+    m_bodyStream << generateLink(target, replaceHtml(name), "", active);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -272,12 +279,16 @@ void HtmlDocument::writeCss(std::ostream &os)
 // -------------------------------------------------------------------------------------------------
 std::string HtmlDocument::generateLink(const std::string &target,
                                        const std::string &name,
+                                       const std::string &title,
                                        bool              active)
 {
     std::stringstream ss;
-    if (active)
-        ss << "<a href='" << target << "'>" << name << "</a>";
-    else
+    if (active) {
+        ss << "<a href='" << target << "' ";
+        if (!title.empty())
+            ss << "title='" << title << "' ";
+        ss << ">" << name << "</a>";
+    } else
         ss << "<span class='inactive'>" << name << "</span>";
     return ss.str();
 }

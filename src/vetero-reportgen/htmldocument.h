@@ -53,16 +53,26 @@ class HtmlDocument
         void setTitle(const std::string &title);
 
         /**
-         * \brief Sets the navigation links on the top
+         * \brief Sets the forward navigation link on the top
          *
-         * The links are displayed as '<' and '>'.
+         * The link is displayed as right arrow. If both \p link and \p linkTitle
+         * are empty, an inactive (gray) arrow is displayed.
          *
-         * \param[in] forward the link target for the forward (<tt>'&gt;</tt>) link.
-         *            If empty, the forward link is displayed gray.
-         * \param[in] backward the link target for the backward (<tt>'&gt;</tt>) link.
-         *            If empty, the backward link is displayed gray.
+         * \param[in] link the link target
+         * \param[in] linkTitle the link tooltip
          */
-        void setNavigationLinks(const std::string &forward, const std::string &backward);
+        void setForwardNavigation(const std::string &link, const std::string &linkTitle);
+
+        /**
+         * \brief Sets the backward navigation link on the top
+         *
+         * The link is displayed as right arrow. If both \p link and \p linkTitle
+         * are empty, an inactive (gray) arrow is displayed.
+         *
+         * \param[in] link the link target
+         * \param[in] linkTitle the link tooltip
+         */
+        void setBackwardNavigation(const std::string &link, const std::string &linkTitle);
 
         /**
          * \brief Returns the auto-reload time
@@ -222,12 +232,15 @@ class HtmlDocument
          *
          * \param[in] target the link target
          * \param[in] name the human-readable link name, replaceHtml() is called.
+         * \param[in] title the link title (tooltip), can be empty which means that no title is
+         *            generated
          * \param[in] active if \c false, then the link is not generated as link but as grey HTML
          *            to show the difference between a link and no link
          * \return a self reference
          */
         static std::string generateLink(const std::string &target,
                                         const std::string &name,
+                                        const std::string &title,
                                         bool              active);
 
     private:

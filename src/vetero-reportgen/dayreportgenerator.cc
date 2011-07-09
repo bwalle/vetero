@@ -255,13 +255,17 @@ void DayReportGenerator::createHtml()
 
     const ValidDataCache &validDataCache = reportgen()->validDataCache();
 
-    html.setNavigationLinks(
+    html.setForwardNavigation(
         validDataCache.dataAtDay(tomorrow.year(), tomorrow.month(), tomorrow.day())
             ? tomorrow.strftime("%Y-%m-%d.xhtml")
             : "",
-        validDataCache.dataAtDay(yesterday.year(), yesterday.month(), yesterday.day())
+        tomorrow.strftime("%A, %d. %B %Y")
+    );
+    html.setBackwardNavigation(
+         validDataCache.dataAtDay(yesterday.year(), yesterday.month(), yesterday.day())
             ? yesterday.strftime("%Y-%m-%d.xhtml")
-            : ""
+            : "",
+         yesterday.strftime("%A, %d. %B %Y")
     );
 
     html.addSection("Temperaturverlauf", "Temperatur", "temperature");
