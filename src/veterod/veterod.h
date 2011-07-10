@@ -17,12 +17,12 @@
 #ifndef VETERO_VETEROD_VETEROD_H_
 #define VETERO_VETEROD_VETEROD_H_
 
-#include <cstdio>
 #include <memory>
 
 #include "common/error.h"
 #include "common/configuration.h"
 #include "common/database.h"
+#include "common/veteroapplication.h"
 
 namespace vetero {
 namespace daemon {
@@ -38,7 +38,7 @@ namespace daemon {
  * \author Bernhard Walle <bernhard@bwalle.de>
  * \ingroup daemon
  */
-class Veterod
+class Veterod : public common::VeteroApplication
 {
     public:
         /**
@@ -56,11 +56,6 @@ class Veterod
          * Creates a new Veterod instance.
          */
         Veterod();
-
-        /**
-         * \brief Destructor.
-         */
-        virtual ~Veterod();
 
         /**
          * \brief Parse the command line
@@ -132,30 +127,6 @@ class Veterod
         throw (common::ApplicationError);
 
         /**
-         * \brief Setup debug logging for the application
-         *
-         * \param[in] loglevel the minimum loglevel that gets logged. Valid values are \c "trace",
-         *            \c "debug", \c "info" and \c "none".  Logging includes the given priority,
-         *            i.e.  if \c debug is given, then messages of the severity \c debug and \c info
-         *            are logged. Pass \c "none" for silence.
-         * \param[in] filename if non-empty, log messages will not be printed to the console
-         *            but redirected into \p filename.
-         * \exception common::ApplicationError if the file cannot be created or if \p loglevel is invalid.
-         */
-        void setupDebugLogging(const std::string &loglevel, const std::string &filename)
-        throw (common::ApplicationError);
-
-        /**
-         * \brief Setup the error logging for the application
-         *
-         * \exception common::ApplicationError if \p logfile cannot be opened for writing
-         *            (if \p logfile is not a file but <tt>'syslog'</tt>, <tt>'stderr'</tt> or
-         *            <tt>'stdout'</tt>, then no exception can be thrown)
-         */
-        void setupErrorLogging()
-        throw (common::ApplicationError);
-
-        /**
          * \brief Starts the display daemon
          *
          * Starts the display daemon if both Configuration::getDisplayName() and
@@ -190,7 +161,6 @@ class Veterod
     private:
         Action m_action;
         bool m_daemonize;
-        FILE *m_logfile;
         std::string m_errorLogfile;
         std::string m_configfile;
         bool m_noConfigFatal;

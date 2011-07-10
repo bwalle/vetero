@@ -23,6 +23,7 @@
 #include "common/error.h"
 #include "common/configuration.h"
 #include "common/database.h"
+#include "common/veteroapplication.h"
 #include "validdatacache.h"
 
 namespace vetero {
@@ -37,7 +38,7 @@ namespace reportgen {
  * \author Bernhard Walle <bernhard@bwalle.de>
  * \ingroup report
  */
-class VeteroReportgen
+class VeteroReportgen : public common::VeteroApplication
 {
     public:
         /**
@@ -121,34 +122,6 @@ class VeteroReportgen
 
     protected:
         /**
-         * \brief Setup the error logging for the application
-         *
-         * \param[in] logfile the logfile to be used for errors. The special values
-         *            <tt>'stdout'</tt>, <tt>'stderr'</tt> for the standard I/O streams and the
-         *            special value <tt>'syslog'</tt> (for syslog()) is recognized.
-         * \exception ApplicationError if \p logfile cannot be opened for writing
-         *            (if \p logfile is not a file but <tt>'syslog'</tt>, <tt>'stderr'</tt> or
-         *            <tt>'stdout'</tt>, then no exception can be thrown)
-         */
-        void setupErrorLogging(const std::string &logfile)
-        throw (common::ApplicationError);
-
-        /**
-         * \brief Setup debug logging for the application
-         *
-         * \param[in] loglevel the minimum loglevel that gets logged. Valid values are \c "trace",
-         *            \c "debug", \c "info" and \c "none".  Logging includes the given priority,
-         *            i.e.  if \c debug is given, then messages of the severity \c debug and \c info
-         *            are logged. Pass \c "none" for silence.
-         * \param[in] filename if non-empty, log messages will not be printed to the console
-         *            but redirected into \p filename.
-         * \exception common::ApplicationError if the file cannot be created or if \p loglevel is
-         *            invalid.
-         */
-        void setupDebugLogging(const std::string &loglevel, const std::string &filename)
-        throw (common::ApplicationError);
-
-        /**
          * \brief Performs the upload of reports
          */
         void uploadReports();
@@ -158,7 +131,6 @@ class VeteroReportgen
         std::auto_ptr<common::DbAccess> m_dbAccess;
         std::auto_ptr<ValidDataCache> m_validDataCache;
         std::vector<std::string> m_jobs;
-        FILE *m_logfile;
 
         std::string m_configfile;
         bool m_noConfigFatal;

@@ -64,21 +64,12 @@ static void quit_display_daemon()
 
 // -------------------------------------------------------------------------------------------------
 Veterod::Veterod()
-    : m_action(ActionCollectWeatherdata)
+    : common::VeteroApplication("veterod")
+    , m_action(ActionCollectWeatherdata)
     , m_daemonize(true)
-    , m_logfile(NULL)
     , m_errorLogfile("stderr")
     , m_noConfigFatal(false)
 {}
-
-// -------------------------------------------------------------------------------------------------
-Veterod::~Veterod()
-{
-    if (m_logfile) {
-        std::fclose(m_logfile);
-        m_logfile = NULL;
-    }
-}
 
 // -------------------------------------------------------------------------------------------------
 bool Veterod::parseCommandLine(int argc, char *argv[])
@@ -144,7 +135,7 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
     // error logging
     if (op.getValue("error-logfile"))
         m_errorLogfile = op.getValue("error-logfile").getString();
-    setupErrorLogging();
+    setupErrorLogging(m_errorLogfile);
 
     // configuration
     if (op.getValue("configfile")) {
@@ -260,50 +251,6 @@ void Veterod::updateReports(const std::vector<std::string> &jobs, bool upload)
         ChildProcessWatcher::instance()->addChild(childpid);
     } catch (const common::ApplicationError &err) {
         BW_ERROR_ERR("updateReports: %s", err.what());
-    }
-}
-
-// -------------------------------------------------------------------------------------------------
-void Veterod::setupDebugLogging(const std::string &levelstring, const std::string &filename)
-    throw (common::ApplicationError)
-{
-    bw::Debug *debugger = bw::Debug::debug();
-
-    // log level
-    bw::Debug::Level level;
-    if (levelstring == "none" || levelstring == "NONE")
-        level = bw::Debug::DL_NONE;
-    else if (levelstring == "info" || levelstring == "INFO")
-        level = bw::Debug::DL_INFO;
-    else if (levelstring == "debug" || levelstring == "DEBUG")
-        level = bw::Debug::DL_DEBUG;
-    else if (levelstring == "trace" || levelstring == "TRACE")
-        level = bw::Debug::DL_TRACE;
-    else
-        throw common::ApplicationError("Invalid loglevel: '" + levelstring + "'");
-
-    debugger->setLevel(level);
-
-    // logfile
-    if (!filename.empty()) {
-        m_logfile = std::fopen(filename.c_str(), "a");
-        if (!m_logfile)
-            throw common::SystemError(std::string("Unable to open file '" + filename + "'"), errno);
-
-        debugger->setFileHandle(m_logfile);
-    }
-}
-
-// -------------------------------------------------------------------------------------------------
-void Veterod::setupErrorLogging()
-    throw (common::ApplicationError)
-{
-    if (m_errorLogfile == "syslog")
-        bw::Errorlog::configure(bw::Errorlog::LM_SYSLOG, "veterod");
-    else {
-        bool success = bw::Errorlog::configure(bw::Errorlog::LM_FILE, m_errorLogfile.c_str());
-        if (!success)
-            throw common::ApplicationError("Unable to setup error logging for '" + m_errorLogfile + "'");
     }
 }
 

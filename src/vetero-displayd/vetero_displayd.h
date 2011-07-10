@@ -22,6 +22,7 @@
 #include "common/database.h"
 #include "common/error.h"
 #include "common/configuration.h"
+#include "common/veteroapplication.h"
 #include "serdisplibdisplay.h"
 
 namespace vetero {
@@ -36,8 +37,8 @@ namespace display {
  * \author Bernhard Walle <bernhard@bwalle.de>
  * \ingroup display
  */
-class VeteroDisplayd {
-
+class VeteroDisplayd : public common::VeteroApplication
+{
     public:
         /**
          * \brief Constructor
@@ -115,19 +116,6 @@ class VeteroDisplayd {
         throw (common::ApplicationError);
 
     protected:
-        /**
-         * \brief Setup the error logging for the application
-         *
-         * \param[in] logfile the logfile to be used for errors. The special values
-         *            <tt>'stdout'</tt>, <tt>'stderr'</tt> for the standard I/O streams and the
-         *            special value <tt>'syslog'</tt> (for syslog()) is recognized.
-         * \exception ApplicationError if \p logfile cannot be opened for writing
-         *            (if \p logfile is not a file but <tt>'syslog'</tt>, <tt>'stderr'</tt> or
-         *            <tt>'stdout'</tt>, then no exception can be thrown)
-         */
-        void setupErrorLogging(const std::string &logfile)
-        throw (common::ApplicationError);
-
         /**
          * \brief Updates the contents of the display
          *

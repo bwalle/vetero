@@ -22,7 +22,6 @@
 #include <libbw/optionparser.h>
 #include <libbw/stringutil.h>
 #include <libbw/log/errorlog.h>
-#include <libbw/log/debug.h>
 
 #include "common/translation.h"
 #include "common/dbaccess.h"
@@ -38,7 +37,8 @@ namespace reportgen {
 
 // -------------------------------------------------------------------------------------------------
 VeteroReportgen::VeteroReportgen()
-    : m_noConfigFatal(false)
+    : VeteroApplication("vetero-reportgen")
+    , m_noConfigFatal(false)
     , m_upload(false)
 {}
 
@@ -167,50 +167,6 @@ bool VeteroReportgen::parseCommandLine(int argc, char *argv[])
 
     m_jobs = op.getArgs();
     return true;
-}
-
-// -------------------------------------------------------------------------------------------------
-void VeteroReportgen::setupDebugLogging(const std::string &levelstring, const std::string &filename)
-    throw (common::ApplicationError)
-{
-    bw::Debug *debugger = bw::Debug::debug();
-
-    // log level
-    bw::Debug::Level level;
-    if (levelstring == "none" || levelstring == "NONE")
-        level = bw::Debug::DL_NONE;
-    else if (levelstring == "info" || levelstring == "INFO")
-        level = bw::Debug::DL_INFO;
-    else if (levelstring == "debug" || levelstring == "DEBUG")
-        level = bw::Debug::DL_DEBUG;
-    else if (levelstring == "trace" || levelstring == "TRACE")
-        level = bw::Debug::DL_TRACE;
-    else
-        throw common::ApplicationError("Invalid loglevel: '" + levelstring + "'");
-
-    debugger->setLevel(level);
-
-    // logfile
-    if (!filename.empty()) {
-        m_logfile = std::fopen(filename.c_str(), "a");
-        if (!m_logfile)
-            throw common::SystemError(std::string("Unable to open file '" + filename + "'"), errno);
-
-        debugger->setFileHandle(m_logfile);
-    }
-}
-
-// -------------------------------------------------------------------------------------------------
-void VeteroReportgen::setupErrorLogging(const std::string &logfile)
-    throw (common::ApplicationError)
-{
-    if (logfile == "syslog")
-        bw::Errorlog::configure(bw::Errorlog::LM_SYSLOG, "vetero-reportgen");
-    else {
-        bool success = bw::Errorlog::configure(bw::Errorlog::LM_FILE, logfile.c_str());
-        if (!success)
-            throw common::ApplicationError("Unable to setup error logging for '" + logfile + "'");
-    }
 }
 
 // -------------------------------------------------------------------------------------------------

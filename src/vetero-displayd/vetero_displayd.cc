@@ -55,7 +55,8 @@ static void veterodisplayd_sigusr1_sighandler(int signal)
 
 // -------------------------------------------------------------------------------------------------
 VeteroDisplayd::VeteroDisplayd()
-    : m_noConfigFatal(false)
+    : common::VeteroApplication("vetero-displayd")
+    , m_noConfigFatal(false)
     , m_serdispConnection(NULL)
     , m_display(NULL)
 {}
@@ -81,8 +82,8 @@ bool VeteroDisplayd::parseCommandLine(int argc, char *argv[])
 
     bw::OptionGroup loggingGroup("Logging Options");
     loggingGroup.addOption("error-logfile", 'L', bw::OT_STRING,
-                            "Use the specified file for error logging. The special values "
-                            "'stderr', 'stdout' and 'syslog' are accepted.");
+                           "Use the specified file for error logging. The special values "
+                           "'stderr', 'stdout' and 'syslog' are accepted.");
 
     bw::OptionGroup configurationGroup("Configuration Options");
     configurationGroup.addOption("configfile", 'c', bw::OT_STRING,
@@ -183,19 +184,6 @@ void VeteroDisplayd::openDisplay()
         m_display->setLocale(m_configuration->locale());
     } catch (const DisplayError &err) {
         throw common::ApplicationError("Unable to open display: " + std::string(err.what()));
-    }
-}
-
-// -------------------------------------------------------------------------------------------------
-void VeteroDisplayd::setupErrorLogging(const std::string &logfile)
-    throw (common::ApplicationError)
-{
-    if (logfile == "syslog")
-        bw::Errorlog::configure(bw::Errorlog::LM_SYSLOG, "vetero-displayd");
-    else {
-        bool success = bw::Errorlog::configure(bw::Errorlog::LM_FILE, logfile.c_str());
-        if (!success)
-            throw common::ApplicationError("Unable to setup error logging for '" + logfile + "'");
     }
 }
 

@@ -23,6 +23,7 @@ set(COMMON_SRCS
     configuration.cc
     weather.cc
     lockfile.cc
+    veteroapplication.cc
 )
 
 add_library(vetero ${COMMON_SRCS})
