@@ -133,7 +133,7 @@ void DbAccess::initTables() const
         "BEGIN "
         "   UPDATE weatherdata "
         "   SET    jdate = julianday(strftime('%Y-%m-%%d 12:00', timestamp)) "
-        "   WHERE  timestamp = old.timestamp; "
+        "   WHERE  timestamp = new.timestamp; "
         "END"
     );
 

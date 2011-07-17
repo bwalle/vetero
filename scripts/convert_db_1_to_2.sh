@@ -50,7 +50,7 @@ sql "CREATE TRIGGER update_weatherdata_jday                 \
         BEGIN                                               \
             UPDATE weatherdata                              \
             SET    jdate = julianday(strftime('%Y-%m-%d 12:00', timestamp)) \
-            WHERE  timestamp = old.timestamp;               \
+            WHERE  timestamp = new.timestamp;               \
         END"
 
 # update the revision
