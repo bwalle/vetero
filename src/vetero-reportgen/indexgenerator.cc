@@ -133,10 +133,10 @@ void IndexGenerator::generateMonth(HtmlDocument &html, const bw::Datetime &month
 
             html << "<td align='right'>";
 
-            if (!(currentDay.day() != 1 && wday < weekdayOfFirst) &&
-                    (currentDay.month() == month.month())) {
+            if ((currentDay.day() != 1 || wday >= weekdayOfFirst) &&
+                    currentDay.month() == month.month()) {
                 bool active = haveData && dataCache.dataAtDay(currentDay);
-                html.link(nameProvider().dailyDir(currentDay), currentDay.strftime("%d"), active);
+                html.link(nameProvider().dailyDirLink(currentDay), currentDay.strftime("%e"), active);
                 currentDay.addDays(1);
             } else
                 html << "&nbsp;";
