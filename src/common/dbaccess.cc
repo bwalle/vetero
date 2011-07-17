@@ -64,6 +64,7 @@ void DbAccess::initTables() const
     m_db->executeSql(
         "CREATE TABLE weatherdata ("
         "    timestamp    DATETIME PRIMARY KEY UNIQUE,"
+        "    jdate        INTEGER,"
         "    temp         INTEGER,"
         "    humid        INTEGER,"
         "    dewpoint     INTEGER,"
@@ -119,6 +120,23 @@ void DbAccess::initTables() const
         ")"
     );
 
+    // INDEX index_weatherdata_jdate
+    m_db->executeSql(
+        "CREATE INDEX index_weatherdata_jdate "
+        "ON weatherdata(jdate)"
+    );
+
+    // TRIGGER update_weatherdata_jday
+    m_db->executeSql(
+        "CREATE TRIGGER update_weatherdata_jday "
+        "AFTER INSERT ON weatherdata "
+        "BEGIN "
+        "   UPDATE weatherdata "
+        "   SET    jdate = julianday(strftime('%Y-%m-%%d 12:00', timestamp)) "
+        "   WHERE  timestamp = old.timestamp; "
+        "END"
+    );
+
     //
     // convencience views with floating point
     //
@@ -127,6 +145,7 @@ void DbAccess::initTables() const
     m_db->executeSql(
         "CREATE VIEW weatherdata_float AS SELECT"
         "    timestamp                        AS timestamp,"
+        "    jdate                            AS jdate,"
         "    round(temp/100.0, 1)             AS temp,"
         "    round(humid/100.0, 0)            AS humid,"
         "    round(dewpoint/100.0, 1)         AS dewpoint,"
@@ -182,7 +201,7 @@ void DbAccess::initTables() const
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 1);
+    writeMiscEntry(DatabaseSchemaRevision, 2);
 }
 
 // -------------------------------------------------------------------------------------------------

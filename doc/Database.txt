@@ -10,6 +10,7 @@ This table contains all data sets that are received.
  Name         | Type      | Description
 ===============================================================================
  timestamp    | DATETIME  | Time of the measurement, localtime
+ jdate        | INTEGER   | Julian date (redundant but improves performance)
  temp         | INTEGER   | Temperature in 1/100 °C (e.g. 2750)
  humid        | INTEGER   | Humidity in 1/100 % (e.g. 7500). 0 if the
               |           | sensor doesn't measure humidity.

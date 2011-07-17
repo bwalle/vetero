@@ -96,9 +96,9 @@ void DayReportGenerator::createTemperatureDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), temp, dewpoint "
         "FROM     weatherdata_float "
-        "WHERE    date(timestamp) = ? "
+        "WHERE    jdate = julianday(?) "
         "ORDER BY timestamp",
-        m_dateString.c_str()
+        m_date.strftime("%Y-%m-%d 12:00").c_str()
     );
 
     Gnuplot plot(reportgen()->configuration());
@@ -130,9 +130,9 @@ void DayReportGenerator::createHumidityDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), humid "
         "FROM     weatherdata_float "
-        "WHERE    date(timestamp) = ?"
+        "WHERE    jdate = julianday(?)"
         "ORDER BY timestamp",
-        m_dateString.c_str()
+        m_date.strftime("%Y-%m-%d 12:00").c_str()
     );
 
     Gnuplot plot(reportgen()->configuration());
@@ -162,9 +162,9 @@ void DayReportGenerator::createWindDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), wind "
         "FROM     weatherdata_float "
-        "WHERE    date(timestamp) = ? "
+        "WHERE    jdate = julianday(?) "
         "ORDER BY timestamp",
-        m_dateString.c_str()
+        m_date.strftime("%Y-%m-%d 12:00").c_str()
     );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
         "SELECT ROUND(wind_max) + 1 "
@@ -204,9 +204,9 @@ void DayReportGenerator::createRainDiagram()
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), rain "
         "FROM     weatherdata_float "
-        "WHERE    date(timestamp) = ?"
+        "WHERE    jdate = julianday(?)"
         "ORDER BY timestamp",
-        m_dateString.c_str()
+        m_date.strftime("%Y-%m-%d 12:00").c_str()
     );
 
     // accumulate the rain
