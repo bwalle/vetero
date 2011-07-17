@@ -214,7 +214,7 @@ void HtmlDocument::write(std::ostream &os)
        << "  <td bgcolor='" << titleColor2 << "'"
        << "      style='border-width:1px; border-color:#000000; border-style:solid; padding: 5px;'>";
 
-    os << " <a href=\"index.xhtml\"><b>Home</b></a>";
+    os << " <a href='/'><b>Home</b></a>";
     for (std::vector<Section>::const_iterator it = m_sections.begin(); it != m_sections.end(); ++it) {
         const Section &section = *it;
         os << " | " << "<a href=\"#" << section.id << "\">" << replaceHtml(section.shortTitle) << "</a>";
