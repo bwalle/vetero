@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include <libbw/log/debug.h>
+#include <libbw/fileutils.h>
 #include <libbw/stringutil.h>
 
 #include "common/translation.h"
@@ -34,7 +35,7 @@ namespace reportgen {
 DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
                                        const std::string    &date)
     : ReportGenerator(reportGenerator)
-    , m_date(date)
+    , m_dateString(date)
 {}
 
 // -------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ void DayReportGenerator::generateReports()
     throw (common::ApplicationError)
 {
     try {
-        if (m_date.empty()) {
+        if (m_dateString.empty()) {
             common::DbAccess dbAccess(&reportgen()->database());
             std::vector<std::string> dates = dbAccess.dataDays();
 
@@ -50,7 +51,7 @@ void DayReportGenerator::generateReports()
             for (it = dates.begin(); it != dates.end(); ++it)
                 generateOneReport(*it);
         } else
-            generateOneReport(m_date);
+            generateOneReport(m_dateString);
     } catch (const common::DatabaseError &err) {
         throw common::ApplicationError("DB error: " + std::string(err.what()));
     }
@@ -61,7 +62,22 @@ void DayReportGenerator::generateOneReport(const std::string &date)
     throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_INFO("Generating daily report for %s", date.c_str());
-    m_date = date;
+    m_dateString = date;
+
+    if (m_dateString.size() != 10)
+        throw common::ApplicationError("Invalid date: '" + m_dateString + "'");
+
+    int year = bw::from_str<int>(m_dateString.substr(0, 4));
+    int month = bw::from_str<int>(m_dateString.substr(5, 2));
+    int day = bw::from_str<int>(m_dateString.substr(8, 2));
+
+    m_date = bw::Datetime(year, month, day, 0, 0, 0, false);
+
+    try {
+        bw::FileUtils::mkdir(nameProvider().dailyDir(m_date), true);
+    } catch (const bw::Error &err) {
+        throw common::ApplicationError(err.what());
+    }
 
     createTemperatureDiagram();
     createHumidityDiagram();
@@ -75,20 +91,19 @@ void DayReportGenerator::generateOneReport(const std::string &date)
 void DayReportGenerator::createTemperatureDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    BW_DEBUG_DBG("Generating temperature diagrams for %s", m_date.c_str());
-    m_temperatureFileName = m_date + "_temperature.svgz";
+    BW_DEBUG_DBG("Generating temperature diagrams for %s", m_dateString.c_str());
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), temp, dewpoint "
         "FROM     weatherdata_float "
         "WHERE    date(timestamp) = ? "
         "ORDER BY timestamp",
-        m_date.c_str()
+        m_dateString.c_str()
     );
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_temperatureFileName);
+    plot.setOutputFile(nameProvider().dailyDiagram(m_date, "temperature"));
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -110,20 +125,19 @@ void DayReportGenerator::createTemperatureDiagram()
 void DayReportGenerator::createHumidityDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    BW_DEBUG_DBG("Generating humidity diagrams for %s", m_date.c_str());
-    m_humidityFileName = m_date + "_humidity.svgz";
+    BW_DEBUG_DBG("Generating humidity diagrams for %s", m_dateString.c_str());
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), humid "
         "FROM     weatherdata_float "
         "WHERE    date(timestamp) = ?"
         "ORDER BY timestamp",
-        m_date.c_str()
+        m_dateString.c_str()
     );
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_humidityFileName);
+    plot.setOutputFile(nameProvider().dailyDiagram(m_date, "humidity"));
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Humidity [%]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -143,20 +157,19 @@ void DayReportGenerator::createHumidityDiagram()
 void DayReportGenerator::createWindDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    BW_DEBUG_DBG("Generating wind diagrams for %s", m_date.c_str());
-    m_windFileName = m_date + "_wind.svgz";
+    BW_DEBUG_DBG("Generating wind diagrams for %s", m_dateString.c_str());
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), wind "
         "FROM     weatherdata_float "
         "WHERE    date(timestamp) = ? "
         "ORDER BY timestamp",
-        m_date.c_str()
+        m_dateString.c_str()
     );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
         "SELECT ROUND(wind_max) + 1 "
         "FROM   day_statistics_float "
-        "WHERE  date = ?", m_date.c_str()
+        "WHERE  date = ?", m_dateString.c_str()
     );
 
     std::string max = "0.0";
@@ -165,7 +178,7 @@ void DayReportGenerator::createWindDiagram()
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_windFileName);
+    plot.setOutputFile(nameProvider().dailyDiagram(m_date, "wind"));
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set format x '%H:%M'\n";
     plot << "set grid\n";
@@ -186,15 +199,14 @@ void DayReportGenerator::createWindDiagram()
 void DayReportGenerator::createRainDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    BW_DEBUG_DBG("Generating rain diagrams for %s", m_date.c_str());
-    m_rainFileName = m_date + "_rain.svgz";
+    BW_DEBUG_DBG("Generating rain diagrams for %s", m_dateString.c_str());
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), rain "
         "FROM     weatherdata_float "
         "WHERE    date(timestamp) = ?"
         "ORDER BY timestamp",
-        m_date.c_str()
+        m_dateString.c_str()
     );
 
     // accumulate the rain
@@ -206,7 +218,7 @@ void DayReportGenerator::createRainDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_rainFileName);
+    plot.setOutputFile(nameProvider().dailyDiagram(m_date, "rain"));
     plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
     plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
     plot << "set format x '%H:%M'\n";
@@ -234,58 +246,52 @@ void DayReportGenerator::createRainDiagram()
 void DayReportGenerator::createHtml()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    std::string filename(reportgen()->configuration().reportDirectory() + "/" + m_date + ".xhtml");
-
-    int year = bw::from_str<int>(m_date.substr(0, 4));
-    int month = bw::from_str<int>(m_date.substr(5, 2));
-    int day = bw::from_str<int>(m_date.substr(8, 2));
-
-    bw::Datetime dayToGenerate(year, month, day, 0, 0, 0, false);
+    std::string filename(nameProvider().dailyIndex(m_date));
 
     HtmlDocument html(reportgen());
     html.setAutoReload(5);
-    html.setTitle(dayToGenerate.strftime("%A, %d. %B %Y"));
+    html.setTitle(m_date.strftime("%A, %d. %B %Y"));
 
     // navigation links
 
-    bw::Datetime yesterday(dayToGenerate);
+    bw::Datetime yesterday(m_date);
     yesterday.addDays(-1);
-    bw::Datetime tomorrow(dayToGenerate);
+    bw::Datetime tomorrow(m_date);
     tomorrow.addDays(1);
 
     const ValidDataCache &validDataCache = reportgen()->validDataCache();
 
     html.setForwardNavigation(
-        validDataCache.dataAtDay(tomorrow.year(), tomorrow.month(), tomorrow.day())
-            ? tomorrow.strftime("%Y-%m-%d.xhtml")
+        validDataCache.dataAtDay(tomorrow)
+            ? nameProvider().dailyDirLink(tomorrow)
             : "",
         tomorrow.strftime("%A, %d. %B %Y")
     );
     html.setBackwardNavigation(
-         validDataCache.dataAtDay(yesterday.year(), yesterday.month(), yesterday.day())
-            ? yesterday.strftime("%Y-%m-%d.xhtml")
+         validDataCache.dataAtDay(yesterday)
+            ? nameProvider().dailyDirLink(yesterday)
             : "",
          yesterday.strftime("%A, %d. %B %Y")
     );
     html.setUpNavigation(
-        dayToGenerate.strftime("%Y-%m.xhtml"),
-        dayToGenerate.strftime("%B %Y")
+        nameProvider().monthlyDirLink(m_date),
+        m_date.strftime("%B %Y")
     );
 
     html.addSection("Temperaturverlauf", "Temperatur", "temperature");
-    html.img(m_temperatureFileName);
+    html.img(nameProvider().dailyDiagramLink(m_date, "temperature"));
     html.addTopLink();
 
     html.addSection("Luftfeuchtigkeitsverlauf", "Luftfeuchtigkeit", "humidity");
-    html.img(m_humidityFileName);
+    html.img(nameProvider().dailyDiagramLink(m_date, "humidity"));
     html.addTopLink();
 
     html.addSection("Verlauf der Windgeschwindigkeit", "Wind", "wind");
-    html.img(m_windFileName);
+    html.img(nameProvider().dailyDiagramLink(m_date, "wind"));
     html.addTopLink();
 
     html.addSection("Niederschlag", "Niederschlag", "rain");
-    html.img(m_rainFileName);
+    html.img(nameProvider().dailyDiagramLink(m_date, "rain"));
     html.addTopLink();
 
     if (!html.write(filename))

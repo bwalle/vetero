@@ -18,6 +18,8 @@
 #ifndef VETERO_REPORTGEN_MONTHREPORTGENERATOR_H_
 #define VETERO_REPORTGEN_MONTHREPORTGENERATOR_H_
 
+#include <libbw/datetime.h>
+
 #include "reportgenerator.h"
 #include "htmldocument.h"
 
@@ -110,12 +112,10 @@ class MonthReportGenerator : public ReportGenerator
 
     private:
         std::string m_monthString;
-        int m_year;
-        int m_month;
+        bw::Datetime m_month;
 
-        std::string m_temperatureFileName;
-        std::string m_windFileName;
-        std::string m_rainFileName;
+        std::string m_firstDayStr;
+        std::string m_lastDayStr;
 };
 
 } // end namespace reportgen

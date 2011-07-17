@@ -20,6 +20,7 @@
 
 #include "common/lockfile.h"
 #include "vetero_reportgen.h"
+#include "nameprovider.h"
 
 namespace vetero {
 namespace reportgen {
@@ -60,6 +61,15 @@ class ReportGenerator
          */
         VeteroReportgen *reportgen() const;
 
+        /**
+         * \brief Returns a reference to the name provider object
+         *
+         * The name provider is used to get the file names of all diagrams and HTML pages.
+         *
+         * \return the name provider
+         */
+        const NameProvider &nameProvider() const;
+
     public:
         /**
          * \brief Does the work.
@@ -71,6 +81,7 @@ class ReportGenerator
 
     private:
         VeteroReportgen *m_reportgen;
+        NameProvider m_nameProvider;
         common::LockFile m_lockfile;
 };
 

@@ -24,6 +24,7 @@ namespace reportgen {
 ReportGenerator::ReportGenerator(VeteroReportgen *reportgen)
     : m_reportgen(reportgen)
     , m_lockfile(reportgen->configuration().reportDirectory())
+    , m_nameProvider(*reportgen)
 {
     if (!m_lockfile.lockShared())
         throw common::ApplicationError("Unable to obtain lock: " + m_lockfile.error());
@@ -37,6 +38,12 @@ ReportGenerator::~ReportGenerator()
 VeteroReportgen *ReportGenerator::reportgen() const
 {
     return m_reportgen;
+}
+
+// -------------------------------------------------------------------------------------------------
+const NameProvider &ReportGenerator::nameProvider() const
+{
+    return m_nameProvider;
 }
 
 } // end namespace reportgen

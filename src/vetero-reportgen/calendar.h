@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <libbw/datetime.h>
+
 namespace vetero {
 namespace reportgen {
 
@@ -42,6 +44,14 @@ class Calendar
         static int daysPerMonth(int year, int month);
 
         /**
+         * \brief Returns the number of days in the given month
+         *
+         * \param[in] datetime a bw::Datetime object representing the month
+         * \return the number of days between 28 and 31.
+         */
+        static int daysPerMonth(const bw::Datetime &datetime);
+
+        /**
          * \brief Returns the locale-specific day abbreviation
          *
          * The global locale is used.
@@ -50,14 +60,6 @@ class Calendar
          * \return the two or three letter abbreviation, e.g. <tt>"Mo"</tt> for Monday.
          */
         static std::string dayAbbreviation(int wday);
-
-        /**
-         * \brief Returns the locale-specific month name
-         *
-         * \param[in] month the month from 1 to 12
-         * \return the month name, e.g. <tt>"Juni"</tt> for 6 and a German locale.
-         */
-        static std::string monthName(int month);
 
         /**
          * \brief Checks if \p year is a leap year

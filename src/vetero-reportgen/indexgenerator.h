@@ -64,10 +64,9 @@ class IndexGenerator: public ReportGenerator
          * \brief Generates the HTML for a given month
          *
          * \param[in] html the stream to which the HTML is written
-         * \param[in] year the year
-         * \param[in] month the month
+         * \param[in] month the bw::Datetime object representing the first day of the month
          */
-        void generateMonth(HtmlDocument &html, int year, int month);
+        void generateMonth(HtmlDocument &html, const bw::Datetime &month);
 
     private:
         common::DbAccess m_dbAccess;

@@ -20,6 +20,7 @@
 
 #include "common/database.h"
 #include "reportgenerator.h"
+#include "nameprovider.h"
 
 namespace vetero {
 namespace reportgen {
@@ -108,11 +109,8 @@ class DayReportGenerator : public ReportGenerator
         throw (common::ApplicationError, common::DatabaseError);
 
     private:
-        std::string m_date;
-        std::string m_temperatureFileName;
-        std::string m_humidityFileName;
-        std::string m_windFileName;
-        std::string m_rainFileName;
+        std::string m_dateString;
+        bw::Datetime m_date;
 };
 
 } // end namespace reportgen

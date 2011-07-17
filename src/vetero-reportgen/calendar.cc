@@ -50,18 +50,17 @@ int Calendar::daysPerMonth(int year, int month)
 }
 
 // -------------------------------------------------------------------------------------------------
+int Calendar::daysPerMonth(const bw::Datetime &datetime)
+{
+    return daysPerMonth(datetime.year(), datetime.month());
+}
+
+// -------------------------------------------------------------------------------------------------
 std::string Calendar::dayAbbreviation(int wday)
 {
     // use Nov 2010 since it has Monday as first day of the month
     bw::Datetime datetime(2010, 11, wday, 0, 0, 0, false);
     return datetime.strftime("%a");
-}
-
-// -------------------------------------------------------------------------------------------------
-std::string Calendar::monthName(int month)
-{
-    bw::Datetime datetime(2010, month, 1, 0, 0, 0, false);
-    return datetime.strftime("%B");
 }
 
 // -------------------------------------------------------------------------------------------------

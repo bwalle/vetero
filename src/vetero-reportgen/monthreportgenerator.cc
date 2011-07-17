@@ -19,6 +19,7 @@
 
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
+#include <libbw/fileutils.h>
 
 #include "common/utils.h"
 #include "common/translation.h"
@@ -64,8 +65,22 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
     BW_DEBUG_INFO("Generating month report for %s", date.c_str());
 
     m_monthString = date;
-    m_year = bw::from_str<int>(m_monthString.substr(0, 4));
-    m_month = bw::from_str<int>(m_monthString.substr(5, 2));
+
+    if (m_monthString.size() != 7)
+        throw common::ApplicationError("Invalid month: " + m_monthString);
+
+    int year = bw::from_str<int>(m_monthString.substr(0, 4));
+    int month = bw::from_str<int>(m_monthString.substr(5, 2));
+    m_month = bw::Datetime(year, month, 1, 0, 0, 0, false);
+
+    try {
+        bw::FileUtils::mkdir(nameProvider().monthlyDir(m_month), true);
+    } catch (const bw::Error &err) {
+        throw common::ApplicationError(err.what());
+    }
+
+    m_firstDayStr = m_month.strftime("%Y-%m-01");
+    m_lastDayStr = m_month.strftime("%Y-%m-") + bw::str(Calendar::daysPerMonth(m_month));
 
     createTemperatureDiagram();
     createWindDiagram();
@@ -77,30 +92,24 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
 void MonthReportGenerator::createTemperatureDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    m_temperatureFileName = m_monthString + "_temperature.svgz";
-
-    std::string firstDay = m_monthString + "-01";
-    std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
-
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, temp_min, temp_max, temp_avg "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
         "       AND temp_min != temp_max",
-        firstDay.c_str(), lastDay.c_str()
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_temperatureFileName);
+    plot.setOutputFile(nameProvider().monthlyDiagram(m_month, "temperature"));
     plot << "set xlabel '" << _("Day") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
     plot << "set timefmt '%Y-%m-%d'\n";
-    plot << "set xrange ['" << m_monthString << "-01' : '" << m_monthString << "-"
-         << lastDay.substr(8, 2) << "']\n";
+    plot << "set xrange ['" << m_firstDayStr << "' : '" << m_lastDayStr << "']\n";
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
@@ -117,17 +126,12 @@ void MonthReportGenerator::createTemperatureDiagram()
 void MonthReportGenerator::createWindDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    m_windFileName = m_monthString + "_wind.svgz";
-
-    std::string firstDay = m_monthString + "-01";
-    std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
-
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, wind_max "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
         "       AND temp_min != temp_max",
-        firstDay.c_str(), lastDay.c_str()
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
     common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
         "SELECT ROUND(wind_max) + 1 "
@@ -141,14 +145,13 @@ void MonthReportGenerator::createWindDiagram()
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_windFileName);
+    plot.setOutputFile(nameProvider().monthlyDiagram(m_month, "wind"));
     plot << "set xlabel '" << _("Day") <<"'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
     plot << "set timefmt '%Y-%m-%d'\n";
-    plot << "set xrange ['" << m_monthString << "-01' : '"
-         << m_monthString << "-" << lastDay.substr(8, 2) << "']\n";
+    plot << "set xrange ['" << m_firstDayStr << "' : '" << m_lastDayStr << "']\n";
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
@@ -163,17 +166,12 @@ void MonthReportGenerator::createWindDiagram()
 void MonthReportGenerator::createRainDiagram()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    m_rainFileName = m_monthString + "_rain.svgz";
-
-    std::string firstDay = m_monthString + "-01";
-    std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
-
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, rain, rain "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
         "       AND temp_min != temp_max",
-        firstDay.c_str(), lastDay.c_str()
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
 
     // accumulate the rain
@@ -185,15 +183,14 @@ void MonthReportGenerator::createRainDiagram()
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
-    plot.setOutputFile(m_rainFileName);
+    plot.setOutputFile(nameProvider().monthlyDiagram(m_month, "rain"));
     plot << "set xlabel '" << _("Day") << "'\n";
     plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
     plot << "set grid\n";
     plot << "set xdata time\n";
     plot << "set format x '%Y-%m-%d'\n";
     plot << "set timefmt '%Y-%m-%d'\n";
-    plot << "set xrange ['" << m_monthString << "-01' : '" << m_monthString
-         << "-" << lastDay.substr(8, 2) << "']\n";
+    plot << "set xrange ['" << m_firstDayStr << "' : '" << m_lastDayStr << "']\n";
     plot << "set mxtics 0\n";
     plot << "set xtics format \"%2d\\n%a\"\n";
     plot << "set xtics 86400\n";
@@ -210,45 +207,44 @@ void MonthReportGenerator::createRainDiagram()
 void MonthReportGenerator::createHtml()
     throw (common::ApplicationError, common::DatabaseError)
 {
-    std::string filename(reportgen()->configuration().reportDirectory() + "/" + m_monthString + ".xhtml");
+    std::string filename(nameProvider().monthlyIndex(m_month));
     HtmlDocument html(reportgen());
 
-    bw::Datetime monthToGenerate(m_year, m_month, 1, 0, 0, 0, false);
-    html.setTitle(monthToGenerate.strftime("%B %Y"));
+    html.setTitle(m_month.strftime("%B %Y"));
 
     // navigation links
 
-    bw::Datetime lastMonth(monthToGenerate);
+    bw::Datetime lastMonth(m_month);
     lastMonth.addDays(-1);
-    bw::Datetime nextMonth(monthToGenerate);
+    bw::Datetime nextMonth(m_month);
     nextMonth.addDays(31);
 
     const ValidDataCache &validDataCache = reportgen()->validDataCache();
 
     html.setForwardNavigation(
-        validDataCache.dataInMonth(nextMonth.year(), nextMonth.month())
-            ? nextMonth.strftime("%Y-%m.xhtml")
+        validDataCache.dataInMonth(nextMonth)
+        ? nameProvider().monthlyDirLink(nextMonth)
             : "",
         nextMonth.strftime("%B %Y")
     );
     html.setBackwardNavigation(
-        validDataCache.dataInMonth(lastMonth.year(), lastMonth.month())
-            ? lastMonth.strftime("%Y-%m.xhtml")
+        validDataCache.dataInMonth(lastMonth)
+            ? nameProvider().monthlyDirLink(lastMonth)
             : "",
         lastMonth.strftime("%B %Y")
     );
     html.setUpNavigation("", "");
 
     html.addSection(_("Temperature profile"), _("Temperature"), "temperature");
-    html.img(m_temperatureFileName);
+    html.img(nameProvider().monthlyDiagramLink(m_month, "temperature"));
     html.addTopLink();
 
     html.addSection(_("Wind speed"), _("Wind"), "wind");
-    html.img(m_windFileName);
+    html.img(nameProvider().monthlyDiagramLink(m_month, "wind"));
     html.addTopLink();
 
     html.addSection(_("Rain"), _("Rain"), "rain");
-    html.img(m_rainFileName);
+    html.img(nameProvider().monthlyDiagramLink(m_month, "rain"));
     html.addTopLink();
 
     html.addSection(_("Numeric values"), _("Values"), "numeric");
@@ -263,9 +259,6 @@ void MonthReportGenerator::createHtml()
 void MonthReportGenerator::createTable(HtmlDocument &html)
     throw (common::ApplicationError, common::DatabaseError)
 {
-    std::string firstDay = m_monthString + "-01";
-    std::string lastDay = m_monthString + "-" + bw::str(Calendar::daysPerMonth(m_year, m_month));
-
     struct FormatDescription {
         const char *unit;
         int        precision;
@@ -292,7 +285,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
         "       AND temp_min != temp_max",
-        firstDay.c_str(), lastDay.c_str()
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
 
     // accumulate the rain
@@ -327,14 +320,15 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
             std::string value = result[i][j];
 
             if (j == 0) {
-                std::string weekday = bw::Datetime(bw::from_str<time_t>(value)).strftime("%a");
-                std::string date = bw::Datetime(bw::from_str<time_t>(value)).strftime(_("%Y-%m-%d"));
-                std::string dateLink = bw::Datetime(bw::from_str<time_t>(value)).strftime("%Y-%m-%d");
+                bw::Datetime date = bw::Datetime(bw::from_str<time_t>(value));
+                std::string weekday = date.strftime("%a");
+                std::string dateStr = date.strftime(_("%Y-%m-%d"));
+                std::string dateLink = nameProvider().dailyDirLink(date);
 
                 html << "<td align='left' style='padding: 5px'>" << weekday << "</td>\n";
                 html << "<td align='right' style='padding: 5px'>"
-                     << "<a href='" << dateLink << ".xhtml'>"
-                     << date << "</a></td>\n";
+                     << "<a href='" << dateLink << "'>"
+                     << dateStr << "</a></td>\n";
 
             } else {
                 assert(j < BW_ARRAY_SIZE(format));

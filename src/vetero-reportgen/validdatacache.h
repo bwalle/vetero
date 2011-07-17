@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include <libbw/datetime.h>
+
 #include "common/error.h"
 #include "common/dbaccess.h"
 
@@ -56,21 +58,18 @@ class ValidDataCache
         /**
          * \brief Checks if there is data available at the given day
          *
-         * \param[in] year the 4-digit year
-         * \param[in] month the month from 1 to 12
-         * \param[in] day the day from 1 to 31
+         * \param[in] day the bw::Datetime object representing the day
          * \return \c true if there's weather data available, \c false otherwise
          */
-        bool dataAtDay(int year, int month, int day) const;
+        bool dataAtDay(const bw::Datetime &day) const;
 
         /**
          * \brief Checks if there is data available at the given month
          *
-         * \param[in] year the 4-digit year
-         * \param[in] month the month from 1 to 12
+         * \param[in] month the bw::Datetime object representing the month
          * \return \c true if there's weather data available, \c false otherwise
          */
-        bool dataInMonth(int year, int month) const;
+        bool dataInMonth(const bw::Datetime &month) const;
 
     private:
         common::DbAccess &m_dbAccess;

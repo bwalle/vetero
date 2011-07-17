@@ -36,16 +36,16 @@ ValidDataCache::~ValidDataCache()
 {}
 
 // -------------------------------------------------------------------------------------------------
-bool ValidDataCache::dataAtDay(int year, int month, int day) const
+bool ValidDataCache::dataAtDay(const bw::Datetime &day) const
 {
-    std::string dayStr = common::str_printf("%04d-%02d-%02d", year, month, day);
+    std::string dayStr = day.strftime("%Y-%m-%d");
     return std::binary_search(m_dataDays.begin(), m_dataDays.end(), dayStr);
 }
 
 // -------------------------------------------------------------------------------------------------
-bool ValidDataCache::dataInMonth(int year, int month) const
+bool ValidDataCache::dataInMonth(const bw::Datetime &month) const
 {
-    std::string monthStr = common::str_printf("%04d-%02d", year, month);
+    std::string monthStr = month.strftime("%Y-%m");
     return std::binary_search(m_dataMonths.begin(), m_dataMonths.end(), monthStr);
 }
 

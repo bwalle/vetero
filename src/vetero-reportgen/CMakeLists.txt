@@ -27,6 +27,7 @@ set(VETERO_REPORTGEN_SRCS
     main.cc
     calendar.cc
     validdatacache.cc
+    nameprovider.cc
 )
 
 add_executable(vetero-reportgen ${VETERO_REPORTGEN_SRCS})
