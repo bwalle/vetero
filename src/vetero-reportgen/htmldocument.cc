@@ -222,7 +222,7 @@ void HtmlDocument::write(std::ostream &os)
        << "  <tr>\n"
        << "    <td bgcolor='#dddddd' style='padding: 5px;'>\n"
        << common::str_printf( _("Created by %s %s on %s\n"),
-                             "<a href='http://www.bwalle.de/website/vetero.html'>Vetero</a> ",
+                             "<a href='https://bitbucket.org/bwalle/vetero'>Vetero</a> ",
                              GIT_VERSION, bw::Datetime::now().strftime("%Y-%m-%d %H:%M").c_str())
        << "    </td>\n"
        << "  </tr>\n"
