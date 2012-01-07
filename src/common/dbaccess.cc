@@ -379,13 +379,13 @@ std::vector<std::string> DbAccess::dataYears(bool nocache) const
         result = m_db->executeSqlQuery(
             "SELECT     DISTINCT STRFTIME('%%Y', timestamp) AS m "
             "FROM       weatherdata "
-            "ORDER BY   m"
+            "ORDER BY   m DESC"
         );
     else
         result = m_db->executeSqlQuery(
             "SELECT     DISTINCT SUBSTR(month, 0, 5) "
             "FROM       month_statistics "
-            "ORDER BY   month"
+            "ORDER BY   month DESC"
         );
 
     common::Database::DbResultVector::const_iterator it;
