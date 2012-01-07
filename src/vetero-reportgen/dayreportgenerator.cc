@@ -298,24 +298,24 @@ void DayReportGenerator::createHtml()
         m_date.strftime("%B %Y")
     );
 
-    html.addSection("Temperaturverlauf", "Temperatur", "temperature");
+    html.addSection(_("Temperature profile"), _("Temperature"), "temperature");
     html.img(nameProvider().dailyDiagramLink(m_date, "temperature"));
     html.addTopLink();
 
-    html.addSection("Luftfeuchtigkeitsverlauf", "Luftfeuchtigkeit", "humidity");
+    html.addSection(_("Humidity profile"), _("Humidity"), "humidity");
     html.img(nameProvider().dailyDiagramLink(m_date, "humidity"));
     html.addTopLink();
 
-    html.addSection("Verlauf der Windgeschwindigkeit", "Wind", "wind");
+    html.addSection(_("Wind speed profile"), _("Wind"), "wind");
     html.img(nameProvider().dailyDiagramLink(m_date, "wind"));
     html.addTopLink();
 
-    html.addSection("Niederschlag", "Niederschlag", "rain");
+    html.addSection(_("Rain profile"), _("Rain"), "rain");
     html.img(nameProvider().dailyDiagramLink(m_date, "rain"));
     html.addTopLink();
 
     if (havePressureData()) {
-        html.addSection("Luftdruck", "Luftdruck", "pressure");
+        html.addSection(_("Air pressure profile"), _("Air pressure"), "pressure");
         html.img(nameProvider().dailyDiagramLink(m_date, "pressure"));
         html.addTopLink();
     }

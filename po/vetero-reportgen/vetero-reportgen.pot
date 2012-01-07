@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-13 20:44+0200\n"
+"POT-Creation-Date: 2012-01-07 20:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,85 +17,114 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: htmldocument.cc:188
+#: htmldocument.cc:224
 #, c-format
 msgid "Created by %s %s on %s\n"
 msgstr ""
 
-#: gnuplot.cc:163
+#: gnuplot.cc:207
 msgid "Wind speed [km/h])"
 msgstr ""
 
-#: gnuplot.cc:164
+#: gnuplot.cc:208
 msgid "Wind strength [Beaufort]"
 msgstr ""
 
-#: dayreportgenerator.cc:88 dayreportgenerator.cc:118
-#: dayreportgenerator.cc:153 dayreportgenerator.cc:184
+#: dayreportgenerator.cc:103 dayreportgenerator.cc:135
+#: dayreportgenerator.cc:174 dayreportgenerator.cc:212
+#: dayreportgenerator.cc:251
 msgid "Time [HH:MM]"
 msgstr ""
 
-#: dayreportgenerator.cc:89 monthreportgenerator.cc:98
+#: dayreportgenerator.cc:104 monthreportgenerator.cc:100
 msgid "Temperature [°C]"
 msgstr ""
 
-#: dayreportgenerator.cc:119
+#: dayreportgenerator.cc:136
 msgid "Humidity [%]"
 msgstr ""
 
-#: dayreportgenerator.cc:185 monthreportgenerator.cc:174
+#: dayreportgenerator.cc:213 monthreportgenerator.cc:177
 msgid "Rain [l/m²]"
 msgstr ""
 
-#: currentreportgenerator.cc:84
-msgid "%Y-%m-%d %H:%M"
+#: dayreportgenerator.cc:252
+msgid "Air pressure [hPa]"
 msgstr ""
 
-#: monthreportgenerator.cc:97 monthreportgenerator.cc:138
-#: monthreportgenerator.cc:173
-msgid "Day"
-msgstr ""
-
-#: monthreportgenerator.cc:202
+#: dayreportgenerator.cc:301 monthreportgenerator.cc:225
 msgid "Temperature profile"
 msgstr ""
 
-#: monthreportgenerator.cc:202
+#: dayreportgenerator.cc:301 monthreportgenerator.cc:225
 msgid "Temperature"
 msgstr ""
 
-#: monthreportgenerator.cc:206
-msgid "Wind speed"
+#: dayreportgenerator.cc:305
+msgid "Humidity profile"
 msgstr ""
 
-#: monthreportgenerator.cc:206
+#: dayreportgenerator.cc:305
+msgid "Humidity"
+msgstr ""
+
+#: dayreportgenerator.cc:309
+msgid "Wind speed profile"
+msgstr ""
+
+#: dayreportgenerator.cc:309 monthreportgenerator.cc:229
 msgid "Wind"
 msgstr ""
 
-#: monthreportgenerator.cc:210
+#: dayreportgenerator.cc:313
+msgid "Rain profile"
+msgstr ""
+
+#: dayreportgenerator.cc:313 monthreportgenerator.cc:233
 msgid "Rain"
 msgstr ""
 
-#: monthreportgenerator.cc:214
+#: dayreportgenerator.cc:318
+msgid "Air pressure profile"
+msgstr ""
+
+#: dayreportgenerator.cc:318
+msgid "Air pressure"
+msgstr ""
+
+#: currentreportgenerator.cc:86
+msgid "%Y-%m-%d %H:%M"
+msgstr ""
+
+#: monthreportgenerator.cc:99 monthreportgenerator.cc:140
+#: monthreportgenerator.cc:176
+msgid "Day"
+msgstr ""
+
+#: monthreportgenerator.cc:229
+msgid "Wind speed"
+msgstr ""
+
+#: monthreportgenerator.cc:237
 msgid "Numeric values"
 msgstr ""
 
-#: monthreportgenerator.cc:214
+#: monthreportgenerator.cc:237
 msgid "Values"
 msgstr ""
 
-#: monthreportgenerator.cc:284
+#: monthreportgenerator.cc:310
 msgid "%Y-%m-%d"
 msgstr ""
 
-#: indexgenerator.cc:42
+#: indexgenerator.cc:44
 msgid "Overview Weather data"
 msgstr ""
 
-#: indexgenerator.cc:45
+#: indexgenerator.cc:47
 msgid "Current weather data"
 msgstr ""
 
-#: indexgenerator.cc:45
+#: indexgenerator.cc:47
 msgid "Current"
 msgstr ""
