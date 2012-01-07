@@ -185,28 +185,30 @@ void VeteroDisplayd::updateDisplay(const common::CurrentWeather &weather)
                           "Min/Max %5.1f/%5.1f", weather.minTemperatureReal(),
                           weather.maxTemperatureReal());
 
-    // Humidity
-    m_display->renderText(2, 0, vetero::display::BOLD_FONT, _("Humidity"));
+    // Humidity and dew point
+    m_display->renderText(2, 0, vetero::display::BOLD_FONT, _("Humid"));
+    m_display->renderText(2, 10, vetero::display::NORMAL_FONT,
+                          "%2.0lf%%", weather.humidityReal());
     m_display->renderText(2, 14, vetero::display::NORMAL_FONT,
-                          "%5.0lf %%", weather.humidityReal());
-
-    // Dew point
-    m_display->renderText(3, 0, vetero::display::BOLD_FONT, _("Dew point"));
-    m_display->renderText(3, 13, vetero::display::NORMAL_FONT,
-                          "%6.1lf°C", weather.dewpointReal());
+                          "%5.1lf°C", weather.dewpointReal());
 
     // Wind
-    m_display->renderText(4, 0, vetero::display::BOLD_FONT, _("Wind speed"));
-    m_display->renderText(4, 11, vetero::display::NORMAL_FONT,
+    m_display->renderText(3, 0, vetero::display::BOLD_FONT, _("Wind speed"));
+    m_display->renderText(3, 11, vetero::display::NORMAL_FONT,
                           "%5.1lf km/h", weather.windSpeedReal());
-    m_display->renderText(5, 6, vetero::display::NORMAL_FONT, "Max.");
-    m_display->renderText(5, 11, vetero::display::NORMAL_FONT, "%5.1lf km/h",
+    m_display->renderText(4, 6, vetero::display::NORMAL_FONT, "Max.");
+    m_display->renderText(4, 11, vetero::display::NORMAL_FONT, "%5.1lf km/h",
                           weather.maxWindSpeedReal());
 
     // Rain
-    m_display->renderText(6, 0, vetero::display::BOLD_FONT, _("Rain"));
-    m_display->renderText(6, 13, vetero::display::NORMAL_FONT,
+    m_display->renderText(5, 0, vetero::display::BOLD_FONT, _("Rain"));
+    m_display->renderText(5, 13, vetero::display::NORMAL_FONT,
                           "%5.1lf mm", weather.rainReal());
+
+    // Air pressure
+    m_display->renderText(6, 0, vetero::display::BOLD_FONT, _("Air pressure"));
+    m_display->renderText(6, 12, vetero::display::NORMAL_FONT,
+                          "%5.0lf hPa", weather.pressureReal());
 
     m_display->update();
 }

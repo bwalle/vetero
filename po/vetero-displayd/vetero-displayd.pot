@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-13 20:44+0200\n"
+"POT-Creation-Date: 2012-01-07 19:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: vetero_displayd.cc:207
+#: vetero_displayd.cc:181
 msgid "Temperature"
 msgstr ""
 
-#: vetero_displayd.cc:213
-msgid "Humidity"
+#: vetero_displayd.cc:189
+msgid "Humid"
 msgstr ""
 
-#: vetero_displayd.cc:217
-msgid "Dew point"
-msgstr ""
-
-#: vetero_displayd.cc:221
+#: vetero_displayd.cc:196
 msgid "Wind speed"
 msgstr ""
 
-#: vetero_displayd.cc:227
+#: vetero_displayd.cc:204
 msgid "Rain"
+msgstr ""
+
+#: vetero_displayd.cc:209
+msgid "Air pressure"
 msgstr ""
