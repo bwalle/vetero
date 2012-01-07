@@ -280,7 +280,7 @@ CurrentWeather DbAccess::queryCurrentWeather() const
 
     Database::DbResultVector result = m_db->executeSqlQuery(
         "SELECT   strftime('%%s', datetime(timestamp, 'utc')), "
-        "         temp, humid, dewpoint, wind, wind_bft, rain, pressure "
+        "         temp, humid, dewpoint, wind, wind_bft, pressure "
         "FROM     weatherdata "
         "ORDER BY timestamp DESC "
         "LIMIT 1"
