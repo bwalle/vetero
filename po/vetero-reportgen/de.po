@@ -86,7 +86,7 @@ msgstr "Niederschlag [l/m²]"
 
 #: dayreportgenerator.cc:313
 msgid "Rain profile"
-msgstr ""
+msgstr "Niederschlagsverlauf"
 
 #: dayreportgenerator.cc:301 monthreportgenerator.cc:225
 msgid "Temperature"
