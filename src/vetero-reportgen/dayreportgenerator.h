@@ -94,6 +94,14 @@ class DayReportGenerator : public ReportGenerator
         void createRainDiagram();
 
         /**
+         * \brief Creates the pressure diagram for one day
+         *
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
+         */
+        void createPressureDiagram();
+
+        /**
          * \brief Creates the HTML page
          *
          * \exception common::ApplicationError on general error
@@ -101,9 +109,18 @@ class DayReportGenerator : public ReportGenerator
          */
         void createHtml();
 
+        /**
+         * \brief Checks if we have pressure data for the given day
+         *
+         * \exception common::ApplicationError on general error
+         * \exception common::DatabaseError if the SQL is invalid
+         */
+        bool havePressureData() const;
+
     private:
         std::string m_dateString;
         bw::Datetime m_date;
+        mutable int m_havePressure; // 0=false, 1=true, -1=not set
 };
 
 } // end namespace reportgen

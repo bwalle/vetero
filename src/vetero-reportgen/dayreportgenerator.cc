@@ -35,6 +35,7 @@ DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
                                        const std::string    &date)
     : ReportGenerator(reportGenerator)
     , m_dateString(date)
+    , m_havePressure(-1)
 {}
 
 void DayReportGenerator::generateReports()
@@ -78,6 +79,8 @@ void DayReportGenerator::generateOneReport(const std::string &date)
     createHumidityDiagram();
     createWindDiagram();
     createRainDiagram();
+    if (havePressureData())
+        createPressureDiagram();
 
     createHtml();
 }
@@ -229,6 +232,38 @@ void DayReportGenerator::createRainDiagram()
     plot.plot(result);
 }
 
+void DayReportGenerator::createPressureDiagram()
+{
+    BW_DEBUG_DBG("Generating pressure diagrams for %s", m_dateString.c_str());
+
+    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+        "SELECT   time(timestamp), pressure "
+        "FROM     weatherdata_float "
+        "WHERE    jdate = julianday(?)"
+        "         AND pressure > 0 "
+        "ORDER BY timestamp",
+        m_date.strftime("%Y-%m-%d 12:00").c_str()
+    );
+
+    Gnuplot plot(reportgen()->configuration());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
+    plot.setOutputFile(nameProvider().dailyDiagram(m_date, "pressure"));
+    plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
+    plot << "set ylabel '" << _("Air pressure [hPa]") << "'\n";
+    plot << "set format x '%H:%M'\n";
+    plot << "set grid\n";
+    plot << "set timefmt '%H:%M:%S'\n";
+    plot << "set xdata time\n";
+    plot << "set xrange ['00:00:00' : '24:00:00']\n";
+    plot << "set xtics format '%H:%M'\n";
+    plot << "set xtics '02:00'\n";
+    plot << "set yrange [960 : 1050]\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with lines notitle linecolor rgb '#ff0000' lw 2\n";
+
+    plot.plot(result);
+}
+
 void DayReportGenerator::createHtml()
 {
     std::string filename(nameProvider().dailyIndex(m_date));
@@ -279,8 +314,32 @@ void DayReportGenerator::createHtml()
     html.img(nameProvider().dailyDiagramLink(m_date, "rain"));
     html.addTopLink();
 
+    if (havePressureData()) {
+        html.addSection("Luftdruck", "Luftdruck", "pressure");
+        html.img(nameProvider().dailyDiagramLink(m_date, "pressure"));
+        html.addTopLink();
+    }
+
     if (!html.write(filename))
         throw common::ApplicationError("Unable to write HTML documentation to '"+ filename +"'");
+}
+
+bool DayReportGenerator::havePressureData() const
+{
+    if (m_havePressure == -1) {
+        common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+            "SELECT   count(*) "
+            "FROM     weatherdata "
+            "WHERE    jdate = julianday(?) "
+            "         AND pressure IS NOT NULL "
+            "ORDER BY timestamp",
+            m_date.strftime("%Y-%m-%d 12:00").c_str()
+        );
+
+        m_havePressure = (bw::from_str<int>(result.at(0).at(0)) > 0);
+    }
+
+    return m_havePressure;
 }
 
 } // end namespace reportgen
