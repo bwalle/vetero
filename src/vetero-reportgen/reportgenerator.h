@@ -76,8 +76,7 @@ class ReportGenerator
          *
          * \exception common::ApplicationError if something failed
          */
-        virtual void generateReports()
-        throw (common::ApplicationError) = 0;
+        virtual void generateReports() = 0;
 
     private:
         VeteroReportgen *m_reportgen;

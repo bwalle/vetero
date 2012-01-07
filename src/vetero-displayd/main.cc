@@ -21,7 +21,6 @@
 
 #include "vetero_displayd.h"
 
-// -------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
     vetero::display::VeteroDisplayd displayd;

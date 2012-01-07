@@ -36,7 +36,6 @@
 namespace vetero {
 namespace common {
 
-// -------------------------------------------------------------------------------------------------
 std::string str_printf(const char *format, ...)
 {
     std::va_list ap;
@@ -48,7 +47,6 @@ std::string str_printf(const char *format, ...)
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string str_printf_l(const char *format, const char *locale, ...)
 {
     std::va_list ap;
@@ -61,13 +59,11 @@ std::string str_printf_l(const char *format, const char *locale, ...)
 
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string str_vprintf(const char *format, va_list ap)
 {
     return str_vprintf_l(format, NULL, ap);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
 {
     // uselocale() is the thread-safe variant of setlocale()
@@ -105,9 +101,7 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 pid_t start_background(const std::string &process, const std::vector<std::string> &args)
-    throw (common::ApplicationError)
 {
     pid_t childpid = fork();
     if (childpid == 0) {
@@ -127,9 +121,7 @@ pid_t start_background(const std::string &process, const std::vector<std::string
     throw SystemError("Unable to fork()", errno);
 }
 
-// -------------------------------------------------------------------------------------------------
 void compress_file(const std::string &filename)
-throw (common::ApplicationError)
 {
     // use the C file I/O since it's equivalent with zlib I/O
 
@@ -166,9 +158,7 @@ throw (common::ApplicationError)
         throw common::ApplicationError("Unable to write to '" + filename + "'");
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string realpath(const std::string &filename)
-throw (common::ApplicationError)
 {
     char *resolved = ::realpath(filename.c_str(), NULL);
     if (!resolved)

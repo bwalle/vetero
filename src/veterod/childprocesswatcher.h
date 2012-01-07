@@ -67,8 +67,7 @@ class ChildProcessWatcher {
          *
          * \param[in] pid the PID of the child process
          */
-        void addChild(pid_t pid)
-        throw (common::ApplicationError);
+        void addChild(pid_t pid);
 
         /**
          * \brief Calls waitpid() on all monitored chilren.

@@ -23,26 +23,22 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
-ValidDataCache::ValidDataCache(common::DbAccess &dbAccess) throw (common::DatabaseError)
+ValidDataCache::ValidDataCache(common::DbAccess &dbAccess)
     : m_dbAccess(dbAccess)
 {
     m_dataDays = m_dbAccess.dataDays();
     m_dataMonths = m_dbAccess.dataMonths();
 }
 
-// -------------------------------------------------------------------------------------------------
 ValidDataCache::~ValidDataCache()
 {}
 
-// -------------------------------------------------------------------------------------------------
 bool ValidDataCache::dataAtDay(const bw::Datetime &day) const
 {
     std::string dayStr = day.strftime("%Y-%m-%d");
     return std::binary_search(m_dataDays.begin(), m_dataDays.end(), dayStr);
 }
 
-// -------------------------------------------------------------------------------------------------
 bool ValidDataCache::dataInMonth(const bw::Datetime &month) const
 {
     std::string monthStr = month.strftime("%Y-%m");

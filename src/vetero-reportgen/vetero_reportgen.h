@@ -87,8 +87,7 @@ class VeteroReportgen : public common::VeteroApplication
          * \exception common::ApplicationError if the configuration file cannot be read or parsed,
          *            see above for more information.
          */
-        void readConfiguration()
-        throw (common::ApplicationError);
+        void readConfiguration();
 
         /**
          * \brief Parse the command line
@@ -99,8 +98,7 @@ class VeteroReportgen : public common::VeteroApplication
          *         \c false if the application should be quit
          * \exception ApplicationError if parsing the command line failed.
          */
-        bool parseCommandLine(int argc, char *argv[])
-        throw (common::ApplicationError);
+        bool parseCommandLine(int argc, char *argv[]);
 
         /**
          * \brief Opens the database connection
@@ -110,8 +108,7 @@ class VeteroReportgen : public common::VeteroApplication
          *
          * \exception common::ApplicationError if it's not possible to create the database.
          */
-        void openDatabase()
-        throw (common::ApplicationError);
+        void openDatabase();
 
         /**
          * \brief Main loop of the application

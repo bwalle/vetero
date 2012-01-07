@@ -35,40 +35,33 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
 VeteroReportgen::VeteroReportgen()
     : VeteroApplication("vetero-reportgen")
     , m_noConfigFatal(false)
     , m_upload(false)
 {}
 
-// -------------------------------------------------------------------------------------------------
 vetero::common::Sqlite3Database &VeteroReportgen::database()
 {
     return m_database;
 }
 
-// -------------------------------------------------------------------------------------------------
 vetero::common::Configuration &VeteroReportgen::configuration()
 {
     return *m_configuration;
 }
 
-// -------------------------------------------------------------------------------------------------
 const vetero::common::Configuration &VeteroReportgen::configuration() const
 {
     return *m_configuration;
 }
 
-// -------------------------------------------------------------------------------------------------
 const ValidDataCache &VeteroReportgen::validDataCache() const
 {
     return *m_validDataCache;
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroReportgen::readConfiguration()
-    throw (common::ApplicationError)
 {
     m_configuration.reset(new common::Configuration(m_configfile));
     if (!m_configuration->configurationRead() && m_noConfigFatal)
@@ -80,9 +73,7 @@ void VeteroReportgen::readConfiguration()
     textdomain("vetero-reportgen");
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroReportgen::openDatabase()
-    throw (common::ApplicationError)
 {
     try {
         m_database.open(m_configuration->databasePath(), common::Sqlite3Database::FLAG_READONLY);
@@ -98,9 +89,7 @@ void VeteroReportgen::openDatabase()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 bool VeteroReportgen::parseCommandLine(int argc, char *argv[])
-    throw (common::ApplicationError)
 {
     bw::OptionGroup generalGroup("General Options");
     generalGroup.addOption("help", 'h', bw::OT_FLAG,
@@ -169,7 +158,6 @@ bool VeteroReportgen::parseCommandLine(int argc, char *argv[])
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroReportgen::uploadReports()
 {
     std::string command(m_configuration->reportUploadCommand());
@@ -188,7 +176,6 @@ void VeteroReportgen::uploadReports()
                      command.c_str(), WEXITSTATUS(ret));
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroReportgen::exec()
 {
     for (std::vector<std::string>::const_iterator it = m_jobs.begin(); it != m_jobs.end(); ++it) {

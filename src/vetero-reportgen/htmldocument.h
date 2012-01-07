@@ -283,7 +283,6 @@ class HtmlDocument
 /* }}} */
 /* Template implementation {{{ */
 
-// -------------------------------------------------------------------------------------------------
 template<typename T>
 HtmlDocument &HtmlDocument::operator<<(const T &t)
 {

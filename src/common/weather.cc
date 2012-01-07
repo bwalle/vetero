@@ -22,7 +22,6 @@
 namespace vetero {
 namespace common {
 
-// -------------------------------------------------------------------------------------------------
 int Weather::windSpeedToBft(double windspeed)
 {
     int kmh = static_cast<int>(round(windspeed));
@@ -55,20 +54,17 @@ int Weather::windSpeedToBft(double windspeed)
         return 12;
 }
 
-// -------------------------------------------------------------------------------------------------
 int Weather::windSpeedToBft(int windspeed)
 {
     return windSpeedToBft(windspeed/100.0);
 }
 
-// -------------------------------------------------------------------------------------------------
 double Weather::dewpoint(double temp, double humid)
 {
     return (241.2 * std::log(humid/100.0) + ((4222.03716*temp)/(241.2+temp))) /
             (17.5043 - log(humid/100.0) - ((17.5043*temp)/(241.2+temp)));
 }
 
-// -------------------------------------------------------------------------------------------------
 int Weather::dewpoint(int temp, int humid)
 {
     double dp = dewpoint(temp/100.0, humid/100.0);

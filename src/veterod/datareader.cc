@@ -25,16 +25,13 @@ namespace daemon {
 
 /* DataReader {{{ */
 
-// -------------------------------------------------------------------------------------------------
 DataReader::DataReader(const std::string &deviceName, int baud)
     : m_serialDeviceName(deviceName)
     , m_serialDevice(m_serialDeviceName)
     , m_baud(baud)
 {}
 
-// -------------------------------------------------------------------------------------------------
 void DataReader::openConnection()
-    throw (common::ApplicationError)
 {
     if (!m_serialDevice.openPort())
         throw common::ApplicationError("Unable to open port '"+ m_serialDeviceName + "': " +
@@ -46,9 +43,7 @@ void DataReader::openConnection()
     BW_DEBUG_INFO("Connection to serial port etablished.");
 }
 
-// -------------------------------------------------------------------------------------------------
 vetero::common::UsbWde1Dataset DataReader::read()
-    throw (common::ApplicationError)
 {
     std::string line;
 
@@ -79,9 +74,7 @@ vetero::common::UsbWde1Dataset DataReader::read()
     return data;
 }
 
-// -------------------------------------------------------------------------------------------------
 vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line) const
-    throw (common::ApplicationError)
 {
     const int TEMPERATURE_INDEX = 19;
     const int HUMIDITY_INDEX    = 20;

@@ -46,8 +46,7 @@ class ValidDataCache
          * \param[in] dbAccess a reference to a database access object
          * \exception common::DatabaseError if retrieving information from the DB failed
          */
-        ValidDataCache(common::DbAccess &dbAccess)
-        throw (common::DatabaseError);
+        ValidDataCache(common::DbAccess &dbAccess);
 
         /**
          * \brief Virtual d'tor

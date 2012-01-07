@@ -30,7 +30,6 @@
 namespace vetero {
 namespace daemon {
 
-// -------------------------------------------------------------------------------------------------
 static void sigchild_handler(int signo)
 {
     assert(signo== SIGCHLD);
@@ -38,23 +37,19 @@ static void sigchild_handler(int signo)
     ChildProcessWatcher::instance()->handleZombies();
 }
 
-// -------------------------------------------------------------------------------------------------
 ChildProcessWatcher::ChildProcessWatcher()
 {
     if (std::signal(SIGCHLD, sigchild_handler) == SIG_ERR)
         BW_ERROR_ERR("Unable to register handler for SIGCHLD: %s", std::strerror(errno));
 }
 
-// -------------------------------------------------------------------------------------------------
 ChildProcessWatcher::~ChildProcessWatcher()
 {
     if (std::signal(SIGCHLD, SIG_IGN) == SIG_ERR)
         BW_ERROR_ERR("Unable to unregister handler for SIGCHLD: %s", std::strerror(errno));
 }
 
-// -------------------------------------------------------------------------------------------------
 void ChildProcessWatcher::addChild(pid_t pid)
-    throw (common::ApplicationError)
 {
     sigset_t set;
     sigemptyset(&set);
@@ -72,7 +67,6 @@ void ChildProcessWatcher::addChild(pid_t pid)
         throw common::ApplicationError("Unable to unblock SIGCHLD");
 }
 
-// -------------------------------------------------------------------------------------------------
 bool ChildProcessWatcher::wait(pid_t pid)
 {
     int status;
@@ -104,7 +98,6 @@ bool ChildProcessWatcher::wait(pid_t pid)
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void ChildProcessWatcher::handleZombies()
 {
     bool childTerminated;
@@ -119,7 +112,6 @@ void ChildProcessWatcher::handleZombies()
     } while (childTerminated);
 }
 
-// -------------------------------------------------------------------------------------------------
 ChildProcessWatcher *ChildProcessWatcher::instance()
 {
     static ChildProcessWatcher instance;

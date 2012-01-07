@@ -29,7 +29,6 @@
 namespace vetero {
 namespace display {
 
-// --------------------------------------------------------------------------------------------------
 std::string queryNativeCharset()
 {
     static std::string charset;
@@ -44,16 +43,12 @@ std::string queryNativeCharset()
     return charset;
 }
 
-// --------------------------------------------------------------------------------------------------
 std::string native2latin1(const std::string &native)
-throw (CharsetError)
 {
     return toLatin1(native, "");
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string toLatin1(const std::string &stringToConvert, const std::string &charset)
-    throw (CharsetError)
 {
     std::string sourceCharset = charset;
     
@@ -90,7 +85,6 @@ std::string toLatin1(const std::string &stringToConvert, const std::string &char
     return result;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string latin12hd44780(const std::string &latin1)
 {
     std::string result;

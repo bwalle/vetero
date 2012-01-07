@@ -64,8 +64,7 @@ class VeteroApplication
          *            but redirected into \p filename.
          * \exception common::ApplicationError if the file cannot be created or if \p loglevel is invalid.
          */
-        void setupDebugLogging(const std::string &loglevel, const std::string &filename)
-        throw (common::ApplicationError);
+        void setupDebugLogging(const std::string &loglevel, const std::string &filename);
 
         /**
          * \brief Setup the error logging for the application
@@ -76,8 +75,7 @@ class VeteroApplication
          *            (if \p logfile is not a file but <tt>'syslog'</tt>, <tt>'stderr'</tt> or
          *            <tt>'stdout'</tt>, then no exception can be thrown)
          */
-        void setupErrorLogging(const std::string &errorLogfile)
-        throw (common::ApplicationError);
+        void setupErrorLogging(const std::string &errorLogfile);
 
     private:
         std::string m_applicationName;

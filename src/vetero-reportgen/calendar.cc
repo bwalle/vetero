@@ -22,7 +22,6 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
 int Calendar::daysPerMonth(int year, int month)
 {
     switch (month) {
@@ -49,13 +48,11 @@ int Calendar::daysPerMonth(int year, int month)
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 int Calendar::daysPerMonth(const bw::Datetime &datetime)
 {
     return daysPerMonth(datetime.year(), datetime.month());
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Calendar::dayAbbreviation(int wday)
 {
     // use Nov 2010 since it has Monday as first day of the month
@@ -63,7 +60,6 @@ std::string Calendar::dayAbbreviation(int wday)
     return datetime.strftime("%a");
 }
 
-// -------------------------------------------------------------------------------------------------
 bool Calendar::isLeapYear(int year)
 {
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);

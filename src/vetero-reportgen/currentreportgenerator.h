@@ -48,8 +48,7 @@ class CurrentReportGenerator : public ReportGenerator {
          *
          * \exception common::ApplicationError if something failed
          */
-        void generateReports()
-        throw (common::ApplicationError);
+        void generateReports();
 
     protected:
         /**

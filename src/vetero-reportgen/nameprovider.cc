@@ -24,21 +24,17 @@ namespace reportgen {
 
 /* NameProvider {{{ */
 
-// -------------------------------------------------------------------------------------------------
 const std::string NameProvider::HTML_EXTENSION(".xhtml");
 const std::string NameProvider::SVG_EXTENSION(".svgz");
 const std::string NameProvider::INDEX_HTML("index.xhtml");
 
-// -------------------------------------------------------------------------------------------------
 NameProvider::NameProvider(const VeteroReportgen &reportgen)
     : m_reportgen(reportgen)
 {}
 
-// -------------------------------------------------------------------------------------------------
 NameProvider::~NameProvider()
 {}
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::dailyDir(const bw::Datetime &date) const
 {
     return bw::FileUtils::join(
@@ -47,31 +43,26 @@ std::string NameProvider::dailyDir(const bw::Datetime &date) const
     );
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::dailyDirLink(const bw::Datetime &date) const
 {
     return date.strftime("/%Y/%m/%d/");
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::dailyIndex(const bw::Datetime &date) const
 {
     return bw::FileUtils::join(dailyDir(date), INDEX_HTML);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::dailyDiagram(const bw::Datetime &date, const std::string &type) const
 {
     return bw::FileUtils::join(dailyDir(date), type + SVG_EXTENSION);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::dailyDiagramLink(const bw::Datetime &date, const std::string &type) const
 {
     return bw::FileUtils::join(date.strftime("/%Y/%m/%d"), type + SVG_EXTENSION);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::monthlyDir(const bw::Datetime &date) const
 {
     return bw::FileUtils::join(
@@ -80,37 +71,31 @@ std::string NameProvider::monthlyDir(const bw::Datetime &date) const
     );
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::monthlyDirLink(const bw::Datetime &date) const
 {
     return date.strftime("/%Y/%m/");
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::monthlyIndex(const bw::Datetime &date) const
 {
     return bw::FileUtils::join(monthlyDir(date), INDEX_HTML);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::monthlyDiagram(const bw::Datetime &date, const std::string &type) const
 {
     return bw::FileUtils::join(monthlyDir(date), type + SVG_EXTENSION);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::monthlyDiagramLink(const bw::Datetime &date, const std::string &type) const
 {
     return bw::FileUtils::join(date.strftime("/%Y/%m"), type + SVG_EXTENSION);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::indexDir() const
 {
     return m_reportgen.configuration().reportDirectory();
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string NameProvider::indexPage() const
 {
     return bw::FileUtils::join(indexDir(), INDEX_HTML);

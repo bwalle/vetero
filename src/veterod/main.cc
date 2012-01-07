@@ -21,7 +21,6 @@
 
 #include "veterod.h"
 
-// -------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
     vetero::daemon::Veterod veterod;

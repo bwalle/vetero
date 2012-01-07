@@ -134,8 +134,7 @@ class Database : private bw::Noncopyable {
          * \exception DatabaseError if the SQL statement cannot be executed
          * \see executeSqlQuery()
          */
-        virtual void executeSql(const char *sql, ...)
-        throw (DatabaseError);
+        virtual void executeSql(const char *sql, ...);
 
         /**
          * \brief Executes a SQL query and return the results
@@ -164,8 +163,7 @@ class Database : private bw::Noncopyable {
          * \return the result vector as described in DbResultVector
          * \exception DatabaseError if the SQL statement cannot be executed
          */
-        virtual DbResultVector executeSqlQuery(const char *sql, ...)
-        throw (DatabaseError);
+        virtual DbResultVector executeSqlQuery(const char *sql, ...);
 
     protected:
         /**
@@ -183,8 +181,7 @@ class Database : private bw::Noncopyable {
          * \return the result vector as described in DbResultVector
          * \exception DatabaseError if the SQL statement cannot be executed
          */
-        virtual DbResultVector vexecuteSqlQuery(const char *sql, va_list args)
-        throw (DatabaseError) = 0;
+        virtual DbResultVector vexecuteSqlQuery(const char *sql, va_list args) = 0;
 };
 
 /* }}} */
@@ -237,8 +234,7 @@ class Sqlite3Database : public Database {
          *            handle.
          * \see close()
          */
-        virtual void open(const std::string &connection, int flags)
-        throw (DatabaseError, std::bad_alloc);
+        virtual void open(const std::string &connection, int flags);
 
         /**
          * \copydoc Database::close()
@@ -249,16 +245,14 @@ class Sqlite3Database : public Database {
         /**
          * \copydoc Database::vexecuteSqlQuery()
          */
-        virtual DbResultVector vexecuteSqlQuery(const char *sql, va_list args)
-        throw (DatabaseError);
+        virtual DbResultVector vexecuteSqlQuery(const char *sql, va_list args);
 
         /**
          * \brief Registers custom database functions
          *
          * \exception DatabaseError if registering fails
          */
-        void registerCustomFunctions()
-        throw (DatabaseError);
+        void registerCustomFunctions();
 
     private:
         sqlite3     *m_connection;

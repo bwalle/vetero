@@ -61,16 +61,14 @@ class VeteroDisplayd : public common::VeteroApplication
          *         \c false if the application should be quit
          * \exception ApplicationError if parsing the command line failed.
          */
-        bool parseCommandLine(int argc, char *argv[])
-        throw (common::ApplicationError);
+        bool parseCommandLine(int argc, char *argv[]);
 
         /**
          * \brief Installs the termination signal handlers
          *
          * \exception common::ApplicationError if registering the signal handlers failed.
          */
-        void installSignalhandlers()
-        throw (common::ApplicationError);
+        void installSignalhandlers();
 
         /**
          * \brief Reads the configuration file
@@ -81,21 +79,20 @@ class VeteroDisplayd : public common::VeteroApplication
          * file exists and if yes, read it. Only if the file exists and cannot be parsed, an
          * \c common::ApplicationError is thrown.
          *
-         * \exception common::ApplicationError if the configuration file cannot be read or parsed, see
-         *            above for more information.
+         * \exception common::ApplicationError if the configuration file cannot be read or parsed,
+         *            see above for more information.
          */
-        void readConfiguration()
-        throw (common::ApplicationError);
+        void readConfiguration();
 
         /**
          * \brief Opens the database connection
          *
-         * Opens the database as specified on the command line. If it doesn't exist, the database will be created.
+         * Opens the database as specified on the command line. If it doesn't exist, the database
+         * will be created.
          *
          * \exception common::ApplicationError if it's not possible to create the database.
          */
-        void openDatabase()
-        throw (common::ApplicationError);
+        void openDatabase();
 
         /**
          * \brief Opens the display connection
@@ -104,16 +101,14 @@ class VeteroDisplayd : public common::VeteroApplication
          *
          * \throw common::ApplicationError if some error occurs.
          */
-        void openDisplay()
-        throw (common::ApplicationError);
+        void openDisplay();
 
         /**
          * \brief Main loop of the application
          *
          * This is the main part of the application.
          */
-        void exec()
-        throw (common::ApplicationError);
+        void exec();
 
     protected:
         /**
@@ -122,8 +117,7 @@ class VeteroDisplayd : public common::VeteroApplication
          * \param[in] weather the weather data to display
          * \exception ApplicationError if an error occurred
          */
-        void updateDisplay(const common::CurrentWeather &weather)
-        throw (common::ApplicationError);
+        void updateDisplay(const common::CurrentWeather &weather);
 
     private:
         std::string m_configfile;

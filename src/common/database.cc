@@ -32,9 +32,7 @@ namespace common {
 
 /* Database {{{ */
 
-// -------------------------------------------------------------------------------------------------
 void Database::executeSql(const char *sql, ...)
-        throw (DatabaseError)
 {
     va_list ap;
 
@@ -43,9 +41,7 @@ void Database::executeSql(const char *sql, ...)
     va_end(ap);
 }
 
-// -------------------------------------------------------------------------------------------------
 Database::DbResultVector Database::executeSqlQuery(const char *sql, ...)
-        throw (DatabaseError)
 {
     va_list ap;
 
@@ -59,7 +55,6 @@ Database::DbResultVector Database::executeSqlQuery(const char *sql, ...)
 /* }}} */
 /* function for the database {{{ */
 
-// -------------------------------------------------------------------------------------------------
 static void sqlite3_beaufort(sqlite3_context* ctx, int number, sqlite3_value **values)
 {
     assert(number == 1);
@@ -72,20 +67,16 @@ static void sqlite3_beaufort(sqlite3_context* ctx, int number, sqlite3_value **v
 /* }}} */
 /* Sqlite3Database {{{ */
 
-// -------------------------------------------------------------------------------------------------
 Sqlite3Database::Sqlite3Database()
     : m_connection(NULL)
 {}
 
-// -------------------------------------------------------------------------------------------------
 Sqlite3Database::~Sqlite3Database()
 {
     Sqlite3Database::close();
 }
 
-// -------------------------------------------------------------------------------------------------
 void Sqlite3Database::open(const std::string &connection, int flags)
-    throw (DatabaseError, std::bad_alloc)
 {
     int sqlite3_flags = 0;
 
@@ -110,7 +101,6 @@ void Sqlite3Database::open(const std::string &connection, int flags)
     registerCustomFunctions();
 }
 
-// -------------------------------------------------------------------------------------------------
 void Sqlite3Database::close()
 {
     if (m_connection) {
@@ -119,7 +109,6 @@ void Sqlite3Database::close()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 static int vetero_sqlite3_callback(void *cookie, int columns, char **values, char **columnNames)
 {
     Database::DbResultVector *results = static_cast<Database::DbResultVector *>(cookie);
@@ -134,9 +123,7 @@ static int vetero_sqlite3_callback(void *cookie, int columns, char **values, cha
     return SQLITE_OK;
 }
 
-// -------------------------------------------------------------------------------------------------
 Database::DbResultVector Sqlite3Database::vexecuteSqlQuery(const char *sql, va_list ap)
-    throw (DatabaseError)
 {
     char *finished_sql = sqlite3_vmprintf(bw::replace_char(sql, '?', "%Q").c_str(), ap);
     if (!finished_sql)
@@ -165,9 +152,7 @@ Database::DbResultVector Sqlite3Database::vexecuteSqlQuery(const char *sql, va_l
     return results;
 }
 
-// -------------------------------------------------------------------------------------------------
 void Sqlite3Database::registerCustomFunctions()
-    throw (DatabaseError)
 {
     // register 'VETERO_BEAUFORT' function
     int err = sqlite3_create_function(
@@ -193,7 +178,6 @@ void Sqlite3Database::registerCustomFunctions()
 
 /* Print result vector {{{ */
 
-// -------------------------------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbResultVector &vector)
 {
     for (int i = 0; i < vector.size(); i++) {

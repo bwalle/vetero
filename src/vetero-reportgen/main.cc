@@ -22,7 +22,6 @@
 
 #include "vetero_reportgen.h"
 
-// -------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
     vetero::reportgen::VeteroReportgen reportgen;

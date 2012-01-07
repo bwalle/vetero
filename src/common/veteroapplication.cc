@@ -27,13 +27,11 @@ namespace common {
 
 /* VeteroApplication {{{ */
 
-// -------------------------------------------------------------------------------------------------
 VeteroApplication::VeteroApplication(const std::string &applicationName)
     : m_applicationName(applicationName)
     , m_logfile(NULL)
 {}
 
-// -------------------------------------------------------------------------------------------------
 VeteroApplication::~VeteroApplication()
 {
     if (m_logfile) {
@@ -42,9 +40,7 @@ VeteroApplication::~VeteroApplication()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroApplication::setupDebugLogging(const std::string &levelstring, const std::string &filename)
-    throw (common::ApplicationError)
 {
     bw::Debug *debugger = bw::Debug::debug();
 
@@ -73,9 +69,7 @@ void VeteroApplication::setupDebugLogging(const std::string &levelstring, const 
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroApplication::setupErrorLogging(const std::string &errorLogfile)
-    throw (common::ApplicationError)
 {
     if (errorLogfile == "syslog")
         bw::Errorlog::configure(bw::Errorlog::LM_SYSLOG, "veterod");
@@ -85,7 +79,6 @@ void VeteroApplication::setupErrorLogging(const std::string &errorLogfile)
             throw common::ApplicationError("Unable to setup error logging for '" + errorLogfile + "'");
     }
 }
-
 
 /* }}} */
 

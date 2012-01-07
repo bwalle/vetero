@@ -29,20 +29,17 @@ namespace reportgen {
 
 /* HtmlDocument {{{ */
 
-// -------------------------------------------------------------------------------------------------
 HtmlDocument::HtmlDocument(const VeteroReportgen *reportgen)
     : m_reportgen(reportgen)
     , m_displayTitle(true)
     , m_autoReload(-1)
 {}
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::setTitle(const std::string &title)
 {
     m_headerInfo.title = title;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::setForwardNavigation(const std::string &link, const std::string &linkTitle)
 {
     bool active = !link.empty();
@@ -50,7 +47,6 @@ void HtmlDocument::setForwardNavigation(const std::string &link, const std::stri
     m_headerInfo.haveNavigation = true;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::setBackwardNavigation(const std::string &link, const std::string &linkTitle)
 {
     bool active = !link.empty();
@@ -58,7 +54,6 @@ void HtmlDocument::setBackwardNavigation(const std::string &link, const std::str
     m_headerInfo.haveNavigation = true;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::setUpNavigation(const std::string &link, const std::string &linkTitle)
 {
     bool active = !link.empty();
@@ -66,31 +61,26 @@ void HtmlDocument::setUpNavigation(const std::string &link, const std::string &l
     m_headerInfo.haveNavigation = true;
 }
 
-// -------------------------------------------------------------------------------------------------
 int HtmlDocument::autoReload() const
 {
     return m_autoReload;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::setAutoReload(int reloadTime)
 {
     m_autoReload = reloadTime;
 }
 
-// -------------------------------------------------------------------------------------------------
 bool HtmlDocument::displayTitle() const
 {
     return m_displayTitle;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::setDisplayTitle(bool displayTitle)
 {
     m_displayTitle = displayTitle;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::addSection(const std::string &title,
                               const std::string &shortName,
                               const std::string &id)
@@ -102,25 +92,21 @@ void HtmlDocument::addSection(const std::string &title,
     m_sections.push_back(section);
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::startParagraph()
 {
     m_bodyStream << "<p>";
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::endParagraph()
 {
     m_bodyStream << "</p>";
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::link(const std::string &target, const std::string &name, bool active)
 {
     m_bodyStream << generateLink(target, replaceHtml(name), "", active);
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::text(const std::string &text, bool active)
 {
     if (active)
@@ -129,19 +115,16 @@ void HtmlDocument::text(const std::string &text, bool active)
         m_bodyStream << "<span class='inactive'>" << replaceHtml(text) << "</span>";
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::img(const std::string &filename)
 {
     m_bodyStream << "<img src=\"" << filename << "\" />";
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::addTopLink()
 {
     m_bodyStream << "<a href=\"#top\">^</a>";
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string HtmlDocument::replaceHtml(const std::string &text)
 {
     std::string ret(text);
@@ -153,7 +136,6 @@ std::string HtmlDocument::replaceHtml(const std::string &text)
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 bool HtmlDocument::write(const std::string &filename)
 {
     std::ofstream htmlFile(filename.c_str());
@@ -166,7 +148,6 @@ bool HtmlDocument::write(const std::string &filename)
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::write(std::ostream &os)
 {
     std::string titleColor1(m_reportgen->configuration().reportTitleColor1());
@@ -250,7 +231,6 @@ void HtmlDocument::write(std::ostream &os)
     os << "</body></html>";
 }
 
-// -------------------------------------------------------------------------------------------------
 void HtmlDocument::writeCss(std::ostream &os)
 {
     os << "<link href='http://fonts.googleapis.com/css?family=Droid+Serif:regular,bold' "
@@ -288,7 +268,6 @@ void HtmlDocument::writeCss(std::ostream &os)
     os << "</style>" << std::endl;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string HtmlDocument::generateLink(const std::string &target,
                                        const std::string &name,
                                        const std::string &title,

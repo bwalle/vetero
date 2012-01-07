@@ -41,7 +41,6 @@ namespace common {
 
 /* Confuse error function {{{ */
 
-// -------------------------------------------------------------------------------------------------
 static void configuration_error_function(cfg_t *cfg, const char *fmt, va_list ap)
 {
     bw::Errorlog *errorlog = bw::Errorlog::instance();
@@ -51,7 +50,6 @@ static void configuration_error_function(cfg_t *cfg, const char *fmt, va_list ap
 /* }}} */
 /* Configuration {{{ */
 
-// -------------------------------------------------------------------------------------------------
 Configuration::Configuration(const std::string &preferredFilename)
     : m_serialDevice("/dev/ttyS0")
     , m_serialBaud(9600)
@@ -85,19 +83,16 @@ Configuration::Configuration(const std::string &preferredFilename)
     read(filename);
 }
 
-// -------------------------------------------------------------------------------------------------
 bool Configuration::configurationRead() const
 {
     return m_configurationRead;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::error() const
 {
     return m_error;
 }
 
-// -------------------------------------------------------------------------------------------------
 void Configuration::read(const std::string &filename)
 {
     char *serial_device = NULL, *database_path = NULL;
@@ -205,73 +200,61 @@ void Configuration::read(const std::string &filename)
                  filename.c_str(), str().c_str());
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::serialDevice() const
 {
     return m_serialDevice;
 }
 
-// -------------------------------------------------------------------------------------------------
 int Configuration::serialBaud() const
 {
     return m_serialBaud;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::databasePath() const
 {
     return m_databasePath;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::reportDirectory() const
 {
     return m_reportDirectory;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::reportTitleColor1() const
 {
     return m_reportTitleColor1;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::reportTitleColor2() const
 {
     return m_reportTitleColor2;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::reportUploadCommand() const
 {
     return m_reportUploadCommand;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::locationString() const
 {
     return m_locationString;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::displayName() const
 {
     return m_displayName;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::displayConnection() const
 {
     return m_displayConnection;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::locale() const
 {
     return m_locale;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Configuration::str() const
 {
     std::stringstream ss;

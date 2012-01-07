@@ -51,8 +51,7 @@ class DayReportGenerator : public ReportGenerator
          *
          * \exception common::ApplicationError if something failed
          */
-        virtual void generateReports()
-        throw (common::ApplicationError);
+        virtual void generateReports();
 
     protected:
         /**
@@ -60,8 +59,7 @@ class DayReportGenerator : public ReportGenerator
          *
          * \param[in] date the date string
          */
-        void generateOneReport(const std::string &date)
-        throw (common::ApplicationError, common::DatabaseError);
+        void generateOneReport(const std::string &date);
 
         /**
          * \brief Creates the temperature diagram for one day
@@ -69,8 +67,7 @@ class DayReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createTemperatureDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createTemperatureDiagram();
 
         /**
          * \brief Creates the humidity diagram for one day
@@ -78,8 +75,7 @@ class DayReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createHumidityDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createHumidityDiagram();
 
         /**
          * \brief Creates the wind diagram for one day
@@ -87,8 +83,7 @@ class DayReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createWindDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createWindDiagram();
 
         /**
          * \brief Creates the rain diagram for one day
@@ -96,8 +91,7 @@ class DayReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createRainDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createRainDiagram();
 
         /**
          * \brief Creates the HTML page
@@ -105,8 +99,7 @@ class DayReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createHtml()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createHtml();
 
     private:
         std::string m_dateString;

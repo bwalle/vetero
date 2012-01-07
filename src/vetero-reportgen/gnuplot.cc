@@ -36,10 +36,8 @@ namespace reportgen {
 
 /* Gnuplot {{{ */
 
-// -------------------------------------------------------------------------------------------------
 std::string Gnuplot::PLACEHOLDER = "@TEMPFILE@";
 
-// -------------------------------------------------------------------------------------------------
 Gnuplot::Gnuplot(const common::Configuration &config)
     : m_config(config)
 {
@@ -49,29 +47,24 @@ Gnuplot::Gnuplot(const common::Configuration &config)
     *this << "set rmargin 10\n";
 }
 
-// -------------------------------------------------------------------------------------------------
 Gnuplot::~Gnuplot()
 {}
 
-// -------------------------------------------------------------------------------------------------
 std::string Gnuplot::workingDirectory() const
 {
     return m_workingDirectory;
 }
 
-// -------------------------------------------------------------------------------------------------
 void Gnuplot::setWorkingDirectory(const std::string &workingdir)
 {
     m_workingDirectory = workingdir;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string Gnuplot::outputFile() const
 {
     return m_outputFile;
 }
 
-// -------------------------------------------------------------------------------------------------
 void Gnuplot::setOutputFile(const std::string &output)
 {
     m_outputFile = output;
@@ -79,9 +72,7 @@ void Gnuplot::setOutputFile(const std::string &output)
     *this << "set output '" << m_outputFile << "'\n";
 }
 
-// -------------------------------------------------------------------------------------------------
 void Gnuplot::plot(const StringStringVector &data)
-    throw (common::ApplicationError)
 {
     if (data.empty() || data[0].empty()) {
         BW_ERROR_WARNING("Gnuplot: No data to plot for '%s'", m_outputFile.c_str());
@@ -146,9 +137,7 @@ void Gnuplot::plot(const StringStringVector &data)
     common::compress_file(outputfile);
 }
 
-// -------------------------------------------------------------------------------------------------
 void Gnuplot::storeData(int fd, const StringStringVector &data)
-    throw (common::ApplicationError)
 {
     std::stringstream ss;
 
@@ -180,7 +169,6 @@ void Gnuplot::storeData(int fd, const StringStringVector &data)
         throw common::SystemError("Unable to write all bytes to the temporary file", errno);
 }
 
-// -------------------------------------------------------------------------------------------------
 void Gnuplot::dumpError(int fd)
 {
     off_t ret = lseek(fd, 0, SEEK_SET);
@@ -210,12 +198,10 @@ void Gnuplot::dumpError(int fd)
 /* }}} */
 /* WeatherGnuplot {{{ */
 
-// -------------------------------------------------------------------------------------------------
 WeatherGnuplot::WeatherGnuplot(const common::Configuration &config)
     : Gnuplot(config)
 {}
 
-// -------------------------------------------------------------------------------------------------
 void WeatherGnuplot::addWindY()
 {
     *this << "set ylabel '" << _("Wind speed [km/h])") << "'\n";

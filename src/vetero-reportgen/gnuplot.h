@@ -141,8 +141,7 @@ class Gnuplot
          * \param[in] data the data which should be plot
          * \exception common::ApplicationError on error
          */
-        void plot(const StringStringVector &data)
-        throw (common::ApplicationError);
+        void plot(const StringStringVector &data);
 
     protected:
         /**
@@ -155,8 +154,7 @@ class Gnuplot
          * \param[in] fd the file descriptor where the data is written to
          * \exception common::ApplicationError is writing failed
          */
-        void storeData(int fd, const StringStringVector &data)
-        throw (common::ApplicationError);
+        void storeData(int fd, const StringStringVector &data);
 
         /**
          * \brief Dumps the error information from the given file descriptor to the logging system
@@ -172,7 +170,6 @@ class Gnuplot
         std::string m_outputFile;
 };
 
-// -------------------------------------------------------------------------------------------------
 template<typename T>
 Gnuplot &Gnuplot::operator<<(const T &t)
 {

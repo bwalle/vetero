@@ -63,8 +63,7 @@ class DataReader
          *
          * \exception ApplicationError if the port cannot be opened.
          */
-        void openConnection()
-        throw (common::ApplicationError);
+        void openConnection();
 
         /**
          * \brief Reads one data set
@@ -75,8 +74,7 @@ class DataReader
          * \exception common::ApplicationError if the data could not be interpreted or if reading from the
          *            serial device failed.
          */
-        vetero::common::UsbWde1Dataset read()
-        throw (common::ApplicationError);
+        vetero::common::UsbWde1Dataset read();
 
     protected:
         /**
@@ -86,8 +84,7 @@ class DataReader
          * \return the parsed data set
          * \exception common::ApplicationError if the string is not a valid input line
          */
-        vetero::common::UsbWde1Dataset parseDataset(const std::string &line) const
-        throw (common::ApplicationError);
+        vetero::common::UsbWde1Dataset parseDataset(const std::string &line) const;
 
     private:
         std::string m_serialDeviceName;

@@ -52,8 +52,7 @@ class MonthReportGenerator : public ReportGenerator
          *
          * \exception common::ApplicationError if something failed
          */
-        virtual void generateReports()
-        throw (common::ApplicationError);
+        virtual void generateReports();
 
     protected:
         /**
@@ -61,8 +60,7 @@ class MonthReportGenerator : public ReportGenerator
          *
          * \param[in] month the date string
          */
-        void generateOneReport(const std::string &month)
-        throw (common::ApplicationError, common::DatabaseError);
+        void generateOneReport(const std::string &month);
 
         /**
          * \brief Creates the temperature diagram for one month
@@ -70,8 +68,7 @@ class MonthReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createTemperatureDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createTemperatureDiagram();
 
         /**
          * \brief Creates the wind diagram for one month
@@ -79,8 +76,7 @@ class MonthReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createWindDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createWindDiagram();
 
         /**
          * \brief Creates the rain diagram for one month
@@ -88,8 +84,7 @@ class MonthReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createRainDiagram()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createRainDiagram();
 
         /**
          * \brief Creates the HTML page
@@ -97,8 +92,7 @@ class MonthReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createHtml()
-        throw (common::ApplicationError, common::DatabaseError);
+        void createHtml();
 
         /**
          * \brief Creates the table with the numeric values
@@ -107,8 +101,7 @@ class MonthReportGenerator : public ReportGenerator
          * \exception common::ApplicationError on general error
          * \exception common::DatabaseError if the SQL is invalid
          */
-        void createTable(HtmlDocument &html)
-        throw (common::ApplicationError, common::DatabaseError);
+        void createTable(HtmlDocument &html);
 
     private:
         std::string m_monthString;

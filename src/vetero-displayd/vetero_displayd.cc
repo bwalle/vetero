@@ -39,21 +39,18 @@ namespace display {
 
 static volatile sig_atomic_t s_quit = false;
 
-// -------------------------------------------------------------------------------------------------
 static void veterodisplayd_sighandler(int signal)
 {
     BW_ERROR_WARNING("Signal %d (%s) received. Starting shutdown.", signal, strsignal(signal));
     s_quit = true;
 }
 
-// -------------------------------------------------------------------------------------------------
 static void veterodisplayd_sigusr1_sighandler(int signal)
 {}
 
 /* }}} */
 /* VeteroDisplayd {{{ */
 
-// -------------------------------------------------------------------------------------------------
 VeteroDisplayd::VeteroDisplayd()
     : common::VeteroApplication("vetero-displayd")
     , m_noConfigFatal(false)
@@ -61,7 +58,6 @@ VeteroDisplayd::VeteroDisplayd()
     , m_display(NULL)
 {}
 
-// -------------------------------------------------------------------------------------------------
 VeteroDisplayd::~VeteroDisplayd()
 {
     if (m_display)
@@ -70,9 +66,7 @@ VeteroDisplayd::~VeteroDisplayd()
     delete m_serdispConnection;
 }
 
-// -------------------------------------------------------------------------------------------------
 bool VeteroDisplayd::parseCommandLine(int argc, char *argv[])
-    throw (common::ApplicationError)
 {
     bw::OptionGroup generalGroup("General Options");
     generalGroup.addOption("help", 'h', bw::OT_FLAG,
@@ -122,9 +116,7 @@ bool VeteroDisplayd::parseCommandLine(int argc, char *argv[])
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroDisplayd::installSignalhandlers()
-    throw (common::ApplicationError)
 {
     sig_t ret = std::signal(SIGTERM, veterodisplayd_sighandler);
     if (ret == SIG_ERR)
@@ -139,9 +131,7 @@ void VeteroDisplayd::installSignalhandlers()
         throw common::SystemError("Unable to install signal handler for SIGUSR1", errno);
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroDisplayd::readConfiguration()
-    throw (common::ApplicationError)
 {
     m_configuration.reset(new common::Configuration(m_configfile));
     if (!m_configuration->configurationRead() && m_noConfigFatal)
@@ -153,9 +143,7 @@ void VeteroDisplayd::readConfiguration()
     textdomain("vetero-displayd");
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroDisplayd::openDatabase()
-    throw (common::ApplicationError)
 {
     try {
         m_database.open(m_configuration->databasePath(), common::Sqlite3Database::FLAG_READONLY);
@@ -170,9 +158,7 @@ void VeteroDisplayd::openDatabase()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroDisplayd::openDisplay()
-    throw (common::ApplicationError)
 {
     try {
         std::string displayName = m_configuration->displayName();
@@ -187,9 +173,7 @@ void VeteroDisplayd::openDisplay()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroDisplayd::updateDisplay(const common::CurrentWeather &weather)
-    throw (common::ApplicationError)
 {
     m_display->clear();
 
@@ -227,9 +211,7 @@ void VeteroDisplayd::updateDisplay(const common::CurrentWeather &weather)
     m_display->update();
 }
 
-// -------------------------------------------------------------------------------------------------
 void VeteroDisplayd::exec()
-    throw (common::ApplicationError)
 {
     common::DbAccess dbAccess(&m_database);
 

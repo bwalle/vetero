@@ -32,16 +32,13 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
 MonthReportGenerator::MonthReportGenerator(VeteroReportgen    *reportGenerator,
                                            const std::string  &month)
     : ReportGenerator(reportGenerator)
     , m_monthString(month)
 {}
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::generateReports()
-    throw (common::ApplicationError)
 {
     try {
         if (m_monthString.empty()) {
@@ -58,9 +55,7 @@ void MonthReportGenerator::generateReports()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::generateOneReport(const std::string &date)
-    throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_INFO("Generating month report for %s", date.c_str());
 
@@ -88,9 +83,7 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
     createHtml();
 }
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::createTemperatureDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, temp_min, temp_max, temp_avg "
@@ -122,9 +115,7 @@ void MonthReportGenerator::createTemperatureDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::createWindDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, wind_max "
@@ -162,9 +153,7 @@ void MonthReportGenerator::createWindDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::createRainDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
         "SELECT date, rain, rain "
@@ -203,9 +192,7 @@ void MonthReportGenerator::createRainDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::createHtml()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     std::string filename(nameProvider().monthlyIndex(m_month));
     HtmlDocument html(reportgen());
@@ -255,9 +242,7 @@ void MonthReportGenerator::createHtml()
         throw common::ApplicationError("Unable to write HTML documentation to '"+ filename +"'");
 }
 
-// -------------------------------------------------------------------------------------------------
 void MonthReportGenerator::createTable(HtmlDocument &html)
-    throw (common::ApplicationError, common::DatabaseError)
 {
     struct FormatDescription {
         const char *unit;

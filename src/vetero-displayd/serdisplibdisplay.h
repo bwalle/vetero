@@ -84,8 +84,7 @@ class SerdisplibConnection : private bw::Noncopyable {
          * \param[in] sdcdev the connection string
          * \exception DisplayError if the connection cannot be created
          */
-        SerdisplibConnection(const std::string &sdcdev)
-        throw (DisplayError);
+        SerdisplibConnection(const std::string &sdcdev);
 
         /**
          * \brief Destructor
@@ -145,8 +144,7 @@ class SerdisplibDisplay : private bw::Noncopyable {
          */
         SerdisplibDisplay(SerdisplibConnection  *connection,
                           const std::string     &displayname,
-                          const std::string     &optionstring)
-        throw (DisplayError);
+                          const std::string     &optionstring);
 
         /**
          * \brief Destructor.
@@ -312,8 +310,7 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
          */
         SerdisplibTextDisplay(SerdisplibConnection  *connection,
                               const std::string     &displayname,
-                              const std::string     &optionstring)
-        throw (DisplayError);
+                              const std::string     &optionstring);
 
     public:
         /**
@@ -381,7 +378,6 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
                         int              startColumn,
                         enum DisplayFont font,
                         const char       *text, ...)
-        throw (std::out_of_range, std::bad_alloc, DisplayError)
         BW_COMPILER_PRINTF_FORMAT(5, 6);
 
         /**
@@ -390,8 +386,7 @@ class SerdisplibTextDisplay : public SerdisplibDisplay {
          * \param[in] line the line number, starting with 0.
          * \exception std::out_of_range if \p line is out of range
          */
-        void clearLine(int line)
-        throw (std::out_of_range);
+        void clearLine(int line);
 
     private:
         std::string m_charset;

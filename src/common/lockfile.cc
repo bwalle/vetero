@@ -31,7 +31,6 @@
 namespace vetero {
 namespace common {
 
-// -------------------------------------------------------------------------------------------------
 LockFile::LockFile(const std::string &filename)
     : m_fd(-1)
     , m_filename(filename)
@@ -41,14 +40,12 @@ LockFile::LockFile(const std::string &filename)
         m_error << "Unable to open '" << filename << "': " << std::strerror(errno);
 }
 
-// -------------------------------------------------------------------------------------------------
 LockFile::~LockFile()
 {
     if (!unlock())
         BW_ERROR_ERR("Unable to unlock '%s': %s", m_filename.c_str(), error().c_str());
 }
 
-// -------------------------------------------------------------------------------------------------
 bool LockFile::lockShared()
 {
     if (m_fd < 0)
@@ -65,7 +62,6 @@ bool LockFile::lockShared()
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 bool LockFile::lockExclusive()
 {
     if (m_fd < 0)
@@ -82,7 +78,6 @@ bool LockFile::lockExclusive()
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 bool LockFile::unlock()
 {
     if (m_fd < 0)
@@ -99,7 +94,6 @@ bool LockFile::unlock()
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string LockFile::error() const
 {
     return m_error.str();

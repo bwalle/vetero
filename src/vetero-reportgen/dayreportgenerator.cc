@@ -31,16 +31,13 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
 DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
                                        const std::string    &date)
     : ReportGenerator(reportGenerator)
     , m_dateString(date)
 {}
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::generateReports()
-    throw (common::ApplicationError)
 {
     try {
         if (m_dateString.empty()) {
@@ -57,9 +54,7 @@ void DayReportGenerator::generateReports()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::generateOneReport(const std::string &date)
-    throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_INFO("Generating daily report for %s", date.c_str());
     m_dateString = date;
@@ -87,9 +82,7 @@ void DayReportGenerator::generateOneReport(const std::string &date)
     createHtml();
 }
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::createTemperatureDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating temperature diagrams for %s", m_dateString.c_str());
 
@@ -121,9 +114,7 @@ void DayReportGenerator::createTemperatureDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::createHumidityDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating humidity diagrams for %s", m_dateString.c_str());
 
@@ -153,9 +144,7 @@ void DayReportGenerator::createHumidityDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::createWindDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating wind diagrams for %s", m_dateString.c_str());
 
@@ -195,9 +184,7 @@ void DayReportGenerator::createWindDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::createRainDiagram()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     BW_DEBUG_DBG("Generating rain diagrams for %s", m_dateString.c_str());
 
@@ -242,9 +229,7 @@ void DayReportGenerator::createRainDiagram()
     plot.plot(result);
 }
 
-// -------------------------------------------------------------------------------------------------
 void DayReportGenerator::createHtml()
-    throw (common::ApplicationError, common::DatabaseError)
 {
     std::string filename(nameProvider().dailyIndex(m_date));
 

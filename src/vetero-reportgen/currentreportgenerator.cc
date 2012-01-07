@@ -33,14 +33,11 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
 CurrentReportGenerator::CurrentReportGenerator(VeteroReportgen *reportGenerator)
     : ReportGenerator(reportGenerator)
 {}
 
-// -------------------------------------------------------------------------------------------------
 void CurrentReportGenerator::generateReports()
-    throw (common::ApplicationError)
 {
     BW_DEBUG_INFO("Updating current_weather.svgz");
 
@@ -121,7 +118,6 @@ void CurrentReportGenerator::generateReports()
     common::compress_file(outputfilename);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string CurrentReportGenerator::findTemplate() const
 {
     const char *templateFiles[] = {

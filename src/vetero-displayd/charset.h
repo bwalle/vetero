@@ -86,8 +86,7 @@ std::string queryNativeCharset();
  * \ingroup display
  * \sa toLatin1()
  */
-std::string native2latin1(const std::string &native)
-throw (CharsetError);
+std::string native2latin1(const std::string &native);
 
 /**
  * \brief Converts the given string from an arbitrary charset to Latin1
@@ -105,8 +104,7 @@ throw (CharsetError);
  * \ingroup display
  * \sa native2latin1()
  */
-std::string toLatin1(const std::string &stringToConvert, const std::string &charset)
-throw (CharsetError);
+std::string toLatin1(const std::string &stringToConvert, const std::string &charset);
 
 /**
  * \brief Converts the iso-8859-1 encoded input to the HD44780 display charset

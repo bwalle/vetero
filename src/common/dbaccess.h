@@ -77,8 +77,7 @@ class DbAccess : private bw::Noncopyable
          *
          * \exception if the tables cannot be creates
          */
-        void initTables() const
-        throw (DatabaseError);
+        void initTables() const;
 
         /**
          * \brief Registers temporary views used in the application.
@@ -88,8 +87,7 @@ class DbAccess : private bw::Noncopyable
          *
          * \exception DatabaseError if the tables cannot be created
          */
-        void initViews() const
-        throw (DatabaseError);
+        void initViews() const;
 
         /**
          * \brief Add or update an entry in the misc key/value table
@@ -98,8 +96,7 @@ class DbAccess : private bw::Noncopyable
          * \param[in] value the value as string
          * \exception DatabaseError if executing of the SQL statement failed
          */
-        void writeMiscEntry(const std::string &key, const std::string &value) const
-        throw (DatabaseError);
+        void writeMiscEntry(const std::string &key, const std::string &value) const;
 
         /**
          * \brief Add or update an entry in the misc key/value table
@@ -109,8 +106,7 @@ class DbAccess : private bw::Noncopyable
          * \exception DatabaseError if executing of the SQL statement failed
          */
         template <typename T>
-        void writeMiscEntry(const std::string &key, const T &value) const
-        throw (DatabaseError);
+        void writeMiscEntry(const std::string &key, const T &value) const;
 
         /**
          * \brief Reads an entry in the misc key/value table
@@ -119,8 +115,7 @@ class DbAccess : private bw::Noncopyable
          * \return the string or an empty string if \p key doesn't exist.
          * \exception ApplicationError if executing of the SQL statement failed
          */
-        std::string readMiscEntry(const std::string &key) const
-        throw (DatabaseError);
+        std::string readMiscEntry(const std::string &key) const;
 
         /**
          * \brief Reads an entry in the misc key/value table
@@ -131,8 +126,7 @@ class DbAccess : private bw::Noncopyable
          * \exception ApplicationError if executing of the SQL statement failed
          */
         template <typename T>
-        T readMiscEntry(const std::string &key, const T &defaultValue=T()) const
-        throw (DatabaseError);
+        T readMiscEntry(const std::string &key, const T &defaultValue=T()) const;
 
         /**
          * \brief Inserts a new UsbWde1Dataset object
@@ -140,8 +134,7 @@ class DbAccess : private bw::Noncopyable
          * \param[in] dataset the dataset to insert
          * \exception DatabaseError if the dataset could not be inserted
          */
-        void insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
-        throw (DatabaseError);
+        void insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const;
 
         /**
          * \brief Queries the current weather from the database
@@ -149,8 +142,7 @@ class DbAccess : private bw::Noncopyable
          * \return the current weather with all elements filled
          * \exception DatabaseError if the dataset could not be queried
          */
-        CurrentWeather queryCurrentWeather() const
-        throw (DatabaseError);
+        CurrentWeather queryCurrentWeather() const;
 
         /**
          * \brief Returns a vector with all days that have weather data
@@ -160,8 +152,7 @@ class DbAccess : private bw::Noncopyable
          *            slow.
          * \return a (sorted) list of dates in the format <tt>YYYY-MM-DD</tt>
          */
-        std::vector<std::string> dataDays(bool nocache=false) const
-        throw (DatabaseError);
+        std::vector<std::string> dataDays(bool nocache=false) const;
 
         /**
          * \brief Returns a vector with all months that have weather data
@@ -171,8 +162,7 @@ class DbAccess : private bw::Noncopyable
          *            slow.
          * \return a (sorted) list of dates in the format <tt>YYYY-MM</tt>
          */
-        std::vector<std::string> dataMonths(bool nocache=false) const
-        throw (DatabaseError);
+        std::vector<std::string> dataMonths(bool nocache=false) const;
 
         /**
          * \brief Returns a vector with all years that have weather data
@@ -182,8 +172,7 @@ class DbAccess : private bw::Noncopyable
          *            slow.
          * \return a (sorted) list of dates in the format <tt>YYYY-MM</tt>
          */
-        std::vector<std::string> dataYears(bool nocache=false) const
-        throw (DatabaseError);
+        std::vector<std::string> dataYears(bool nocache=false) const;
 
         /**
          * \brief Updates the day statistics in the database
@@ -197,8 +186,7 @@ class DbAccess : private bw::Noncopyable
          *            for all days are updated.
          * \exception DatabaseError if accessing the database failed
          */
-        void updateDayStatistics(const std::string &date)
-        throw (DatabaseError);
+        void updateDayStatistics(const std::string &date);
 
         /**
          * \brief Updates the month statistics in the database
@@ -207,8 +195,7 @@ class DbAccess : private bw::Noncopyable
          *            all months are updated.
          * \exception DatabaseError if accessing the database failed
          */
-        void updateMonthStatistics(const std::string &month)
-        throw (DatabaseError);
+        void updateMonthStatistics(const std::string &month);
 
     private:
         Database *m_db;
@@ -216,18 +203,14 @@ class DbAccess : private bw::Noncopyable
 
 /* Template implementation {{{ */
 
-// -------------------------------------------------------------------------------------------------
 template <typename T>
 void DbAccess::writeMiscEntry(const std::string &key, const T &value) const
-    throw (DatabaseError)
 {
     return writeMiscEntry(key, bw::str(value));
 }
 
-// -------------------------------------------------------------------------------------------------
 template <typename T>
 T DbAccess::readMiscEntry(const std::string &key, const T &defaultValue) const
-    throw (DatabaseError)
 {
     std::string result = readMiscEntry(key);
     if (result.empty())

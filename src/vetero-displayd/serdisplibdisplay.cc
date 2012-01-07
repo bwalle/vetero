@@ -34,9 +34,7 @@ namespace display {
 
 /* SerdisplibConnection {{{ */
 
-// -------------------------------------------------------------------------------------------------
 SerdisplibConnection::SerdisplibConnection(const std::string &sdcdev)
-        throw (DisplayError)
     : m_connection(NULL)
 {
     m_connection = SDCONN_open(sdcdev.c_str());
@@ -44,11 +42,9 @@ SerdisplibConnection::SerdisplibConnection(const std::string &sdcdev)
         throw DisplayError("Unable to create a display connection handle for '"+ sdcdev +"'");
 }
 
-// -------------------------------------------------------------------------------------------------
 SerdisplibConnection::~SerdisplibConnection()
 {}
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibConnection::close()
 {
     if (m_connection) {
@@ -60,10 +56,9 @@ void SerdisplibConnection::close()
 /* }}} */
 /* SerdisplibDisplay {{{ */
 
-// -------------------------------------------------------------------------------------------------
 SerdisplibDisplay::SerdisplibDisplay(SerdisplibConnection  *connection,
                                      const std::string     &displayname,
-                                     const std::string     &optionstring) throw (DisplayError)
+                                     const std::string     &optionstring)
     : m_display(NULL)
 {
     m_display = serdisp_init(connection->m_connection,
@@ -75,94 +70,79 @@ SerdisplibDisplay::SerdisplibDisplay(SerdisplibConnection  *connection,
     clearBuffer();
 }
 
-// -------------------------------------------------------------------------------------------------
 SerdisplibDisplay::~SerdisplibDisplay()
 {
     if (m_display)
         quit();
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::close()
 {
     serdisp_close(m_display);
     m_display = NULL;
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::quit()
 {
     serdisp_quit(m_display);
     m_display = NULL;
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::clearBuffer()
 {
     serdisp_clearbuffer(m_display);
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::clear()
 {
     serdisp_clear(m_display);
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::update()
 {
     serdisp_update(m_display);
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::rewrite()
 {
     serdisp_rewrite(m_display);
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::blink(int what, int cnt, int delta)
 {
     serdisp_blink(m_display, what, cnt, delta);
 }
 
-// -------------------------------------------------------------------------------------------------
 int SerdisplibDisplay::getWidth() const
 {
     return serdisp_getwidth(m_display);
 }
 
-// -------------------------------------------------------------------------------------------------
 int SerdisplibDisplay::getHeight() const
 {
     return serdisp_getheight(m_display);
 }
 
-// -------------------------------------------------------------------------------------------------
 long SerdisplibDisplay::getOption(const std::string &optionName, int &typeSize)
 {
     return serdisp_getoption(m_display, optionName.c_str(), &typeSize);
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::setOption(const std::string &optionName, long value)
 {
     serdisp_setoption(m_display, optionName.c_str(), value);
 }
 
-// -------------------------------------------------------------------------------------------------
 int SerdisplibDisplay::isOption(const std::string &optionName)
 {
     return serdisp_isoption(m_display, optionName.c_str());
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibDisplay::setPixel(int x, int y, int color)
 {
     serdisp_setpixel(m_display, x, y, color);
 }
 
-// -------------------------------------------------------------------------------------------------
 long SerdisplibDisplay::getPixel(int x, int y)
 {
     return serdisp_getpixel(m_display, x, y);
@@ -171,50 +151,42 @@ long SerdisplibDisplay::getPixel(int x, int y)
 /* }}} */
 /* SerdisplibTextDisplay {{{ */
 
-// -------------------------------------------------------------------------------------------------
 SerdisplibTextDisplay::SerdisplibTextDisplay(SerdisplibConnection  *connection,
                                              const std::string     &displayname,
-                                             const std::string     &optionstring) throw (DisplayError)
+                                             const std::string     &optionstring)
     : SerdisplibDisplay(connection, displayname, optionstring)
     , m_locale("C")
 {}
 
-// -------------------------------------------------------------------------------------------------
 int SerdisplibTextDisplay::getRows() const
 {
     return getHeight() / (FONT_HEIGHT + GAP_Y);
 }
 
-// -------------------------------------------------------------------------------------------------
 int SerdisplibTextDisplay::getColumns() const
 {
     return getWidth() / (FONT_WIDTH + GAP_X);
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string SerdisplibTextDisplay::getCharset() const
 {
     return m_charset;
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibTextDisplay::setCharset(const std::string &charset)
 {
     m_charset = charset;
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibTextDisplay::setLocale(const std::string &locale)
 {
     m_locale = locale;
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibTextDisplay::renderText(int               line,
                                        int               startColumn,
                                        enum DisplayFont  font,
                                        const char        *text, ...)
-    throw (std::out_of_range, std::bad_alloc, DisplayError)
 {
     if (line < 0 || line >= getRows())
         throw std::out_of_range("SerdisplibDisplay::setLineText(): "
@@ -253,9 +225,7 @@ void SerdisplibTextDisplay::renderText(int               line,
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void SerdisplibTextDisplay::clearLine(int line)
-    throw (std::out_of_range)
 {
     if (line < 0 || line >= getRows())
         throw std::out_of_range("SerdisplibDisplay::clearLine(): "

@@ -66,16 +66,14 @@ class Veterod : public common::VeteroApplication
          *         \c false if the application should be quit
          * \exception common::ApplicationError if parsing the command line failed.
          */
-        bool parseCommandLine(int argc, char *argv[])
-        throw (common::ApplicationError);
+        bool parseCommandLine(int argc, char *argv[]);
 
         /**
          * \brief Installs the termination signal handlers
          *
          * \exception common::ApplicationError if registering the signal handlers failed.
          */
-        void installSignalhandlers()
-        throw (common::ApplicationError);
+        void installSignalhandlers();
 
         /**
          * \brief Reads the configuration file
@@ -89,8 +87,7 @@ class Veterod : public common::VeteroApplication
          * \exception common::ApplicationError if the configuration file cannot be read or parsed, see
          *            above for more information.
          */
-        void readConfiguration()
-        throw (common::ApplicationError);
+        void readConfiguration();
 
         /**
          * \brief Opens the database connection
@@ -100,16 +97,14 @@ class Veterod : public common::VeteroApplication
          *
          * \exception common::ApplicationError if it's not possible to create the database.
          */
-        void openDatabase()
-        throw (common::ApplicationError);
+        void openDatabase();
 
         /**
          * \brief Main loop of the application
          *
          * This is the main part of the application.
          */
-        void exec()
-        throw (common::ApplicationError);
+        void exec();
 
     protected:
         /**
@@ -117,14 +112,12 @@ class Veterod : public common::VeteroApplication
          *
          * This is the main part of the application.
          */
-        void execCollectWeatherdata()
-        throw (common::ApplicationError);
+        void execCollectWeatherdata();
 
         /**
          * \brief Special main loop which only regenerates metadata and exists.
          */
-        void execRegenerateMetadata()
-        throw (common::ApplicationError);
+        void execRegenerateMetadata();
 
         /**
          * \brief Starts the display daemon
@@ -134,8 +127,7 @@ class Veterod : public common::VeteroApplication
          *
          * \exception common::ApplicationError if the display daemon cannot be started.
          */
-        void startDisplay()
-        throw (common::ApplicationError);
+        void startDisplay();
 
         /**
          * \brief Updates the HTML reports

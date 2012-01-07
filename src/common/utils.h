@@ -120,8 +120,7 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
  * \exception common::ApplicationError if the process cannot be started
  * \ingroup common
  */
-pid_t start_background(const std::string &process, const std::vector<std::string> &args)
-throw (common::ApplicationError);
+pid_t start_background(const std::string &process, const std::vector<std::string> &args);
 
 /**
  * \brief Compresses \p filename with gzip
@@ -135,8 +134,7 @@ throw (common::ApplicationError);
  * \exception common::ApplicationError if reading the file or writing the file fails.
  * \ingroup common
  */
-void compress_file(const std::string &filename)
-throw (common::ApplicationError);
+void compress_file(const std::string &filename);
 
 /**
  * \brief Wrapper around POSIX realpath()
@@ -146,8 +144,7 @@ throw (common::ApplicationError);
  * \exception common::ApplicationError on error
  * \ingroup common
  */
-std::string realpath(const std::string &filename)
-throw (common::ApplicationError);
+std::string realpath(const std::string &filename);
 
 } // end namespace common
 } // end namespace vetero

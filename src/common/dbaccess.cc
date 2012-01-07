@@ -27,30 +27,24 @@ namespace common {
 
 /* DbAccess {{{ */
 
-// -------------------------------------------------------------------------------------------------
 const char *DbAccess::LastRain                  = "last_rain";
 const char *DbAccess::DatabaseSchemaRevision    = "db_revision";
 
-// -------------------------------------------------------------------------------------------------
 DbAccess::DbAccess(Database *db)
     : m_db(db)
 {}
 
-// -------------------------------------------------------------------------------------------------
 Database &DbAccess::database()
 {
     return *m_db;
 }
 
-// -------------------------------------------------------------------------------------------------
 const Database &DbAccess::database() const
 {
     return *m_db;
 }
 
-// -------------------------------------------------------------------------------------------------
 void DbAccess::initTables() const
-    throw (DatabaseError)
 {
     // TABLE misc
     m_db->executeSql(
@@ -204,17 +198,13 @@ void DbAccess::initTables() const
     writeMiscEntry(DatabaseSchemaRevision, 2);
 }
 
-// -------------------------------------------------------------------------------------------------
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const
-    throw (DatabaseError)
 {
     m_db->executeSql("INSERT OR REPLACE INTO misc (key, value) VALUES (?, ?)",
                      key.c_str(), value.c_str());
 }
 
-// -------------------------------------------------------------------------------------------------
 std::string DbAccess::readMiscEntry(const std::string &key) const
-    throw (DatabaseError)
 {
     std::string sql = "SELECT value FROM misc WHERE key = ?";
     Database::DbResultVector result = m_db->executeSqlQuery(sql.c_str(), key.c_str());
@@ -228,9 +218,7 @@ std::string DbAccess::readMiscEntry(const std::string &key) const
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
-    throw (DatabaseError)
 {
     // rain calculation
     int rain = 0;
@@ -270,9 +258,7 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
         writeMiscEntry(LastRain, dataset.rainGauge());
 }
 
-// -------------------------------------------------------------------------------------------------
 CurrentWeather DbAccess::queryCurrentWeather() const
-    throw (DatabaseError)
 {
     CurrentWeather ret;
 
@@ -317,9 +303,7 @@ CurrentWeather DbAccess::queryCurrentWeather() const
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::vector<std::string> DbAccess::dataDays(bool nocache) const
-    throw (DatabaseError)
 {
     std::vector<std::string> ret;
 
@@ -344,9 +328,7 @@ std::vector<std::string> DbAccess::dataDays(bool nocache) const
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::vector<std::string> DbAccess::dataMonths(bool nocache) const
-    throw (DatabaseError)
 {
     std::vector<std::string> ret;
 
@@ -371,9 +353,7 @@ std::vector<std::string> DbAccess::dataMonths(bool nocache) const
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 std::vector<std::string> DbAccess::dataYears(bool nocache) const
-    throw (DatabaseError)
 {
     std::vector<std::string> ret;
 
@@ -398,9 +378,7 @@ std::vector<std::string> DbAccess::dataYears(bool nocache) const
     return ret;
 }
 
-// -------------------------------------------------------------------------------------------------
 void DbAccess::updateDayStatistics(const std::string &date)
-    throw (DatabaseError)
 {
     if (date.empty()) {
         std::vector<std::string> days = dataDays(true);
@@ -434,9 +412,7 @@ void DbAccess::updateDayStatistics(const std::string &date)
     );
 }
 
-// -------------------------------------------------------------------------------------------------
 void DbAccess::updateMonthStatistics(const std::string &month)
-    throw (DatabaseError)
 {
     if (month.empty()) {
         std::vector<std::string> months = dataMonths(true);

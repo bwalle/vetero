@@ -40,14 +40,12 @@ namespace daemon {
 
 /* Signal handlers {{{ */
 
-// -------------------------------------------------------------------------------------------------
 static void veterod_sighandler(int signal)
 {
     BW_ERROR_WARNING("vetero Signal %d (%s) received. Terminating.", signal, strsignal(signal));
     std::exit(0);
 }
 
-// -------------------------------------------------------------------------------------------------
 static pid_t s_displayPid;
 static void quit_display_daemon()
 {
@@ -62,7 +60,6 @@ static void quit_display_daemon()
 /* }}} */
 /* Veterod {{{ */
 
-// -------------------------------------------------------------------------------------------------
 Veterod::Veterod()
     : common::VeteroApplication("veterod")
     , m_action(ActionCollectWeatherdata)
@@ -71,9 +68,7 @@ Veterod::Veterod()
     , m_noConfigFatal(false)
 {}
 
-// -------------------------------------------------------------------------------------------------
 bool Veterod::parseCommandLine(int argc, char *argv[])
-    throw (common::ApplicationError)
 {
     bw::OptionGroup generalGroup("General Options");
     generalGroup.addOption("help", 'h', bw::OT_FLAG,
@@ -149,9 +144,7 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
     return true;
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::installSignalhandlers()
-    throw (common::ApplicationError)
 {
     BW_DEBUG_DBG("Registering signal handler for SIGTERM");
     sig_t ret = std::signal(SIGTERM, veterod_sighandler);
@@ -166,18 +159,14 @@ void Veterod::installSignalhandlers()
     atexit(quit_display_daemon);
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::readConfiguration()
-    throw (common::ApplicationError)
 {
     m_configuration.reset(new common::Configuration(m_configfile));
     if (!m_configuration->configurationRead() && m_noConfigFatal)
         throw common::ApplicationError(m_configuration->error());
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::openDatabase()
-    throw (common::ApplicationError)
 {
     std::string dbPath = m_configuration->databasePath();
     bool initNeeded = access(dbPath.c_str(), F_OK) != 0;
@@ -200,9 +189,7 @@ void Veterod::openDatabase()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::startDisplay()
-    throw (common::ApplicationError)
 {
     if (m_configuration->displayName().empty() || m_configuration->displayConnection().empty()) {
         BW_DEBUG_INFO("'display_name' or 'display_connection' not set. Not starting displayd.");
@@ -221,7 +208,6 @@ void Veterod::startDisplay()
     BW_DEBUG_DBG("Display daemon started with PID %ld", long(s_displayPid));
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::updateReports(const std::vector<std::string> &jobs, bool upload)
 {
     if (m_configuration->reportDirectory().empty()) {
@@ -254,7 +240,6 @@ void Veterod::updateReports(const std::vector<std::string> &jobs, bool upload)
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::notifyDisplay()
 {
     if (s_displayPid == 0)
@@ -281,7 +266,6 @@ void Veterod::notifyDisplay()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::createPidfile()
 {
     const std::string pidfile = "/var/run/veterod.pid";
@@ -295,9 +279,7 @@ void Veterod::createPidfile()
     fout << getpid();
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::exec()
-    throw (common::ApplicationError)
 {
     switch (m_action) {
         case ActionCollectWeatherdata:
@@ -310,9 +292,7 @@ void Veterod::exec()
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::execCollectWeatherdata()
-throw (common::ApplicationError)
 {
     BW_DEBUG_INFO("Starting application.");
 
@@ -356,9 +336,7 @@ throw (common::ApplicationError)
     }
 }
 
-// -------------------------------------------------------------------------------------------------
 void Veterod::execRegenerateMetadata()
-    throw (common::ApplicationError)
 {
     BW_DEBUG_INFO("Regenerating metadata.");
 

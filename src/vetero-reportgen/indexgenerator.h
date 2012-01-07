@@ -48,8 +48,7 @@ class IndexGenerator: public ReportGenerator
          *
          * \exception common::ApplicationError if something failed
          */
-        virtual void generateReports()
-        throw (common::ApplicationError);
+        virtual void generateReports();
 
     protected:
         /**

@@ -30,15 +30,12 @@
 namespace vetero {
 namespace reportgen {
 
-// -------------------------------------------------------------------------------------------------
 IndexGenerator::IndexGenerator(VeteroReportgen *reportGenerator)
     : ReportGenerator(reportGenerator)
     , m_dbAccess(&reportGenerator->database())
 {}
 
-// -------------------------------------------------------------------------------------------------
 void IndexGenerator::generateReports()
-    throw (common::ApplicationError)
 {
     BW_DEBUG_INFO("Generating index");
 
@@ -72,7 +69,6 @@ void IndexGenerator::generateReports()
         throw common::ApplicationError("Unable to write " + indexHtml);
 }
 
-// -------------------------------------------------------------------------------------------------
 void IndexGenerator::generateYear(HtmlDocument &html, int year)
 {
     BW_DEBUG_TRACE("Index: Generate year %d", year);
@@ -95,7 +91,6 @@ void IndexGenerator::generateYear(HtmlDocument &html, int year)
     html << "</table>\n";
 }
 
-// -------------------------------------------------------------------------------------------------
 void IndexGenerator::generateMonth(HtmlDocument &html, const bw::Datetime &month)
 {
     BW_DEBUG_TRACE("Index: Generate month %s", month.strftime("%Y-%m").c_str());
