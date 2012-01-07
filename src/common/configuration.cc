@@ -53,6 +53,8 @@ static void configuration_error_function(cfg_t *cfg, const char *fmt, va_list ap
 Configuration::Configuration(const std::string &preferredFilename)
     : m_serialDevice("/dev/ttyS0")
     , m_serialBaud(9600)
+    , m_pressureSensorI2cBus(-1)
+    , m_pressureHeight(-1)
     , m_databasePath("vetero.db")
     , m_configurationRead(false)
     , m_reportTitleColor1("#217808")
@@ -101,23 +103,27 @@ void Configuration::read(const std::string &filename)
     char *display_name = NULL, *display_connection = NULL;
     char *location_string = NULL;
     char *locale = NULL;
-    int serial_baud = -1;
+    int serial_baud = -1, pressure_sensor_i2c_bus = -1, pressure_height = -1;
 
     cfg_opt_t opts[] = {
-        CFG_SIMPLE_STR(const_cast<char *>("serial_device"),         &serial_device),
-        CFG_SIMPLE_INT(const_cast<char *>("serial_baud"),           &serial_baud),
-        CFG_SIMPLE_STR(const_cast<char *>("database_path"),         &database_path),
+        CFG_SIMPLE_STR(const_cast<char *>("serial_device"),             &serial_device),
+        CFG_SIMPLE_INT(const_cast<char *>("serial_baud"),               &serial_baud),
 
-        CFG_SIMPLE_STR(const_cast<char *>("report_directory"),      &report_directory),
-        CFG_SIMPLE_STR(const_cast<char *>("report_title_color1"),   &report_title_color1),
-        CFG_SIMPLE_STR(const_cast<char *>("report_title_color2"),   &report_title_color2),
-        CFG_SIMPLE_STR(const_cast<char *>("report_upload_command"), &report_upload_command),
-        CFG_SIMPLE_STR(const_cast<char *>("location_string"),       &location_string),
+        CFG_SIMPLE_INT(const_cast<char *>("pressure_sensor_i2c_bus"),   &pressure_sensor_i2c_bus),
+        CFG_SIMPLE_INT(const_cast<char *>("pressure_height"),           &pressure_height),
 
-        CFG_SIMPLE_STR(const_cast<char *>("display_name"),          &display_name),
-        CFG_SIMPLE_STR(const_cast<char *>("display_connection"),    &display_connection),
+        CFG_SIMPLE_STR(const_cast<char *>("database_path"),             &database_path),
 
-        CFG_SIMPLE_STR(const_cast<char *>("locale"),                &locale),
+        CFG_SIMPLE_STR(const_cast<char *>("report_directory"),          &report_directory),
+        CFG_SIMPLE_STR(const_cast<char *>("report_title_color1"),       &report_title_color1),
+        CFG_SIMPLE_STR(const_cast<char *>("report_title_color2"),       &report_title_color2),
+        CFG_SIMPLE_STR(const_cast<char *>("report_upload_command"),     &report_upload_command),
+        CFG_SIMPLE_STR(const_cast<char *>("location_string"),           &location_string),
+
+        CFG_SIMPLE_STR(const_cast<char *>("display_name"),              &display_name),
+        CFG_SIMPLE_STR(const_cast<char *>("display_connection"),        &display_connection),
+
+        CFG_SIMPLE_STR(const_cast<char *>("locale"),                    &locale),
         CFG_END()
     };
     cfg_t *cfg;
@@ -142,6 +148,11 @@ void Configuration::read(const std::string &filename)
 
     if (serial_baud > 0)
         m_serialBaud = serial_baud;
+
+    if (pressure_sensor_i2c_bus >= 0)
+        m_pressureSensorI2cBus = pressure_sensor_i2c_bus;
+    if (pressure_height >= 0)
+        m_pressureHeight = pressure_height;
 
     if (database_path) {
         m_databasePath = database_path;
@@ -208,6 +219,16 @@ std::string Configuration::serialDevice() const
 int Configuration::serialBaud() const
 {
     return m_serialBaud;
+}
+
+int Configuration::pressureSensorI2cBus() const
+{
+    return m_pressureSensorI2cBus;
+}
+
+int Configuration::pressureHeight() const
+{
+    return m_pressureHeight;
 }
 
 std::string Configuration::databasePath() const

@@ -64,7 +64,8 @@ void DbAccess::initTables() const
         "    dewpoint     INTEGER,"
         "    wind         INTEGER,"
         "    wind_bft     INTEGER,"
-        "    rain         INTEGER"
+        "    rain         INTEGER,"
+        "    pressure     INTEGER"
         ")"
     );
 
@@ -145,7 +146,8 @@ void DbAccess::initTables() const
         "    round(dewpoint/100.0, 1)         AS dewpoint,"
         "    round(wind/100.0, 1)             AS wind,"
         "    wind_bft                         AS wind_bft,"
-        "    round(rain/1000.0, 3)            AS rain "
+        "    round(rain/1000.0, 3)            AS rain, "
+        "    round(pressure/100.0, 0)         AS pressure "
         "FROM weatherdata"
     );
 
@@ -195,7 +197,7 @@ void DbAccess::initTables() const
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 2);
+    writeMiscEntry(DatabaseSchemaRevision, 3);
 }
 
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const
@@ -258,13 +260,27 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
         writeMiscEntry(LastRain, dataset.rainGauge());
 }
 
+void DbAccess::insertPressure(int pressure) const
+{
+    // this SQL is quite expensive, but since we're going to execute it only once
+    // in 4 minutes, well, it's ok :-)
+    m_db->executeSql("UPDATE weatherdata "
+                     "SET pressure = ? "
+                     "WHERE timestamp = ( "
+                     "    SELECT timestamp "
+                     "    FROM weatherdata "
+                     "    ORDER BY timestamp DESC "
+                     "    LIMIT 1)",
+                     bw::str(pressure).c_str() );
+}
+
 CurrentWeather DbAccess::queryCurrentWeather() const
 {
     CurrentWeather ret;
 
     Database::DbResultVector result = m_db->executeSqlQuery(
         "SELECT   strftime('%%s', datetime(timestamp, 'utc')), "
-        "         temp, humid, dewpoint, wind, wind_bft, rain "
+        "         temp, humid, dewpoint, wind, wind_bft, rain, pressure "
         "FROM     weatherdata "
         "ORDER BY timestamp DESC "
         "LIMIT 1"
@@ -279,6 +295,7 @@ CurrentWeather DbAccess::queryCurrentWeather() const
     ret.setDewpoint( bw::from_str<int>(data.at(3)) );
     ret.setWindSpeed( bw::from_str<int>(data.at(4)) );
     ret.setWindBeaufort( bw::from_str<int>(data.at(5)) );
+    ret.setPressure( bw::from_str<int>(data.at(6)) );
 
     result = m_db->executeSqlQuery(
         "SELECT   temp_min, temp_max, wind_max, wind_bft_max, rain "

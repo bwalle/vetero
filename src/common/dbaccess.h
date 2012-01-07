@@ -137,6 +137,14 @@ class DbAccess : private bw::Noncopyable
         void insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const;
 
         /**
+         * \brief Inserts a pressure to the last inserted UsbWde1Dataset value
+         *
+         * \param[in] pressure the pressure (corrected to sea level) in 1/100 hPa
+         * \exception DatabaseError if the dataset could not be inserted
+         */
+        void insertPressure(int pressure) const;
+
+        /**
          * \brief Queries the current weather from the database
          *
          * \return the current weather with all elements filled

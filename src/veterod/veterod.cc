@@ -33,6 +33,7 @@
 #include "veterod.h"
 #include "config.h"
 #include "datareader.h"
+#include "pressurereader.h"
 #include "childprocesswatcher.h"
 
 namespace vetero {
@@ -266,6 +267,12 @@ void Veterod::notifyDisplay()
     }
 }
 
+bool Veterod::havePressureSensor() const
+{
+    return (m_configuration->pressureSensorI2cBus() >= 0) &&
+           (m_configuration->pressureHeight() >= 0);
+}
+
 void Veterod::createPidfile()
 {
     const std::string pidfile = "/var/run/veterod.pid";
@@ -303,6 +310,8 @@ void Veterod::execCollectWeatherdata()
 
     DataReader reader(m_configuration->serialDevice(), m_configuration->serialBaud());
     reader.openConnection();
+    PressureReader pressureReader(m_configuration->pressureSensorI2cBus());
+    pressureReader.setHeight(m_configuration->pressureHeight());
     startDisplay();
     common::DbAccess dbAccess(&m_database);
     // don't assume we need to regenerate everything on startup
@@ -312,6 +321,14 @@ void Veterod::execCollectWeatherdata()
         try {
             vetero::common::UsbWde1Dataset dataset = reader.read();
             dbAccess.insertUsbWde1Dataset(dataset);
+
+            try {
+                if (havePressureSensor())
+                    dbAccess.insertPressure(pressureReader.readPressure());
+            } catch (const common::ApplicationError &err) {
+                BW_ERROR_WARNING("Unable to read pressure: %s", err.what());
+            }
+
             dbAccess.updateDayStatistics(dataset.timestamp().strftime("%Y-%m-%d"));
             notifyDisplay();
 

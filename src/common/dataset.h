@@ -363,6 +363,32 @@ class CurrentWeather
 
         /** \} */                                                                          /* }}} */
 
+        /** \name Pressure */                                                              /* {{{ */
+        /** \{ */
+
+        /**
+         * \brief Returns the current pressure in 1/100 hPa
+         *
+         * \return the current air pressure in 1/100 hPa
+         */
+        int pressure() const;
+
+        /**
+         * \brief Returns the current air pressure in hPa
+         *
+         * \return the current air pressure in hPa
+         */
+        double pressureReal() const;
+
+        /**
+         * \brief Sets the current air pressure in 1/100 hPa
+         *
+         * \param[in] pressure the pressure in 1/100 hPa
+         */
+        void setPressure(int pressure);
+
+        /** \} */                                                                          /* }}} */
+
         /** \name Wind */                                                                  /* {{{ */
         /** \{ */
 
@@ -478,6 +504,7 @@ class CurrentWeather
         bw::Datetime m_timestamp;
         int m_temperature, m_minTemperature, m_maxTemperature;
         int m_humidity, m_dewpoint;
+        int m_pressure;
         int m_windSpeed, m_maxWindSpeed, m_windBft, m_maxWindBft;
         int m_rain;
 };

@@ -230,6 +230,24 @@ void CurrentWeather::setDewpoint(int dewpoint)
 }
 
 /* }}} */
+/* Pressure {{{ */
+
+int CurrentWeather::pressure() const
+{
+    return m_pressure;
+}
+
+double CurrentWeather::pressureReal() const
+{
+    return m_pressure/100.0;
+}
+
+void CurrentWeather::setPressure(int pressure)
+{
+    m_pressure = pressure;
+}
+
+/* }}} */
 /* Wind {{{ */
 
 int CurrentWeather::windSpeed() const
@@ -305,16 +323,17 @@ void CurrentWeather::setRain(int rain)
 std::string CurrentWeather::str() const
 {
     std::stringstream ss;
-    ss << "temperature="        << temperature() << "C, "
-       << "minTemperature="     << minTemperature() << "C, "
-       << "maxTemperature="     << maxTemperature() << "C, "
-       << "humidity="           << humidity() << "%, "
-       << "dewpoint="           << dewpoint() << "C, "
-       << "windSpeed="          << windSpeed() << ", "
+    ss << "temperature="        << temperatureReal() << "C, "
+       << "minTemperature="     << minTemperatureReal() << "C, "
+       << "maxTemperature="     << maxTemperatureReal() << "C, "
+       << "humidity="           << humidityReal() << "%, "
+       << "dewpoint="           << dewpointReal() << "C, "
+       << "pressure="           << pressureReal() << "hPa, "
+       << "windSpeed="          << windSpeedReal() << ", "
        << "windSpeed="          << windBeaufort() << " Bft, "
-       << "maxWindSpeed="       << maxWindSpeed() << ", "
+       << "maxWindSpeed="       << maxWindSpeedReal() << ", "
        << "maxWindSpeed="       << maxWindBeaufort() << " Bft, "
-       << "rain="               << rain() << ", ";
+       << "rain="               << rainReal() << ", ";
     return ss.str();
 }
 

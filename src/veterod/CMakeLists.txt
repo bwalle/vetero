@@ -19,6 +19,7 @@ set(VETEROD_SRCS
     veterod.h
     veterod.cc
     datareader.cc
+    pressurereader.cc
     childprocesswatcher.cc
     main.cc
 )

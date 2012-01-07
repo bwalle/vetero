@@ -95,6 +95,32 @@ class Configuration
 
         /** \} */                                                                          /* }}} */
 
+        /** \name Pressure sensor */                                                       /* {{{ */
+        /** \{ */
+
+        /**
+         * \brief Returns the bus number of the I2C device where the bmp085 sensor is connected to
+         *
+         * The default device is \c "/dev/ttyS0".
+         *
+         * \return the bus number (starting with 0 as the first bus) or a negative value
+         *         if the value is unset (meaning that there's no bmp085 sensor)
+         */
+        int pressureSensorI2cBus() const;
+
+        /**
+         * \brief Returns the height (in metres) that is used to calculate the air pressure
+         *
+         * A negative valueThe default baudrate is 9600.
+         *
+         * \return the height (which can be 0) or a negative value if there is no height configured.
+         *         In that case, a zero height is assumed which means that the pressure of the
+         *         sensor is taken without any correction.
+         */
+        int pressureHeight() const;
+
+        /** \} */                                                                          /* }}} */
+
         /** \name Database */                                                              /* {{{ */
         /** \{ */
 
@@ -205,6 +231,8 @@ class Configuration
     private:
         std::string m_serialDevice;
         int         m_serialBaud;
+        int         m_pressureSensorI2cBus;
+        int         m_pressureHeight;
         std::string m_reportTitleColor1;
         std::string m_reportTitleColor2;
         std::string m_reportDirectory;

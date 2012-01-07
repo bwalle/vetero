@@ -111,6 +111,16 @@ void CurrentReportGenerator::generateReports()
             line.replace(pos, 4, value);
         }
 
+        pos = line.find("PPPP");
+        if (pos != std::string::npos) {
+            double pressure = currentWeather.pressureReal();
+            if (pressure > 1)
+                value = common::str_printf_l("%4.0lf", loc.c_str(), currentWeather.pressureReal());
+            else
+                value = "----";
+            line.replace(pos, 4, value);
+        }
+
         output << line;
     }
 

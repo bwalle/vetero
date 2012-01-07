@@ -150,6 +150,14 @@ class Veterod : public common::VeteroApplication
          */
         void notifyDisplay();
 
+        /**
+         * \brief Checks if we have a pressure sensor configured
+         *
+         * \retval true if a pressure sensor is attached and configured
+         * \retval false if no pressure sensor is attached and configured
+         */
+        bool havePressureSensor() const;
+
     private:
         Action m_action;
         bool m_daemonize;
