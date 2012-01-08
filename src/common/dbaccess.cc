@@ -167,9 +167,9 @@ void DbAccess::initTables() const
         "    round(wind_min/100.0, 1)         AS wind_min,"
         "    round(wind_max/100.0, 1)         AS wind_max,"
         "    round(wind_avg/100.0, 1)         AS wind_avg,"
-        "    round(wind_bft_min/1000.0, 1)    AS wind_bft_min,"
-        "    round(wind_bft_max/1000.0, 1)    AS wind_bft_max,"
-        "    round(wind_bft_avg/1000.0, 1)    AS wind_bft_avg,"
+        "    wind_bft_min                     AS wind_bft_min,"
+        "    wind_bft_max                     AS wind_bft_max,"
+        "    wind_bft_avg                     AS wind_bft_avg,"
         "    round(rain/1000.0, 1)            AS rain "
         "FROM day_statistics"
     );
@@ -197,7 +197,7 @@ void DbAccess::initTables() const
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 3);
+    writeMiscEntry(DatabaseSchemaRevision, 4);
 }
 
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const
