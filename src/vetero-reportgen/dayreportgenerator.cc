@@ -58,6 +58,7 @@ void DayReportGenerator::generateReports()
 void DayReportGenerator::generateOneReport(const std::string &date)
 {
     BW_DEBUG_INFO("Generating daily report for %s", date.c_str());
+    reset();
     m_dateString = date;
 
     if (m_dateString.size() != 10)
@@ -340,6 +341,11 @@ bool DayReportGenerator::havePressureData() const
     }
 
     return m_havePressure;
+}
+
+void DayReportGenerator::reset()
+{
+    m_havePressure = -1;
 }
 
 } // end namespace reportgen

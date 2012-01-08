@@ -117,6 +117,14 @@ class DayReportGenerator : public ReportGenerator
          */
         bool havePressureData() const;
 
+        /**
+         * \brief Reset cached values
+         *
+         * That function must be called when generating more than one
+         * report before switching to another date.
+         */
+        void reset();
+
     private:
         std::string m_dateString;
         bw::Datetime m_date;
