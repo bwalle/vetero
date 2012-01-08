@@ -358,6 +358,7 @@ void Veterod::execRegenerateMetadata()
     BW_DEBUG_INFO("Regenerating metadata.");
 
     common::DbAccess dbAccess(&m_database);
+    dbAccess.deleteStatistics();
     dbAccess.updateDayStatistics("");
     dbAccess.updateMonthStatistics("");
 }

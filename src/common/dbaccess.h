@@ -183,6 +183,14 @@ class DbAccess : private bw::Noncopyable
         std::vector<std::string> dataYears(bool nocache=false) const;
 
         /**
+         * \brief Drops all generated cached data
+         *
+         * This function is called when veterod is called with the '-M' (regenerate metadata)
+         * option. It's not used without manually invoking veterod with that option!
+         */
+        void deleteStatistics();
+
+        /**
          * \brief Updates the day statistics in the database
          *
          * This function should be called by veterod after a data set has been inserted. The reason

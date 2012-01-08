@@ -395,6 +395,12 @@ std::vector<std::string> DbAccess::dataYears(bool nocache) const
     return ret;
 }
 
+void DbAccess::deleteStatistics()
+{
+    m_db->executeSql("DELETE FROM day_statistics");
+    m_db->executeSql("DELETE FROM month_statistics");
+}
+
 void DbAccess::updateDayStatistics(const std::string &date)
 {
     if (date.empty()) {
