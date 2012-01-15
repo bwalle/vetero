@@ -16,6 +16,8 @@
  */
 #include <fstream>
 #include <cmath>
+#include <cerrno>
+#include <fcntl.h>
 
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
@@ -48,13 +50,35 @@ void PressureReader::setHeight(int height)
 
 int PressureReader::readPressure()
 {
-    int pressure;
-    std::ifstream fin(m_filename.c_str());
-    fin >> pressure;
+    // For Linux sysfs files it's better to read them direclty using POSIX syscalls
+    // That way we have more control over error handling.
 
-    if (!fin.good())
-        throw common::ApplicationError("Unable to read pressure from '" + m_filename + "'");
+    int fd = open(m_filename.c_str(), O_RDONLY);
+    if (fd < 0)
+        throw common::SystemError("Unable to open '" + m_filename + "'", errno);
 
+    char buffer[1024];
+    ssize_t readChars = -1;
+
+    for (int retryCount = 10; retryCount > 0; --retryCount) {
+        readChars = read(fd, buffer, sizeof(buffer) - 1);
+        if (readChars > 0)
+            break;
+        else if (errno != EIO && errno != EBUSY)
+            break;
+
+        BW_DEBUG_DBG("Unable to read pressure (%s), retrying", strerror(errno));
+        lseek(fd, 0, SEEK_SET); // rewind
+        sleep(1); // wait before retrying
+    }
+
+    close(fd);
+    if (readChars < 0)
+        throw common::SystemError("Unable to read from '" + m_filename + "'", errno);
+
+    buffer[readChars] = '\0';
+
+    int pressure = bw::from_str<int>(bw::stripr(buffer));
     return calculateSeaLevelPressure(pressure);
 }
 
