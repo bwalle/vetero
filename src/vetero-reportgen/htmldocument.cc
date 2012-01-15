@@ -239,7 +239,7 @@ void HtmlDocument::writeCss(std::ostream &os)
     os << "<style type=\"text/css\">\n";
 
     os << "body {\n"
-       << "    font-family:      'Droid Serif', Arial, Helvetica, sans-serif;\n"
+       << "    font-family:      Optima, 'Droid Serif', Arial, Helvetica, sans-serif;\n"
        << "    font-size:        10.5pt;\n"
        << "    margin:           15px;\n"
        << "    background-color: #ffffff;\n"
