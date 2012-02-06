@@ -127,7 +127,7 @@ void DbAccess::initTables() const
         "AFTER INSERT ON weatherdata "
         "BEGIN "
         "   UPDATE weatherdata "
-        "   SET    jdate = julianday(strftime('%Y-%m-%%d 12:00', timestamp)) "
+        "   SET    jdate = julianday(strftime('%%Y-%%m-%%d 12:00', timestamp)) "
         "   WHERE  timestamp = new.timestamp; "
         "END"
     );
