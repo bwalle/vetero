@@ -320,6 +320,15 @@ void Veterod::execCollectWeatherdata()
     while (true) {
         try {
             vetero::common::UsbWde1Dataset dataset = reader.read();
+
+            // do some sanity check before inserting in the DB
+            // Normally all values are corrupted, so it's okay to check just the temperature.
+            if (dataset.temperature() < -5000 || dataset.temperature() >= 7000) {
+                BW_ERROR_WARNING("Invalid dataset read, skipping (temperature: %lf)\n",
+                                 dataset.temperature()/100.0);
+                continue;
+            }
+
             dbAccess.insertUsbWde1Dataset(dataset);
 
             try {
