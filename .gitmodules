@@ -1,0 +1,3 @@
+[submodule "ext/libbw.git"]
+	path = ext/libbw.git
+	url = https://bitbucket.org/bwalle/libbw.git
