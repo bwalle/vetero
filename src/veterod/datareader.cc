@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,19 +25,18 @@ namespace daemon {
 
 /* DataReader {{{ */
 
-DataReader::DataReader(const std::string &deviceName, int baud)
-    : m_serialDeviceName(deviceName)
-    , m_serialDevice(m_serialDeviceName)
-    , m_baud(baud)
+DataReader::DataReader(const common::Configuration &configuration)
+    : m_configuration(configuration),
+      m_serialDevice(configuration.serialDevice())
 {}
 
 void DataReader::openConnection()
 {
     if (!m_serialDevice.openPort())
-        throw common::ApplicationError("Unable to open port '"+ m_serialDeviceName + "': " +
+        throw common::ApplicationError("Unable to open port '"+ m_configuration.serialDevice() + "': " +
                                m_serialDevice.getLastError());
 
-    if (!m_serialDevice.reconfigure(m_baud, bw::io::SerialFile::FC_NONE))
+    if (!m_serialDevice.reconfigure(m_configuration.serialBaud(), bw::io::SerialFile::FC_NONE))
         throw common::ApplicationError("Unable to configure serial port: " + m_serialDevice.getLastError());
 
     BW_DEBUG_INFO("Connection to serial port etablished.");
@@ -67,7 +66,7 @@ vetero::common::UsbWde1Dataset DataReader::read()
 
     vetero::common::UsbWde1Dataset data = parseDataset(line);
     data.setTimestamp(bw::Datetime::now());
-    data.setSensorType(vetero::common::UsbWde1Dataset::SensorKombi);
+    data.setSensorType(m_configuration.sensorType());
 
     BW_DEBUG_DBG("Read dataset: %s", data.str().c_str());
 

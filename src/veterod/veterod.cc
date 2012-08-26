@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,7 +308,7 @@ void Veterod::execCollectWeatherdata()
         createPidfile();
     }
 
-    DataReader reader(m_configuration->serialDevice(), m_configuration->serialBaud());
+    DataReader reader(*m_configuration.get());
     reader.openConnection();
     PressureReader pressureReader(m_configuration->pressureSensorI2cBus());
     pressureReader.setHeight(m_configuration->pressureHeight());

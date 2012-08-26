@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,14 +51,15 @@ static void configuration_error_function(cfg_t *cfg, const char *fmt, va_list ap
 /* Configuration {{{ */
 
 Configuration::Configuration(const std::string &preferredFilename)
-    : m_serialDevice("/dev/ttyS0")
-    , m_serialBaud(9600)
-    , m_pressureSensorI2cBus(-1)
-    , m_pressureHeight(-1)
-    , m_databasePath("vetero.db")
-    , m_configurationRead(false)
-    , m_reportTitleColor1("#217808")
-    , m_reportTitleColor2("#91d007")
+    : m_serialDevice("/dev/ttyS0"),
+      m_serialBaud(9600),
+      m_sensorType(SensorType::Kombi),
+      m_pressureSensorI2cBus(-1),
+      m_pressureHeight(-1),
+      m_databasePath("vetero.db"),
+      m_configurationRead(false),
+      m_reportTitleColor1("#217808"),
+      m_reportTitleColor2("#91d007")
 {
     const std::string configfiles[] = {
             INSTALL_PREFIX "/etc/veterorc",
@@ -98,6 +99,7 @@ std::string Configuration::error() const
 void Configuration::read(const std::string &filename)
 {
     char *serial_device = NULL, *database_path = NULL;
+    char *sensor_type = NULL;
     char *report_title_color1 = NULL, *report_title_color2 = NULL;
     char *report_directory = NULL, *report_upload_command = NULL;
     char *display_name = NULL, *display_connection = NULL;
@@ -108,6 +110,8 @@ void Configuration::read(const std::string &filename)
     cfg_opt_t opts[] = {
         CFG_SIMPLE_STR(const_cast<char *>("serial_device"),             &serial_device),
         CFG_SIMPLE_INT(const_cast<char *>("serial_baud"),               &serial_baud),
+
+        CFG_SIMPLE_STR(const_cast<char *>("sensor_type"),               &sensor_type),
 
         CFG_SIMPLE_INT(const_cast<char *>("pressure_sensor_i2c_bus"),   &pressure_sensor_i2c_bus),
         CFG_SIMPLE_INT(const_cast<char *>("pressure_height"),           &pressure_height),
@@ -148,6 +152,13 @@ void Configuration::read(const std::string &filename)
 
     if (serial_baud > 0)
         m_serialBaud = serial_baud;
+
+    if (sensor_type) {
+        m_sensorType = SensorType::fromString(sensor_type);
+        if (m_sensorType == SensorType::Invalid)
+            BW_ERROR_ERR("Unable to parse sensor type '%s'. Default to 'kombi'.", sensor_type);
+        std::free(sensor_type);
+    }
 
     if (pressure_sensor_i2c_bus >= 0)
         m_pressureSensorI2cBus = pressure_sensor_i2c_bus;
@@ -221,6 +232,11 @@ int Configuration::serialBaud() const
     return m_serialBaud;
 }
 
+SensorType Configuration::sensorType() const
+{
+    return m_sensorType;
+}
+
 int Configuration::pressureSensorI2cBus() const
 {
     return m_pressureSensorI2cBus;
@@ -282,6 +298,7 @@ std::string Configuration::str() const
     ss << std::boolalpha
        << "serialDevice="         << m_serialDevice           << ", "
        << "serialBaud="           << m_serialBaud             << ", "
+       << "sensorType="           << m_sensorType             << ", "
        << "reportDirectory="      << m_reportDirectory        << ", "
        << "reportUploadCommand="  << m_reportUploadCommand    << ", "
        << "locationString="       << m_locationString         << ", "

@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,59 @@
 namespace vetero {
 namespace common {
 
+/* SensorType {{{ */
+
+SensorType SensorType::Invalid(IdInvalid);
+SensorType SensorType::Kombi(IdKombi);
+SensorType SensorType::KombiNoRain(IdKombiNoRain);
+SensorType SensorType::Pool(IdPool);
+SensorType SensorType::Normal(IdNormal);
+
+std::string SensorType::str() const
+{
+    switch (m_typeId) {
+        case IdKombi:
+            return "kombi";
+
+        case IdKombiNoRain:
+            return "kombi_no_rain";
+
+        case IdPool:
+            return "pool";
+
+        case IdNormal:
+            return "normal";
+
+        case IdInvalid:
+        default:
+            return "invalid";
+    }
+}
+
+SensorType SensorType::fromString(const std::string &value)
+{
+    if (strcasecmp(value.c_str(), "kombi") == 0)
+        return Kombi;
+    else if (strcasecmp(value.c_str(), "kombi_no_rain") == 0)
+        return KombiNoRain;
+    else if (strcasecmp(value.c_str(), "pool") == 0)
+        return Pool;
+    else if (strcasecmp(value.c_str(), "normal") == 0)
+        return Normal;
+    else
+        return Invalid;
+}
+
+std::ostream &operator<<(std::ostream &os, const SensorType &type)
+{
+    return os << type.str();
+}
+
+/* }}} */
 /* UsbWde1Dataset {{{ */
 
 UsbWde1Dataset::UsbWde1Dataset()
-    : m_sensorType(SensorInvalid)
+    : m_sensorType(SensorType::Invalid)
     , m_temperature(0)
     , m_humidity(0)
     , m_windSpeed(0)
@@ -35,12 +84,12 @@ UsbWde1Dataset::UsbWde1Dataset()
     , m_IsRain(false)
 {}
 
-UsbWde1Dataset::SensorType UsbWde1Dataset::sensorType() const
+SensorType UsbWde1Dataset::sensorType() const
 {
     return m_sensorType;
 }
 
-void UsbWde1Dataset::setSensorType(UsbWde1Dataset::SensorType type)
+void UsbWde1Dataset::setSensorType(const SensorType &type)
 {
     m_sensorType = type;
 }

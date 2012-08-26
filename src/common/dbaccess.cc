@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,40 +223,42 @@ std::string DbAccess::readMiscEntry(const std::string &key) const
 void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
 {
     // rain calculation
-    int rain = 0;
-    if (dataset.sensorType() == UsbWde1Dataset::SensorKombi) {
+    std::string rain("NULL");
+    if (dataset.sensorType().hasRain()) {
         int lastRain = readMiscEntry(LastRain, -1);
         if (lastRain == -1)
             lastRain = dataset.rainGauge();
         int rainGaugeDiff = dataset.rainGauge() - lastRain;
         if (rainGaugeDiff < 0)
             rainGaugeDiff += 4096 + 1;
-        rain = rainGaugeDiff * UsbWde1Dataset::RAIN_GAUGE_FACTOR;
+        rain = bw::str(rainGaugeDiff * UsbWde1Dataset::RAIN_GAUGE_FACTOR);
     }
 
     // wind bft
-    int windStrength = 0;
-    if (dataset.sensorType() == UsbWde1Dataset::SensorKombi)
-        windStrength = Weather::windSpeedToBft(dataset.windSpeed());
+    std::string windSpeed("NULL");
+    std::string windStrength("NULL");
+    if (dataset.sensorType().hasWind()) {
+        windSpeed = bw::str( dataset.windSpeed() );
+        windStrength = bw::str(Weather::windSpeedToBft(dataset.windSpeed()));
+    }
 
     // dew point calculation
-    int dewpoint = 0;
-    if (dataset.sensorType() == UsbWde1Dataset::SensorKombi ||
-            dataset.sensorType() == UsbWde1Dataset::SensorNormal)
-        dewpoint = Weather::dewpoint(dataset.temperature(), dataset.humidity());
+    std::string humidity("NULL");
+    std::string dewpoint("NULL");
+    if (dataset.sensorType().hasHumidity()) {
+        humidity = bw::str(dataset.humidity());
+        dewpoint = bw::str(Weather::dewpoint(dataset.temperature(), dataset.humidity()));
+    }
 
     m_db->executeSql("INSERT INTO weatherdata "
                      "(timestamp, temp, humid, dewpoint, wind, wind_bft, rain) "
                      "VALUES (?, ?, ?, ?, ?, ?, ?)",
                      dataset.timestamp().str().c_str(),
                      bw::str( dataset.temperature() ).c_str(),
-                     bw::str( dataset.humidity() ).c_str(),
-                     bw::str( dewpoint ).c_str(),
-                     bw::str( dataset.windSpeed() ).c_str(),
-                     bw::str( windStrength ).c_str(),
-                     bw::str( rain ).c_str() );
+                     humidity.c_str(), dewpoint.c_str(),
+                     windSpeed.c_str(), windStrength.c_str(), rain.c_str() );
 
-    if (dataset.sensorType() == UsbWde1Dataset::SensorKombi)
+    if (dataset.sensorType().hasRain())
         writeMiscEntry(LastRain, dataset.rainGauge());
 }
 
