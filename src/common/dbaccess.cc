@@ -25,13 +25,28 @@
 namespace vetero {
 namespace common {
 
+/* DummyProgressNotifier {{{ */
+
+class DummyProgressNotifier : public ProgressNotifier {
+
+public:
+    virtual void progressed(double total, double now) {}
+    virtual void finished() {}
+};
+
+namespace {
+    DummyProgressNotifier dummyProgressNotifier;
+}
+
+/* }}} */
 /* DbAccess {{{ */
 
 const char *DbAccess::LastRain                  = "last_rain";
 const char *DbAccess::DatabaseSchemaRevision    = "db_revision";
 
 DbAccess::DbAccess(Database *db)
-    : m_db(db)
+    : m_db(db),
+      m_progressNotifier(&dummyProgressNotifier)
 {}
 
 Database &DbAccess::database()
@@ -405,15 +420,8 @@ void DbAccess::deleteStatistics()
 
 void DbAccess::updateDayStatistics(const std::string &date)
 {
-    if (date.empty()) {
-        std::vector<std::string> days = dataDays(true);
-
-        std::vector<std::string>::const_iterator it;;
-        for (it = days.begin(); it != days.end(); ++it)
-            updateDayStatistics(*it);
-
-        return;
-    }
+    if (date.empty())
+        return updateDayStatistics();
 
     BW_DEBUG_INFO("Regenerating day statistics for %s", date.c_str());
 
@@ -437,17 +445,22 @@ void DbAccess::updateDayStatistics(const std::string &date)
     );
 }
 
+void DbAccess::updateDayStatistics()
+{
+    std::vector<std::string> days = dataDays(true);
+
+    for (size_t i = 0; i < days.size(); ++i) {
+        m_progressNotifier->progressed(days.size(), i);
+        updateDayStatistics(days[i]);
+    }
+
+    m_progressNotifier->finished();
+}
+
 void DbAccess::updateMonthStatistics(const std::string &month)
 {
-    if (month.empty()) {
-        std::vector<std::string> months = dataMonths(true);
-
-        std::vector<std::string>::const_iterator it;;
-        for (it = months.begin(); it != months.end(); ++it)
-            updateMonthStatistics(*it);
-
-        return;
-    }
+    if (month.empty())
+        return updateMonthStatistics();
 
     BW_DEBUG_INFO("Regenerating month statistics for %s", month.c_str());
 
@@ -470,6 +483,26 @@ void DbAccess::updateMonthStatistics(const std::string &month)
         "  WHERE  STRFTIME('%%Y-%%m', date) = ?",
         month.c_str(), month.c_str()
     );
+}
+
+void DbAccess::updateMonthStatistics()
+{
+    std::vector<std::string> months = dataMonths(true);
+
+    for (ssize_t i = 0; i < months.size(); ++i) {
+        m_progressNotifier->progressed(months.size(), i);
+        updateMonthStatistics(months[i]);
+    }
+
+    m_progressNotifier->finished();
+}
+
+void DbAccess::setProgressNotifier(ProgressNotifier *progress)
+{
+    if (progress)
+        m_progressNotifier = progress;
+    else
+        m_progressNotifier = &dummyProgressNotifier;
 }
 
 /* }}} */

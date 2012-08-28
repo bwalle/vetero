@@ -161,6 +161,7 @@ class Veterod : public common::VeteroApplication
     private:
         Action m_action;
         bool m_daemonize;
+        bool m_showProgress;
         std::string m_errorLogfile;
         std::string m_configfile;
         bool m_noConfigFatal;

@@ -24,6 +24,7 @@ set(COMMON_SRCS
     weather.cc
     lockfile.cc
     veteroapplication.cc
+    consoleprogress.cc
 )
 
 add_library(vetero ${COMMON_SRCS})
