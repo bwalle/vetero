@@ -77,7 +77,10 @@ void CurrentReportGenerator::generateReports()
 
         pos = line.find("DD.D");
         if (pos != std::string::npos) {
-            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.dewpointReal());
+            if (currentWeather.hasHumidity())
+                value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.dewpointReal());
+            else
+                value = common::dashDecimalValue(loc, 2, 1);
             line.replace(pos, 4, value);
         }
 
