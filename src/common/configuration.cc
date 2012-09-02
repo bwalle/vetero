@@ -155,8 +155,10 @@ void Configuration::read(const std::string &filename)
 
     if (sensor_type) {
         m_sensorType = SensorType::fromString(sensor_type);
-        if (m_sensorType == SensorType::Invalid)
+        if (m_sensorType == SensorType::Invalid) {
             BW_ERROR_ERR("Unable to parse sensor type '%s'. Default to 'kombi'.", sensor_type);
+            m_sensorType = SensorType::Kombi;
+        }
         std::free(sensor_type);
     }
 
