@@ -34,8 +34,12 @@ namespace reportgen {
 
 MonthReportGenerator::MonthReportGenerator(VeteroReportgen    *reportGenerator,
                                            const std::string  &month)
-    : ReportGenerator(reportGenerator)
-    , m_monthString(month)
+    : ReportGenerator(reportGenerator),
+      m_monthString(month),
+
+      m_havePressure(-1),
+      m_haveWind(-1),
+      m_haveRain(-1)
 {}
 
 void MonthReportGenerator::generateReports()
@@ -78,8 +82,10 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
     m_lastDayStr = m_month.strftime("%Y-%m-") + bw::str(Calendar::daysPerMonth(m_month));
 
     createTemperatureDiagram();
-    createWindDiagram();
-    createRainDiagram();
+    if (haveWindData())
+        createWindDiagram();
+    if (haveRainData())
+        createRainDiagram();
     createHtml();
 }
 
@@ -226,13 +232,17 @@ void MonthReportGenerator::createHtml()
     html.img(nameProvider().monthlyDiagramLink(m_month, "temperature"));
     html.addTopLink();
 
-    html.addSection(_("Wind speed"), _("Wind"), "wind");
-    html.img(nameProvider().monthlyDiagramLink(m_month, "wind"));
-    html.addTopLink();
+    if (haveWindData()) {
+        html.addSection(_("Wind speed"), _("Wind"), "wind");
+        html.img(nameProvider().monthlyDiagramLink(m_month, "wind"));
+        html.addTopLink();
+    }
 
-    html.addSection(_("Rain"), _("Rain"), "rain");
-    html.img(nameProvider().monthlyDiagramLink(m_month, "rain"));
-    html.addTopLink();
+    if (haveRainData()) {
+        html.addSection(_("Rain"), _("Rain"), "rain");
+        html.img(nameProvider().monthlyDiagramLink(m_month, "rain"));
+        html.addTopLink();
+    }
 
     html.addSection(_("Numeric values"), _("Values"), "numeric");
     createTable(html);
@@ -247,15 +257,16 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     struct FormatDescription {
         const char *unit;
         int        precision;
+        bool       active;
     } format[] = {
-        { NULL,   -1 },     // date
-        { "°C",    1 },     // temp_avg
-        { "°C",    1 },     // temp_min
-        { "°C",    1 },     // temp_avg
-        { "km/h",  1 },     // wind_max
-        { "Bft",   0 },     // wind_max_beaufort
-        { "l/m²",  1 },     // rain
-        { "l/m²",  1 }      // rain_month
+        { NULL,   -1, true },               // date
+        { "°C",    1, true },               // temp_avg
+        { "°C",    1, true },               // temp_min
+        { "°C",    1, true },               // temp_avg
+        { "km/h",  1, haveWindData() },     // wind_max
+        { "Bft",   0, haveWindData() },     // wind_max_beaufort
+        { "l/m²",  1, haveRainData() },     // rain
+        { "l/m²",  1, haveRainData() }      // rain_month
     };
 
     common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
@@ -283,19 +294,30 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
          << "<tr bgcolor='#FFFFFF'>\n"
          << "  <th style='padding: 5px' colspan=\"2\"><b></b></th>\n"
-         << "  <th style='padding: 5px' colspan=\"3\"><b>Temperatur</b></th>\n"
-         << "  <th style='padding: 5px' colspan=\"2\"><b>Wind</b></th>\n"
-         << "  <th style='padding: 5px' colspan=\"2\"><b>Niederschlag</b></th>\n"
-         << "</tr>\n"
+         << "  <th style='padding: 5px' colspan=\"3\"><b>Temperatur</b></th>\n";
+
+    if (haveWindData())
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>Wind</b></th>\n";
+
+    if (haveRainData())
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>Niederschlag</b></th>\n";
+
+    html << "</tr>\n"
          << "<tr bgcolor='#FFFFFF'>\n"
          << "  <th style='padding: 5px' colspan=\"2\"><b>Datum</b></th>\n"
          << "  <th style='padding: 5px'><b>Avg.</b></th>\n"
          << "  <th style='padding: 5px'><b>Min.</b></th>\n"
-         << "  <th style='padding: 5px'><b>Max.</b></th>\n"
-         << "  <th style='padding: 5px' colspan=\"2\"><b>Max.</b></th>\n"
-         << "  <th style='padding: 5px'><b>Tag</b></th>\n"
-         << "  <th style='padding: 5px'><b>Summe</b></th>\n"
-         << "</tr>\n";
+         << "  <th style='padding: 5px'><b>Max.</b></th>\n";
+
+    if (haveWindData())
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>Max.</b></th>\n";
+
+    if (haveRainData()) {
+        html << "  <th style='padding: 5px'><b>Tag</b></th>\n"
+             << "  <th style='padding: 5px'><b>Summe</b></th>\n";
+    }
+
+    html << "</tr>\n";
 
     std::string localeStr = reportgen()->configuration().locale();
     for (size_t i = 0; i < result.size(); i++) {
@@ -319,6 +341,9 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
                 assert(j < BW_ARRAY_SIZE(format));
                 FormatDescription *desc = &format[j];
 
+                if (!desc->active)
+                    continue;
+
                 if (desc->precision > 0) {
                     double numericValue = bw::from_str<double>(value, std::locale::classic());
                     value = common::str_printf_l("%.*lf", localeStr.c_str(), desc->precision,
@@ -336,6 +361,47 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
 
     html << "</table>\n";
 }
+
+bool MonthReportGenerator::havePressureData() const
+{
+    if (m_havePressure == -1)
+        m_havePressure = haveWeatherData("pressure");
+
+    return m_havePressure;
+}
+
+bool MonthReportGenerator::haveRainData() const
+{
+    if (m_haveRain == -1)
+        m_haveRain = haveWeatherData("rain");
+
+    return m_haveRain;
+}
+
+bool MonthReportGenerator::haveWindData() const
+{
+    if (m_haveWind == -1)
+        m_haveWind = haveWeatherData("wind_avg");
+
+    BW_DEBUG_DBG("haveWind=%d\n", m_haveWind);
+
+    return m_haveWind;
+}
+
+bool MonthReportGenerator::haveWeatherData(const std::string &data) const
+{
+    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+        "SELECT   count(*) "
+        "FROM     day_statistics "
+        "WHERE    date BETWEEN date(?, 'localtime') AND date(?, 'localtime') AND "
+        "         %s IS NOT NULL",
+        m_firstDayStr.c_str(), m_lastDayStr.c_str(),
+        data.c_str()
+    );
+
+    return (bw::from_str<int>(result.at(0).at(0)) > 0);
+}
+
 
 } // end namespace reportgen
 } // end namespace vetero

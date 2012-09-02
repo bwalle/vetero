@@ -103,12 +103,23 @@ class MonthReportGenerator : public ReportGenerator
          */
         void createTable(HtmlDocument &html);
 
+        bool haveRainData() const;
+        bool haveWindData() const;
+        bool havePressureData() const;
+
+        bool haveWeatherData(const std::string &name) const;
+
     private:
         std::string m_monthString;
         bw::Datetime m_month;
 
         std::string m_firstDayStr;
         std::string m_lastDayStr;
+
+        // 0=false, 1=true, -1=not set
+        mutable int m_havePressure;
+        mutable int m_haveRain;
+        mutable int m_haveWind;
 };
 
 } // end namespace reportgen

@@ -53,82 +53,35 @@ class DayReportGenerator : public ReportGenerator
          */
         virtual void generateReports();
 
-    protected:
-        /**
-         * \brief Generates one report
-         *
-         * \param[in] date the date string
-         */
+    private:
         void generateOneReport(const std::string &date);
 
-        /**
-         * \brief Creates the temperature diagram for one day
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createTemperatureDiagram();
-
-        /**
-         * \brief Creates the humidity diagram for one day
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createHumidityDiagram();
-
-        /**
-         * \brief Creates the wind diagram for one day
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createWindDiagram();
-
-        /**
-         * \brief Creates the rain diagram for one day
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createRainDiagram();
-
-        /**
-         * \brief Creates the pressure diagram for one day
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createPressureDiagram();
 
-        /**
-         * \brief Creates the HTML page
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createHtml();
 
-        /**
-         * \brief Checks if we have pressure data for the given day
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
+        bool haveHumidityData() const;
+        bool haveRainData() const;
+        bool haveWindData() const;
         bool havePressureData() const;
 
-        /**
-         * \brief Reset cached values
-         *
-         * That function must be called when generating more than one
-         * report before switching to another date.
-         */
+        bool haveWeatherData(const std::string &name) const;
+
         void reset();
 
     private:
         std::string m_dateString;
         bw::Datetime m_date;
-        mutable int m_havePressure; // 0=false, 1=true, -1=not set
+
+        // 0=false, 1=true, -1=not set
+        mutable int m_havePressure;
+        mutable int m_haveRain;
+        mutable int m_haveWind;
+        mutable int m_haveHumidity;
 };
 
 } // end namespace reportgen

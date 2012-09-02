@@ -61,7 +61,10 @@ static void sqlite3_beaufort(sqlite3_context* ctx, int number, sqlite3_value **v
     assert(values != NULL);
     assert(values[0] != NULL);
 
-    sqlite3_result_int(ctx, Weather::windSpeedToBft(sqlite3_value_int(values[0])));
+    if (sqlite3_value_type(values[0]) == SQLITE_NULL)
+        sqlite3_result_null(ctx);
+    else
+        sqlite3_result_int(ctx, Weather::windSpeedToBft(sqlite3_value_int(values[0])));
 }
 
 /* }}} */

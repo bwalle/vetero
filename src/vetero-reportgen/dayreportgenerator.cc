@@ -33,9 +33,12 @@ namespace reportgen {
 
 DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
                                        const std::string    &date)
-    : ReportGenerator(reportGenerator)
-    , m_dateString(date)
-    , m_havePressure(-1)
+    : ReportGenerator(reportGenerator),
+      m_dateString(date),
+      m_havePressure(-1),
+      m_haveWind(-1),
+      m_haveHumidity(-1),
+      m_haveRain(-1)
 {}
 
 void DayReportGenerator::generateReports()
@@ -77,9 +80,12 @@ void DayReportGenerator::generateOneReport(const std::string &date)
     }
 
     createTemperatureDiagram();
-    createHumidityDiagram();
-    createWindDiagram();
-    createRainDiagram();
+    if (haveHumidityData())
+        createHumidityDiagram();
+    if (haveWindData())
+        createWindDiagram();
+    if (haveRainData())
+        createRainDiagram();
     if (havePressureData())
         createPressureDiagram();
 
@@ -303,17 +309,23 @@ void DayReportGenerator::createHtml()
     html.img(nameProvider().dailyDiagramLink(m_date, "temperature"));
     html.addTopLink();
 
-    html.addSection(_("Humidity profile"), _("Humidity"), "humidity");
-    html.img(nameProvider().dailyDiagramLink(m_date, "humidity"));
-    html.addTopLink();
+    if (haveHumidityData()) {
+        html.addSection(_("Humidity profile"), _("Humidity"), "humidity");
+        html.img(nameProvider().dailyDiagramLink(m_date, "humidity"));
+        html.addTopLink();
+    }
 
-    html.addSection(_("Wind speed profile"), _("Wind"), "wind");
-    html.img(nameProvider().dailyDiagramLink(m_date, "wind"));
-    html.addTopLink();
+    if (haveWindData()) {
+        html.addSection(_("Wind speed profile"), _("Wind"), "wind");
+        html.img(nameProvider().dailyDiagramLink(m_date, "wind"));
+        html.addTopLink();
+    }
 
-    html.addSection(_("Rain profile"), _("Rain"), "rain");
-    html.img(nameProvider().dailyDiagramLink(m_date, "rain"));
-    html.addTopLink();
+    if (haveRainData()) {
+        html.addSection(_("Rain profile"), _("Rain"), "rain");
+        html.img(nameProvider().dailyDiagramLink(m_date, "rain"));
+        html.addTopLink();
+    }
 
     if (havePressureData()) {
         html.addSection(_("Air pressure profile"), _("Air pressure"), "pressure");
@@ -327,20 +339,49 @@ void DayReportGenerator::createHtml()
 
 bool DayReportGenerator::havePressureData() const
 {
-    if (m_havePressure == -1) {
-        common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
-            "SELECT   count(*) "
-            "FROM     weatherdata "
-            "WHERE    jdate = julianday(?) "
-            "         AND pressure IS NOT NULL "
-            "ORDER BY timestamp",
-            m_date.strftime("%Y-%m-%d 12:00").c_str()
-        );
-
-        m_havePressure = (bw::from_str<int>(result.at(0).at(0)) > 0);
-    }
+    if (m_havePressure == -1)
+        m_havePressure = haveWeatherData("pressure");
 
     return m_havePressure;
+}
+
+bool DayReportGenerator::haveHumidityData() const
+{
+    if (m_haveHumidity == -1)
+        m_haveHumidity = haveWeatherData("humid");
+
+    return m_haveHumidity;
+}
+
+bool DayReportGenerator::haveRainData() const
+{
+    if (m_haveRain == -1)
+        m_haveRain = haveWeatherData("rain");
+
+    return m_haveRain;
+}
+
+bool DayReportGenerator::haveWindData() const
+{
+    if (m_haveWind == -1)
+        m_haveWind = haveWeatherData("wind");
+
+    return m_haveWind;
+}
+
+bool DayReportGenerator::haveWeatherData(const std::string &data) const
+{
+    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+        "SELECT   count(*) "
+        "FROM     weatherdata "
+        "WHERE    jdate = julianday(?) "
+        "         AND %s IS NOT NULL "
+        "ORDER BY timestamp",
+        m_date.strftime("%Y-%m-%d 12:00").c_str(),
+        data.c_str()
+    );
+
+    return (bw::from_str<int>(result.at(0).at(0)) > 0);
 }
 
 void DayReportGenerator::reset()
