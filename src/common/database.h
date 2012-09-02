@@ -133,6 +133,7 @@ class Database : private bw::Noncopyable {
          *            elements.
          * \exception DatabaseError if the SQL statement cannot be executed
          * \see executeSqlQuery()
+         * \see c_str_null
          */
         virtual void executeSql(const char *sql, ...);
 
@@ -273,6 +274,21 @@ class Sqlite3Database : public Database {
  * \return \p os
  */
 std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbResultVector &vector);
+
+/**
+ * @brief Wrapper to simplify using std::string with executeSql()
+ *
+ * If the string is "NULL", then the macro returns a NULL pointer. This makes it possible
+ * to insert (conditionally) NULL values to the database without losing the advantage of
+ * std::string (which can't take NULL values).
+ */
+inline const char *c_str_null(const std::string &string)
+{
+    if (string == "NULL")
+        return NULL;
+    else
+        return string.c_str();
+}
 
 /* }}} */
 

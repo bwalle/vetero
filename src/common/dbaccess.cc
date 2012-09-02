@@ -268,10 +268,10 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
     m_db->executeSql("INSERT INTO weatherdata "
                      "(timestamp, temp, humid, dewpoint, wind, wind_bft, rain) "
                      "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                     dataset.timestamp().str().c_str(),
-                     bw::str( dataset.temperature() ).c_str(),
-                     humidity.c_str(), dewpoint.c_str(),
-                     windSpeed.c_str(), windStrength.c_str(), rain.c_str() );
+                     c_str_null(dataset.timestamp().str()),
+                     c_str_null(bw::str( dataset.temperature() )),
+                     c_str_null(humidity), c_str_null(dewpoint),
+                     c_str_null(windSpeed), c_str_null(windStrength), c_str_null(rain) );
 
     if (dataset.sensorType().hasRain())
         writeMiscEntry(LastRain, dataset.rainGauge());
