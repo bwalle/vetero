@@ -75,12 +75,6 @@ vetero::common::UsbWde1Dataset DataReader::read()
 
 vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line) const
 {
-    const int TEMPERATURE_INDEX = 19;
-    const int HUMIDITY_INDEX    = 20;
-    const int WIND_INDEX        = 21;
-    const int RAIN_INDEX        = 22;
-    const int IS_RAIN_INDEX     = 23;
-
     std::vector<std::string> parts = bw::stringsplit(line, ";");
     if (parts.size() != 25)
         throw common::ApplicationError("Invalid data set received: " + bw::str(parts.size()) +
@@ -89,6 +83,13 @@ vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line)
     vetero::common::UsbWde1Dataset data;
 
     if (m_configuration.sensorType() == common::SensorType::Kombi) {
+
+        const int TEMPERATURE_INDEX = 19;
+        const int HUMIDITY_INDEX    = 20;
+        const int WIND_INDEX        = 21;
+        const int RAIN_INDEX        = 22;
+        const int IS_RAIN_INDEX     = 23;
+
 
         // temperature
         std::string temperature = parts[TEMPERATURE_INDEX];
@@ -114,16 +115,19 @@ vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line)
 
     } else if (m_configuration.sensorType() == common::SensorType::Normal) {
 
+        const int TEMPERATURE_INDEX_1 = 3;
+        const int HUMIDITY_INDEX_1 = 11;
+
         // computer scientists start counting from 0, not from 1 :-)
         int number = m_configuration.sensorNumber() - 1;
 
         // temperature
-        std::string temperature = parts[3 + number*2];
+        std::string temperature = parts[TEMPERATURE_INDEX_1 + number];
         temperature = bw::replace_char(temperature, ',', "");
         data.setTemperature( bw::from_str<int>(temperature) * 10 );
 
         // humidity
-        std::string humidity = parts[4 + number*2];
+        std::string humidity = parts[HUMIDITY_INDEX_1 + number];
         data.setHumidity( bw::from_str<int>(humidity) * 100 );
     }
 
