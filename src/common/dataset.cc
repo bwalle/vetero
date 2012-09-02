@@ -259,7 +259,7 @@ void CurrentWeather::setMaxTemperature(int maxTemperature)
 
 bool CurrentWeather::hasHumidity() const
 {
-    return false;
+    return m_hasHumidity;
 }
 
 int CurrentWeather::humidity() const
