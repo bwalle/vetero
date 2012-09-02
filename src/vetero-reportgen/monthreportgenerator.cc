@@ -383,8 +383,6 @@ bool MonthReportGenerator::haveWindData() const
     if (m_haveWind == -1)
         m_haveWind = haveWeatherData("wind_avg");
 
-    BW_DEBUG_DBG("haveWind=%d\n", m_haveWind);
-
     return m_haveWind;
 }
 
