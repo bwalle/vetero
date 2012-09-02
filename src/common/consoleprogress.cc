@@ -16,6 +16,7 @@
  */
 
 #include <sys/ioctl.h>
+#include <stdio.h>
 
 #include "consoleprogress.h"
 
@@ -29,10 +30,17 @@ ConsoleProgress::ConsoleProgress(const std::string &title)
 {
     int totalWidth = 80;
 
+#if defined(TIOCGSIZE)
     struct ttysize ts;
     int ret = ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
     if (ret >= 0)
         totalWidth = ts.ts_cols;
+#elif defined(TIOCGWINSZ)
+    struct winsize ws;
+    int ret = ioctl(STDIN_FILENO, TIOCGWINSZ, &ws);
+    if (ret >= 0)
+        totalWidth = ws.ws_col;
+#endif
 
     // 1 space between title and bar, 1 space between percentage and title
     // and two characters for the '|'
