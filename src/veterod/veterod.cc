@@ -354,13 +354,30 @@ void Veterod::execCollectWeatherdata()
             jobs.push_back("current");
             jobs.push_back("day:" + dataset.timestamp().dateStr());
             if (dataset.timestamp().day() != lastInserted.day()) {
-                bw::Datetime lastDay(dataset.timestamp());
+
+                bw::Datetime timestamp(dataset.timestamp());
+                bw::Datetime lastDay(timestamp);
                 lastDay.addDays(-1);
-                std::string monthStr(lastDay.strftime("%Y-%m"));
-                dbAccess.updateMonthStatistics(monthStr);
-                jobs.push_back("month:" + monthStr);
-                // last day because of the next link
+                
+                //
+                // update statistics
+                //
+
+                dbAccess.updateMonthStatistics(timestamp.strftime("%Y-%m"));
+                if (timestamp.month() != lastDay.month())
+                    dbAccess.updateMonthStatistics(lastDay.strftime("%Y-%m"));
+
+                //
+                // update reports
+                //
+
+                // last day and last month because of the next link
                 jobs.push_back("day:" + lastDay.strftime("%Y-%m-%d"));
+                if (timestamp.month() != lastDay.month())
+                    jobs.push_back("month:" + lastDay.strftime("%Y-%m"));
+
+                // current month to avoid dead links although there's no data yet
+                jobs.push_back("month:" + timestamp.strftime("%Y-%m"));
             }
             updateReports(jobs, true);
 
