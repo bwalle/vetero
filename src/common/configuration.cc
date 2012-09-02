@@ -54,6 +54,7 @@ Configuration::Configuration(const std::string &preferredFilename)
     : m_serialDevice("/dev/ttyS0"),
       m_serialBaud(9600),
       m_sensorType(SensorType::Kombi),
+      m_sensorNumber(-1),
       m_pressureSensorI2cBus(-1),
       m_pressureHeight(-1),
       m_databasePath("vetero.db"),
@@ -100,6 +101,7 @@ void Configuration::read(const std::string &filename)
 {
     char *serial_device = NULL, *database_path = NULL;
     char *sensor_type = NULL;
+    int sensor_number = -1;
     char *report_title_color1 = NULL, *report_title_color2 = NULL;
     char *report_directory = NULL, *report_upload_command = NULL;
     char *display_name = NULL, *display_connection = NULL;
@@ -112,6 +114,7 @@ void Configuration::read(const std::string &filename)
         CFG_SIMPLE_INT(const_cast<char *>("serial_baud"),               &serial_baud),
 
         CFG_SIMPLE_STR(const_cast<char *>("sensor_type"),               &sensor_type),
+        CFG_SIMPLE_INT(const_cast<char *>("sensor_number"),             &sensor_number),
 
         CFG_SIMPLE_INT(const_cast<char *>("pressure_sensor_i2c_bus"),   &pressure_sensor_i2c_bus),
         CFG_SIMPLE_INT(const_cast<char *>("pressure_height"),           &pressure_height),
@@ -161,11 +164,14 @@ void Configuration::read(const std::string &filename)
         }
         std::free(sensor_type);
     }
+    m_sensorNumber = sensor_number;
+    if (m_sensorNumber <= 0 && m_sensorType == SensorType::Normal) {
+        BW_ERROR_ERR("Invalid sensor number provided. Default to 1.");
+        m_sensorNumber = 1;
+    }
 
-    if (pressure_sensor_i2c_bus >= 0)
-        m_pressureSensorI2cBus = pressure_sensor_i2c_bus;
-    if (pressure_height >= 0)
-        m_pressureHeight = pressure_height;
+    m_pressureSensorI2cBus = pressure_sensor_i2c_bus;
+    m_pressureHeight = pressure_height;
 
     if (database_path) {
         m_databasePath = database_path;
@@ -237,6 +243,11 @@ int Configuration::serialBaud() const
 SensorType Configuration::sensorType() const
 {
     return m_sensorType;
+}
+
+int Configuration::sensorNumber() const
+{
+    return m_sensorNumber;
 }
 
 int Configuration::pressureSensorI2cBus() const

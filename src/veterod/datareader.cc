@@ -88,27 +88,44 @@ vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line)
 
     vetero::common::UsbWde1Dataset data;
 
-    // temperature
-    std::string temperature = parts[TEMPERATURE_INDEX];
-    temperature = bw::replace_char(temperature, ',', "");
-    data.setTemperature( bw::from_str<int>(temperature) * 10 );
+    if (m_configuration.sensorType() == common::SensorType::Kombi) {
 
-    // humidity
-    std::string humidity = parts[HUMIDITY_INDEX];
-    data.setHumidity( bw::from_str<int>(humidity) * 100 );
+        // temperature
+        std::string temperature = parts[TEMPERATURE_INDEX];
+        temperature = bw::replace_char(temperature, ',', "");
+        data.setTemperature( bw::from_str<int>(temperature) * 10 );
 
-    // wind
-    std::string wind = parts[WIND_INDEX];
-    wind = bw::replace_char(wind, ',', "");
-    data.setWindSpeed( bw::from_str<int>(wind) * 10 );
+        // humidity
+        std::string humidity = parts[HUMIDITY_INDEX];
+        data.setHumidity( bw::from_str<int>(humidity) * 100 );
 
-    // rain
-    std::string rain = parts[RAIN_INDEX];
-    data.setRainGauge( bw::from_str<int>(rain) );
+        // wind
+        std::string wind = parts[WIND_INDEX];
+        wind = bw::replace_char(wind, ',', "");
+        data.setWindSpeed( bw::from_str<int>(wind) * 10 );
 
-    // is raining
-    std::string isRain = parts[IS_RAIN_INDEX];
-    data.setIsRain( bw::from_str<int>(isRain) );
+        // rain
+        std::string rain = parts[RAIN_INDEX];
+        data.setRainGauge( bw::from_str<int>(rain) );
+
+        // is raining
+        std::string isRain = parts[IS_RAIN_INDEX];
+        data.setIsRain( bw::from_str<int>(isRain) );
+
+    } else if (m_configuration.sensorType() == common::SensorType::Normal) {
+
+        // computer scientists start counting from 0, not from 1 :-)
+        int number = m_configuration.sensorNumber() - 1;
+
+        // temperature
+        std::string temperature = parts[3 + number*2];
+        temperature = bw::replace_char(temperature, ',', "");
+        data.setTemperature( bw::from_str<int>(temperature) * 10 );
+
+        // humidity
+        std::string humidity = parts[4 + number*2];
+        data.setHumidity( bw::from_str<int>(humidity) * 100 );
+    }
 
     return data;
 }

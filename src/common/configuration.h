@@ -43,6 +43,7 @@ class Configuration
         // Sensor configuration
 
         SensorType sensorType() const;
+        int sensorNumber() const;
 
         //  Pressure sensor
 
@@ -76,6 +77,7 @@ class Configuration
         std::string m_serialDevice;
         int         m_serialBaud;
         SensorType  m_sensorType;
+        int         m_sensorNumber;
         int         m_pressureSensorI2cBus;
         int         m_pressureHeight;
         std::string m_reportTitleColor1;
