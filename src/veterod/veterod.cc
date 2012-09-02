@@ -313,7 +313,7 @@ void Veterod::execCollectWeatherdata()
     BW_DEBUG_INFO("Starting application.");
 
     if (m_daemonize) {
-        bw::daemonize();
+        bw::daemonize(bw::DAEMONIZE_NOCLOSE); // SQLite is already open!
         createPidfile();
     }
 
