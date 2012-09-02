@@ -89,35 +89,46 @@ void CurrentReportGenerator::generateReports()
 
         pos = line.find("HH");
         if (pos != std::string::npos) {
-            value = common::str_printf_l("%.0lf", loc.c_str(), currentWeather.humidityReal());
+            if (currentWeather.hasHumidity())
+                value = common::str_printf_l("%.0lf", loc.c_str(), currentWeather.humidityReal());
+            else
+                value = common::dashDecimalValue(loc, 2);
             line.replace(pos, 2, value);
         }
 
         pos = line.find("WW.W");
         if (pos != std::string::npos) {
-            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.windSpeedReal());
+            if (currentWeather.hasWind())
+                value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.windSpeedReal());
+            else
+                value = common::dashDecimalValue(loc, 2, 1);
             line.replace(pos, 4, value);
         }
 
         pos = line.find("WB");
         if (pos != std::string::npos) {
-            value = common::str_printf_l("%d", loc.c_str(), currentWeather.windBeaufort());
+            if (currentWeather.hasWind())
+                value = common::str_printf_l("%d", loc.c_str(), currentWeather.windBeaufort());
+            else
+                value = common::dashDecimalValue(loc, 2);
             line.replace(pos, 2, value);
         }
 
         pos = line.find("RR.R");
         if (pos != std::string::npos) {
-            value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.rainReal());
+            if (currentWeather.hasRain())
+                value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.rainReal());
+            else
+                value = common::dashDecimalValue(loc, 2, 1);
             line.replace(pos, 4, value);
         }
 
         pos = line.find("PPPP");
         if (pos != std::string::npos) {
-            double pressure = currentWeather.pressureReal();
-            if (pressure > 1)
+            if (currentWeather.hasPressure())
                 value = common::str_printf_l("%4.0lf", loc.c_str(), currentWeather.pressureReal());
             else
-                value = "----";
+                value = common::dashDecimalValue(loc, 4);
             line.replace(pos, 4, value);
         }
 

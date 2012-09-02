@@ -177,6 +177,8 @@ class CurrentWeather
 
         // Humidity and Dewpoint
 
+        bool hasHumidity() const;
+
         int humidity() const;
         double humidityReal() const;
         void setHumidity(int humidity);
@@ -187,11 +189,14 @@ class CurrentWeather
 
         // Pressure
 
+        bool hasPressure() const;
         int pressure() const;
         double pressureReal() const;
         void setPressure(int pressure);
 
         // Wind
+
+        bool hasWind() const;
 
         int windSpeed() const;
         double windSpeedReal() const;
@@ -209,6 +214,7 @@ class CurrentWeather
 
         // Rain
 
+        bool hasRain() const;
         int rain() const;
         double rainReal() const;
         void setRain(int  rain);
@@ -228,9 +234,17 @@ class CurrentWeather
     private:
         bw::Datetime m_timestamp;
         int m_temperature, m_minTemperature, m_maxTemperature;
+
+        bool m_hasHumidity;
         int m_humidity, m_dewpoint;
+
+        bool m_hasPressure;
         int m_pressure;
+
+        bool m_hasWind;
         int m_windSpeed, m_maxWindSpeed, m_windBft, m_maxWindBft;
+
+        bool m_hasRain;
         int m_rain;
 };
 

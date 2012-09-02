@@ -308,11 +308,19 @@ CurrentWeather DbAccess::queryCurrentWeather() const
     std::vector<std::string> data = result.front();
     ret.setTimestamp( bw::Datetime(bw::from_str<time_t>(data.at(0))) );
     ret.setTemperature( bw::from_str<int>(data.at(1)) );
-    ret.setHumidity( bw::from_str<int>(data.at(2)) );
-    ret.setDewpoint( bw::from_str<int>(data.at(3)) );
-    ret.setWindSpeed( bw::from_str<int>(data.at(4)) );
-    ret.setWindBeaufort( bw::from_str<int>(data.at(5)) );
-    ret.setPressure( bw::from_str<int>(data.at(6)) );
+
+    if (!data.at(2).empty()) {
+        ret.setHumidity( bw::from_str<int>(data.at(2)) );
+        ret.setDewpoint( bw::from_str<int>(data.at(3)) );
+    }
+
+    if (!data.at(4).empty()) {
+        ret.setWindSpeed( bw::from_str<int>(data.at(4)) );
+        ret.setWindBeaufort( bw::from_str<int>(data.at(5)) );
+    }
+
+    if (!data.at(6).empty())
+        ret.setPressure( bw::from_str<int>(data.at(6)) );
 
     result = m_db->executeSqlQuery(
         "SELECT   temp_min, temp_max, wind_max, wind_bft_max, rain "
@@ -331,7 +339,8 @@ CurrentWeather DbAccess::queryCurrentWeather() const
         ret.setMaxTemperature( bw::from_str<int>(data.at(1)) );
         ret.setMaxWindSpeed( bw::from_str<int>(data.at(2)) );
         ret.setMaxWindBeaufort( bw::from_str<int>(data.at(3)) );
-        ret.setRain( bw::from_str<int>(data.at(4)) );
+        if (!data.at(4).empty())
+            ret.setRain( bw::from_str<int>(data.at(4)) );
     }
 
     return ret;

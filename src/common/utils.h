@@ -30,6 +30,22 @@ namespace vetero {
 namespace common {
 
 /**
+ * \brief Returns the decimal separator for \p locale
+ */
+std::string decimalSeparator(const char *locale);
+
+/**
+ * \brief Formats something like <tt>"--.-"</tt> in a locale-correct manner
+ *
+ * \param[in] locale the locale to use
+ * \param[in] dashesBefore the number of dashes before the decimal separator
+ * \param[in] dashesAfter the number of dashes after the decimal separator (may be 0 which
+ *            omits the decimal separator)
+ * \return the formated string
+ */
+std::string dashDecimalValue(const std::string &locale, int dashesBefore, int dashesAfter=0);
+
+/**
  * \brief printf() implementation that allocates the result string automatically
  *
  * Don't need a static buffer but still having the advantage of the simplicity
@@ -48,7 +64,7 @@ std::string str_printf(const char *format, ...)
 
 /**
  * \brief printf_l() implementation that allocates the result string
- *        automatically 
+ *        automatically
  *
  * Don't need a static buffer but still having the advantage of the simplicity
  * of printf(). The function is even available on systems without printf_l()

@@ -176,17 +176,25 @@ std::ostream &operator<<(std::ostream &os, const UsbWde1Dataset &dataset)
 /* CurrentWeather {{{ */
 
 CurrentWeather::CurrentWeather()
-    : m_temperature(0)
-    , m_minTemperature(0)
-    , m_maxTemperature(0)
-    , m_humidity(0)
-    , m_dewpoint(0)
-    , m_pressure(0)
-    , m_windSpeed(0)
-    , m_maxWindSpeed(0)
-    , m_windBft(0)
-    , m_maxWindBft(0)
-    , m_rain(0)
+    : m_temperature(0),
+      m_minTemperature(0),
+      m_maxTemperature(0),
+
+      m_hasHumidity(false),
+      m_humidity(0),
+      m_dewpoint(0),
+
+      m_hasPressure(false),
+      m_pressure(0),
+
+      m_hasWind(false),
+      m_windSpeed(0),
+      m_maxWindSpeed(0),
+      m_windBft(0),
+      m_maxWindBft(0),
+
+      m_hasRain(false),
+      m_rain(0)
 {}
 
 bw::Datetime CurrentWeather::timestamp() const
@@ -249,6 +257,11 @@ void CurrentWeather::setMaxTemperature(int maxTemperature)
 /* }}} */
 /* Humidity and Dewpoint {{{ */
 
+bool CurrentWeather::hasHumidity() const
+{
+    return false;
+}
+
 int CurrentWeather::humidity() const
 {
     return m_humidity;
@@ -261,6 +274,7 @@ double CurrentWeather::humidityReal() const
 
 void CurrentWeather::setHumidity(int humidity)
 {
+    m_hasHumidity = true;
     m_humidity = humidity;
 }
 
@@ -282,6 +296,11 @@ void CurrentWeather::setDewpoint(int dewpoint)
 /* }}} */
 /* Pressure {{{ */
 
+bool CurrentWeather::hasPressure() const
+{
+    return m_hasPressure;
+}
+
 int CurrentWeather::pressure() const
 {
     return m_pressure;
@@ -294,11 +313,17 @@ double CurrentWeather::pressureReal() const
 
 void CurrentWeather::setPressure(int pressure)
 {
+    m_hasPressure = true;
     m_pressure = pressure;
 }
 
 /* }}} */
 /* Wind {{{ */
+
+bool CurrentWeather::hasWind() const
+{
+    return m_hasWind;
+}
 
 int CurrentWeather::windSpeed() const
 {
@@ -312,6 +337,7 @@ double CurrentWeather::windSpeedReal() const
 
 void CurrentWeather::setWindSpeed(int windSpeed)
 {
+    m_hasWind = true;
     m_windSpeed = windSpeed;
 }
 
@@ -322,6 +348,7 @@ int CurrentWeather::windBeaufort() const
 
 void CurrentWeather::setWindBeaufort(int bft)
 {
+    m_hasWind = true;
     m_windBft = bft;
 }
 
@@ -353,6 +380,11 @@ void CurrentWeather::setMaxWindBeaufort(int bft)
 /* }}} */
 /* Rain {{{ */
 
+bool CurrentWeather::hasRain() const
+{
+    return m_hasRain;
+}
+
 int CurrentWeather::rain() const
 {
     return m_rain;
@@ -365,6 +397,7 @@ double CurrentWeather::rainReal() const
 
 void CurrentWeather::setRain(int rain)
 {
+    m_hasRain = true;
     m_rain = rain;
 }
 
@@ -375,15 +408,26 @@ std::string CurrentWeather::str() const
     std::stringstream ss;
     ss << "temperature="        << temperatureReal() << "C, "
        << "minTemperature="     << minTemperatureReal() << "C, "
-       << "maxTemperature="     << maxTemperatureReal() << "C, "
-       << "humidity="           << humidityReal() << "%, "
-       << "dewpoint="           << dewpointReal() << "C, "
-       << "pressure="           << pressureReal() << "hPa, "
-       << "windSpeed="          << windSpeedReal() << ", "
-       << "windSpeed="          << windBeaufort() << " Bft, "
-       << "maxWindSpeed="       << maxWindSpeedReal() << ", "
-       << "maxWindSpeed="       << maxWindBeaufort() << " Bft, "
-       << "rain="               << rainReal() << ", ";
+       << "maxTemperature="     << maxTemperatureReal() << "C, ";
+
+    if (hasHumidity()) {
+       ss << "humidity=" << humidityReal() << "%, "
+          << "dewpoint=" << dewpointReal() << "C, ";
+    }
+
+    if (hasPressure())
+        ss << "pressure=" << hasPressure() << "hPa, ";
+
+    if (hasWind()) {
+        ss << "windSpeed=" << windSpeedReal() << ", "
+           << "windSpeed=" << windBeaufort() << " Bft, "
+           << "maxWindSpeed=" << maxWindSpeedReal() << ", "
+           << "maxWindSpeed=" << maxWindBeaufort() << " Bft, ";
+    }
+
+    if (hasRain())
+        ss << "rain=" << rainReal() << ", ";
+
     return ss.str();
 }
 

@@ -36,6 +36,37 @@
 namespace vetero {
 namespace common {
 
+std::string dashDecimalValue(const std::string &locale, int dashesBefore, int dashesAfter)
+{
+    locale_t oldlocale = NULL;
+    locale_t clocale = NULL;
+
+    if (!locale.empty() && dashesAfter > 0) {
+        clocale = newlocale(LC_NUMERIC_MASK, locale.c_str(), NULL);
+        if (clocale)
+            oldlocale = uselocale(clocale);
+        else {
+            oldlocale = uselocale(NULL);
+            BW_ERROR_WARNING("Unable to set new locale (%s) with uselocale(): %s",
+                             locale.c_str(), std::strerror(errno));
+        }
+    }
+
+    std::string ret(dashesBefore, '-');
+    if (dashesAfter > 0) {
+        ret += localeconv()->decimal_point;
+        ret += std::string(dashesAfter, '-');
+    }
+
+    // restore locale
+    if (oldlocale)
+        uselocale(oldlocale);
+    if (clocale)
+        freelocale(clocale);
+
+    return ret;
+}
+
 std::string str_printf(const char *format, ...)
 {
     std::va_list ap;
@@ -71,7 +102,7 @@ std::string str_vprintf_l(const char *format, const char *locale, va_list ap)
 
     locale_t oldlocale = NULL;
     locale_t clocale = NULL;
-    
+
     if (locale) {
         clocale = newlocale(LC_NUMERIC_MASK, locale, NULL);
         if (clocale)
