@@ -224,14 +224,14 @@ void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) 
 std::string DbAccess::readMiscEntry(const std::string &key) const
 {
     std::string sql = "SELECT value FROM misc WHERE key = ?";
-    Database::DbResultVector result = m_db->executeSqlQuery(sql.c_str(), key.c_str());
+    Database::Result result = m_db->executeSqlQuery(sql.c_str(), key.c_str());
 
-    if (result.empty())
+    if (result.data.empty())
         return std::string();
     else {
-        if (result.size() != 1 || result[0].size() != 1)
+        if (result.data.size() != 1 || result.data[0].size() != 1)
             throw DatabaseError("Invalid result returned. SQL was '"+ sql +"'.");
-        return result[0][0];
+        return result.data[0][0];
     }
 }
 
@@ -295,17 +295,17 @@ CurrentWeather DbAccess::queryCurrentWeather() const
 {
     CurrentWeather ret;
 
-    Database::DbResultVector result = m_db->executeSqlQuery(
+    Database::Result result = m_db->executeSqlQuery(
         "SELECT   strftime('%%s', datetime(timestamp, 'utc')), "
         "         temp, humid, dewpoint, wind, wind_bft, pressure "
         "FROM     weatherdata "
         "ORDER BY timestamp DESC "
         "LIMIT 1"
     );
-    if (result.size() == 0 || result.at(0).size() == 0)
+    if (result.data.size() == 0 || result.data.at(0).size() == 0)
         return ret;
 
-    std::vector<std::string> data = result.front();
+    std::vector<std::string> data = result.data.front();
     ret.setTimestamp( bw::Datetime(bw::from_str<time_t>(data.at(0))) );
     ret.setTemperature( bw::from_str<int>(data.at(1)) );
 
@@ -328,13 +328,13 @@ CurrentWeather DbAccess::queryCurrentWeather() const
         "WHERE    date = ?", ret.timestamp().strftime("%Y-%m-%d").c_str()
     );
 
-    if (result.size() == 0 || result.at(0).size() == 0) {
+    if (result.data.size() == 0 || result.data.at(0).size() == 0) {
         ret.setMinTemperature(ret.temperature());
         ret.setMaxTemperature(ret.temperature());
         ret.setMaxWindSpeed(ret.windSpeed());
         ret.setMaxWindBeaufort(ret.windBeaufort());
     } else {
-        data = result.front();
+        data = result.data.front();
         ret.setMinTemperature( bw::from_str<int>(data.at(0)) );
         ret.setMaxTemperature( bw::from_str<int>(data.at(1)) );
         ret.setMaxWindSpeed( bw::from_str<int>(data.at(2)) );
@@ -350,7 +350,7 @@ std::vector<std::string> DbAccess::dataDays(bool nocache) const
 {
     std::vector<std::string> ret;
 
-    common::Database::DbResultVector result;
+    common::Database::Result result;
     if (nocache)
         result = m_db->executeSqlQuery(
             "SELECT     DISTINCT STRFTIME('%%Y-%%m-%%d', timestamp) AS d "
@@ -364,9 +364,8 @@ std::vector<std::string> DbAccess::dataDays(bool nocache) const
             "ORDER BY   date"
         );
 
-    common::Database::DbResultVector::const_iterator it;
-    for (it = result.begin(); it != result.end(); ++it)
-        ret.push_back(it->front());
+    for (int i = 0; i < result.data.size(); ++i)
+        ret.push_back(result.data[i].front());
 
     return ret;
 }
@@ -375,7 +374,7 @@ std::vector<std::string> DbAccess::dataMonths(bool nocache) const
 {
     std::vector<std::string> ret;
 
-    common::Database::DbResultVector result;
+    common::Database::Result result;
     if (nocache)
         result = m_db->executeSqlQuery(
             "SELECT     DISTINCT STRFTIME('%%Y-%%m', timestamp) AS m "
@@ -389,9 +388,8 @@ std::vector<std::string> DbAccess::dataMonths(bool nocache) const
             "ORDER BY   month"
         );
 
-    common::Database::DbResultVector::const_iterator it;
-    for (it = result.begin(); it != result.end(); ++it)
-        ret.push_back(it->front());
+    for (int i = 0; i < result.data.size(); ++i)
+        ret.push_back(result.data[i].front());
 
     return ret;
 }
@@ -400,7 +398,7 @@ std::vector<std::string> DbAccess::dataYears(bool nocache) const
 {
     std::vector<std::string> ret;
 
-    common::Database::DbResultVector result;
+    common::Database::Result result;
     if (nocache)
         result = m_db->executeSqlQuery(
             "SELECT     DISTINCT STRFTIME('%%Y', timestamp) AS m "
@@ -414,9 +412,8 @@ std::vector<std::string> DbAccess::dataYears(bool nocache) const
             "ORDER BY   month DESC"
         );
 
-    common::Database::DbResultVector::const_iterator it;
-    for (it = result.begin(); it != result.end(); ++it)
-        ret.push_back(it->front());
+    for (int i = 0; i < result.data.size(); ++i)
+        ret.push_back(result.data[i].front());
 
     return ret;
 }

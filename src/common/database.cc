@@ -41,12 +41,12 @@ void Database::executeSql(const char *sql, ...)
     va_end(ap);
 }
 
-Database::DbResultVector Database::executeSqlQuery(const char *sql, ...)
+Database::Result Database::executeSqlQuery(const char *sql, ...)
 {
     va_list ap;
 
     va_start(ap, sql);
-    Database::DbResultVector ret = vexecuteSqlQuery(sql, ap);
+    Database::Result ret = vexecuteSqlQuery(sql, ap);
     va_end(ap);
 
     return ret;
@@ -114,30 +114,35 @@ void Sqlite3Database::close()
 
 static int vetero_sqlite3_callback(void *cookie, int columns, char **values, char **columnNames)
 {
-    Database::DbResultVector *results = static_cast<Database::DbResultVector *>(cookie);
+    Database::Result *result = static_cast<Database::Result *>(cookie);
 
     std::vector< std::string > line;
 
     for (int i = 0; i < columns; i++)
         line.push_back( values[i] ? std::string(values[i]) : std::string() );
 
-    results->push_back(line);
+    result->data.push_back(line);
+
+    if (result->columnNames.empty()) {
+        for (int i = 0; i < columns; i++)
+            result->columnNames.push_back( columnNames[i] ? std::string(columnNames[i]) : std::string() );
+    }
 
     return SQLITE_OK;
 }
 
-Database::DbResultVector Sqlite3Database::vexecuteSqlQuery(const char *sql, va_list ap)
+Database::Result Sqlite3Database::vexecuteSqlQuery(const char *sql, va_list ap)
 {
     char *finished_sql = sqlite3_vmprintf(bw::replace_char(sql, '?', "%Q").c_str(), ap);
     if (!finished_sql)
         throw DatabaseError("Unable to call sqlite3_vmprintf('"+ std::string(sql) +"')");
 
     char *errorstring;
-    DbResultVector results;
+    Result result;
     int ret = sqlite3_exec(m_connection,
                            finished_sql,
                            vetero_sqlite3_callback,
-                           &results,
+                           &result,
                            &errorstring);
     if (ret != SQLITE_OK) {
         std::stringstream ss;
@@ -152,7 +157,7 @@ Database::DbResultVector Sqlite3Database::vexecuteSqlQuery(const char *sql, va_l
     sqlite3_free(errorstring);
     sqlite3_free(finished_sql);
 
-    return results;
+    return result;
 }
 
 void Sqlite3Database::registerCustomFunctions()
@@ -181,15 +186,15 @@ void Sqlite3Database::registerCustomFunctions()
 
 /* Print result vector {{{ */
 
-std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbResultVector &vector)
+std::ostream &operator<<(std::ostream &os, const vetero::common::Database::Result &result)
 {
-    for (int i = 0; i < vector.size(); i++) {
-        for (int j = 0; j < vector[i].size(); j++) {
-            os << vector[i][j];
-            if (j + 1 != vector[i].size())
+    for (int i = 0; i < result.data.size(); i++) {
+        for (int j = 0; j < result.data[i].size(); j++) {
+            os << result.data[i][j];
+            if (j + 1 != result.data[i].size())
                 os << "|";
         }
-        if (i + 1 != vector.size())
+        if (i + 1 != result.data.size())
             os << std::endl;
     }
 

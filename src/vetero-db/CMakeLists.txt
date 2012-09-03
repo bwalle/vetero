@@ -1,5 +1,5 @@
 # {{{
-# (c) 2010, Bernhard Walle <bernhard@bwalle.de>
+# (c) 2012, Bernhard Walle <bernhard@bwalle.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
 #
 
-#
-# Make it possible to include <common/*>.
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+set(VETERO_DB_SRCS
+    veterodb.cc
+    main.cc
+)
 
-add_subdirectory(common)
-add_subdirectory(veterod)
-add_subdirectory(vetero-reportgen)
-add_subdirectory(vetero-displayd)
-add_subdirectory(vetero-db)
+add_executable(vetero-db ${VETERO_DB_SRCS})
+target_link_libraries(vetero-db ${EXTRA_LIBS} vetero)
+
+install (TARGETS vetero-db DESTINATION bin)
 
 # vim: set sw=4 ts=4 et fdm=marker:

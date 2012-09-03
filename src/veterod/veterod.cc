@@ -35,7 +35,6 @@
 #include "datareader.h"
 #include "pressurereader.h"
 #include "childprocesswatcher.h"
-#include "common/consoleprogress.h"
 
 namespace vetero {
 namespace daemon {
@@ -64,15 +63,10 @@ static void quit_display_daemon()
 
 Veterod::Veterod()
     : common::VeteroApplication("veterod"),
-      m_action(ActionCollectWeatherdata),
       m_daemonize(true),
-      m_showProgress(false),
       m_errorLogfile("stderr"),
       m_noConfigFatal(false)
-{
-    if (isatty(STDIN_FILENO))
-        m_showProgress = true;
-}
+{}
 
 bool Veterod::parseCommandLine(int argc, char *argv[])
 {
@@ -92,22 +86,15 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
     loggingGroup.addOption("error-logfile", 'L', bw::OT_STRING,
                            "Use the specified file for error logging. The special values "
                            "'stderr', 'stdout' and 'syslog' are accepted.");
-    loggingGroup.addOption("no-progress", 'P', bw::OT_FLAG,
-                           "Disable progress bar when regenerating meta data");
 
     bw::OptionGroup configurationGroup("Configuration Options");
     configurationGroup.addOption("configfile", 'c', bw::OT_STRING,
                                  "Use the provided configuration file rather than '" + m_configfile + "'");
 
-    bw::OptionGroup actionGroups("Actions (replaces the default action to collect weatherdata)");
-    actionGroups.addOption("regenerate-metadata", 'M', bw::OT_FLAG,
-                           "Regenerate all cached values in the database. This may take some time.");
-
     bw::OptionParser op;
     op.addOptions(generalGroup);
     op.addOptions(loggingGroup);
     op.addOptions(configurationGroup);
-    op.addOptions(actionGroups);
 
     // do the parsing
     if (!op.parse(argc, argv))
@@ -122,10 +109,6 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
         return false;
     }
 
-    // actions
-    if (op.getValue("regenerate-metadata"))
-        m_action = ActionRegenerateMetadata;
-
     // debug logging
     std::string debugLoglevel("none");
     std::string debugLogfile;
@@ -134,8 +117,6 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
     if (op.getValue("debug-logfile"))
         debugLogfile = op.getValue("debug-logfile").getString();
     setupDebugLogging(debugLoglevel, debugLogfile);
-    if (op.getValue("no-progress"))
-        m_showProgress = false;
 
     // error logging
     if (op.getValue("error-logfile"))
@@ -297,19 +278,6 @@ void Veterod::createPidfile()
 
 void Veterod::exec()
 {
-    switch (m_action) {
-        case ActionCollectWeatherdata:
-            execCollectWeatherdata();
-            break;
-
-        case ActionRegenerateMetadata:
-            execRegenerateMetadata();
-            break;
-    }
-}
-
-void Veterod::execCollectWeatherdata()
-{
     BW_DEBUG_INFO("Starting application.");
 
     if (m_daemonize) {
@@ -386,29 +354,6 @@ void Veterod::execCollectWeatherdata()
             BW_ERROR_ERR("%s", err.what());
         }
     }
-}
-
-void Veterod::execRegenerateMetadata()
-{
-    BW_DEBUG_INFO("Regenerating metadata.");
-
-    std::auto_ptr<common::ConsoleProgress> progressNotifier;
-    common::DbAccess dbAccess(&m_database);
-
-    dbAccess.deleteStatistics();
-
-    if (m_showProgress) {
-        progressNotifier.reset(new common::ConsoleProgress(""));
-        dbAccess.setProgressNotifier(progressNotifier.get());
-    }
-
-    if (m_showProgress)
-        progressNotifier->reset("Day statistics");
-    dbAccess.updateDayStatistics();
-
-    if (m_showProgress)
-        progressNotifier->reset("Month statistics");
-    dbAccess.updateMonthStatistics();
 }
 
 /* }}} */

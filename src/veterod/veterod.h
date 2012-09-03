@@ -42,15 +42,6 @@ class Veterod : public common::VeteroApplication
 {
     public:
         /**
-         * \brief Describes the action veterod performs
-         */
-        enum Action {
-            ActionCollectWeatherdata, ///! collect weatherdata, this is the default
-            ActionRegenerateMetadata  ///! regenerate the metadata in the DB
-        };
-
-    public:
-        /**
          * \brief Constructor
          *
          * Creates a new Veterod instance.
@@ -108,18 +99,6 @@ class Veterod : public common::VeteroApplication
 
     protected:
         /**
-         * \brief Main loop of the application
-         *
-         * This is the main part of the application.
-         */
-        void execCollectWeatherdata();
-
-        /**
-         * \brief Special main loop which only regenerates metadata and exists.
-         */
-        void execRegenerateMetadata();
-
-        /**
          * \brief Starts the display daemon
          *
          * Starts the display daemon if both Configuration::getDisplayName() and
@@ -159,9 +138,7 @@ class Veterod : public common::VeteroApplication
         bool havePressureSensor() const;
 
     private:
-        Action m_action;
         bool m_daemonize;
-        bool m_showProgress;
         std::string m_errorLogfile;
         std::string m_configfile;
         bool m_noConfigFatal;

@@ -96,7 +96,7 @@ void DayReportGenerator::createTemperatureDiagram()
 {
     BW_DEBUG_DBG("Generating temperature diagrams for %s", m_dateString.c_str());
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), temp, dewpoint "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?) "
@@ -121,14 +121,14 @@ void DayReportGenerator::createTemperatureDiagram()
          << "'" << Gnuplot::PLACEHOLDER
          << "' using 1:3 with lines title 'Taupunkt' linecolor rgb '#FF8500' lw 2\n";
 
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void DayReportGenerator::createHumidityDiagram()
 {
     BW_DEBUG_DBG("Generating humidity diagrams for %s", m_dateString.c_str());
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), humid "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?)"
@@ -151,29 +151,29 @@ void DayReportGenerator::createHumidityDiagram()
     plot << "plot '" << Gnuplot::PLACEHOLDER
          << "' using 1:2 with lines notitle linecolor rgb '#3C8EFF' lw 2\n";
 
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void DayReportGenerator::createWindDiagram()
 {
     BW_DEBUG_DBG("Generating wind diagrams for %s", m_dateString.c_str());
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), wind "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?) "
         "ORDER BY timestamp",
         m_date.strftime("%Y-%m-%d 12:00").c_str()
     );
-    common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
+    common::Database::Result maxResult = reportgen()->database().executeSqlQuery(
         "SELECT ROUND(wind_max) + 1 "
         "FROM   day_statistics_float "
         "WHERE  date = ?", m_dateString.c_str()
     );
 
     std::string max = "0.0";
-    if (maxResult.size() > 0 && maxResult.front().size() > 0)
-        max = maxResult.front().front();
+    if (maxResult.data.size() > 0 && maxResult.data.front().size() > 0)
+        max = maxResult.data.front().front();
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
@@ -191,14 +191,14 @@ void DayReportGenerator::createWindDiagram()
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with points notitle  pt 7 ps 1 "
             "linecolor rgb '#180076' lw 2\n";
 
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void DayReportGenerator::createRainDiagram()
 {
     BW_DEBUG_DBG("Generating rain diagrams for %s", m_dateString.c_str());
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), rain "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?)"
@@ -208,9 +208,9 @@ void DayReportGenerator::createRainDiagram()
 
     // accumulate the rain
     double sum = 0.0;
-    for (int i = 0; i < result.size(); ++i) {
-        sum += bw::from_str<double>( result[i].at(1) );
-        result[i].at(1) = bw::str(sum);
+    for (int i = 0; i < result.data.size(); ++i) {
+        sum += bw::from_str<double>( result.data[i].at(1) );
+        result.data[i].at(1) = bw::str(sum);
     }
 
     Gnuplot plot(reportgen()->configuration());
@@ -236,14 +236,14 @@ void DayReportGenerator::createRainDiagram()
     plot << "plot '" << Gnuplot::PLACEHOLDER
          << "' using 1:2 with boxes notitle linecolor rgb '#ADD0FF' lw 2\n";
 
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void DayReportGenerator::createPressureDiagram()
 {
     BW_DEBUG_DBG("Generating pressure diagrams for %s", m_dateString.c_str());
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   time(timestamp), pressure "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?)"
@@ -268,7 +268,7 @@ void DayReportGenerator::createPressureDiagram()
     plot << "plot '" << Gnuplot::PLACEHOLDER
          << "' using 1:2 with lines notitle linecolor rgb '#ff0000' lw 2\n";
 
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void DayReportGenerator::createHtml()
@@ -371,7 +371,7 @@ bool DayReportGenerator::haveWindData() const
 
 bool DayReportGenerator::haveWeatherData(const std::string &data) const
 {
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   count(*) "
         "FROM     weatherdata "
         "WHERE    jdate = julianday(?) "
@@ -381,7 +381,7 @@ bool DayReportGenerator::haveWeatherData(const std::string &data) const
         data.c_str()
     );
 
-    return (bw::from_str<int>(result.at(0).at(0)) > 0);
+    return (bw::from_str<int>(result.data.front().front()) > 0);
 }
 
 void DayReportGenerator::reset()

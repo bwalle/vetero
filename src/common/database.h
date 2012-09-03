@@ -80,7 +80,10 @@ class Database : private bw::Noncopyable {
          *          }
          * \endcode
          */
-        typedef std::vector< std::vector<std::string> > DbResultVector;
+        struct Result {
+            std::vector< std::vector<std::string> > data;
+            std::vector< std::string >              columnNames;
+        };
 
     public:
         /**
@@ -161,10 +164,10 @@ class Database : private bw::Noncopyable {
          * \param[in] sql the SQL that should be processed. Each occurrence of <tt>'?'</tt> (without
          *            quotes) will be replaced by the counterpart in argument list.
          *            elements.
-         * \return the result vector as described in DbResultVector
+         * \return the result vector as described in Result
          * \exception DatabaseError if the SQL statement cannot be executed
          */
-        virtual DbResultVector executeSqlQuery(const char *sql, ...);
+        virtual Result executeSqlQuery(const char *sql, ...);
 
     protected:
         /**
@@ -179,10 +182,10 @@ class Database : private bw::Noncopyable {
          *
          * \param[in] sql the SQL string
          * \param[in] args the varardic args
-         * \return the result vector as described in DbResultVector
+         * \return the result vector as described in Result
          * \exception DatabaseError if the SQL statement cannot be executed
          */
-        virtual DbResultVector vexecuteSqlQuery(const char *sql, va_list args) = 0;
+        virtual Result vexecuteSqlQuery(const char *sql, va_list args) = 0;
 };
 
 /* }}} */
@@ -246,7 +249,7 @@ class Sqlite3Database : public Database {
         /**
          * \copydoc Database::vexecuteSqlQuery()
          */
-        virtual DbResultVector vexecuteSqlQuery(const char *sql, va_list args);
+        virtual Result vexecuteSqlQuery(const char *sql, va_list args);
 
         /**
          * \brief Registers custom database functions
@@ -273,7 +276,7 @@ class Sqlite3Database : public Database {
  * \param[in] vector the database result vector
  * \return \p os
  */
-std::ostream &operator<<(std::ostream &os, const vetero::common::Database::DbResultVector &vector);
+std::ostream &operator<<(std::ostream &os, const vetero::common::Database::Result &vector);
 
 /**
  * @brief Wrapper to simplify using std::string with executeSql()

@@ -91,7 +91,7 @@ void MonthReportGenerator::generateOneReport(const std::string &date)
 
 void MonthReportGenerator::createTemperatureDiagram()
 {
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT date, temp_min, temp_max, temp_avg "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
@@ -118,27 +118,27 @@ void MonthReportGenerator::createTemperatureDiagram()
          << "' using 1:3 with lines title 'Max' linecolor rgb '#FF0000' lw 2, "
          << "'" << Gnuplot::PLACEHOLDER
          << "' using 1:4 with lines title 'Avg' linecolor rgb '#555555' lw 2\n";
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void MonthReportGenerator::createWindDiagram()
 {
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT date, wind_max "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
         "       AND temp_min != temp_max",
         m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
-    common::Database::DbResultVector maxResult = reportgen()->database().executeSqlQuery(
+    common::Database::Result maxResult = reportgen()->database().executeSqlQuery(
         "SELECT ROUND(wind_max) + 1 "
         "FROM   month_statistics_float "
         "WHERE  month = ?", m_monthString.c_str()
     );
 
     std::string max = "0.0";
-    if (maxResult.size() > 0 && maxResult.front().size() > 0)
-        max = maxResult.front().front();
+    if (maxResult.data.size() > 0 && maxResult.data.front().size() > 0)
+        max = maxResult.data.front().front();
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
@@ -156,12 +156,12 @@ void MonthReportGenerator::createWindDiagram()
     plot << "set yrange [0 : " << max << "]\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with impulses notitle "
             "linecolor rgb '#180076' lw 4;\n";
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void MonthReportGenerator::createRainDiagram()
 {
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT date, rain, rain "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
@@ -171,9 +171,9 @@ void MonthReportGenerator::createRainDiagram()
 
     // accumulate the rain
     double sum = 0.0;
-    for (int i = 0; i < result.size(); ++i) {
-        sum += bw::from_str<double>( result[i].at(2) );
-        result[i].at(2) = bw::str(sum);
+    for (int i = 0; i < result.data.size(); ++i) {
+        sum += bw::from_str<double>( result.data[i].at(2) );
+        result.data[i].at(2) = bw::str(sum);
     }
 
     Gnuplot plot(reportgen()->configuration());
@@ -195,7 +195,7 @@ void MonthReportGenerator::createRainDiagram()
          << " '" << Gnuplot::PLACEHOLDER
          << "' using 1:2 with impulses notitle linecolor rgb '#0000FF' lw 4\n";
 
-    plot.plot(result);
+    plot.plot(result.data);
 }
 
 void MonthReportGenerator::createHtml()
@@ -269,7 +269,7 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
         { "l/m²",  1, haveRainData() }      // rain_month
     };
 
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT strftime('%%s', date), "
         "       temp_avg, "
         "       temp_min, "
@@ -286,9 +286,9 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
 
     // accumulate the rain
     double sum = 0.0;
-    for (int i = 0; i < result.size(); ++i) {
-        sum += bw::from_str<double>( result[i].at(7) );
-        result[i].at(7) = bw::str(sum);
+    for (int i = 0; i < result.data.size(); ++i) {
+        sum += bw::from_str<double>( result.data[i].at(7) );
+        result.data[i].at(7) = bw::str(sum);
     }
 
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
@@ -320,11 +320,11 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     html << "</tr>\n";
 
     std::string localeStr = reportgen()->configuration().locale();
-    for (size_t i = 0; i < result.size(); i++) {
+    for (size_t i = 0; i < result.data.size(); i++) {
         html << "<tr bgcolor='#FFFFFF'>\n";
 
-        for (size_t j = 0; j < result[i].size(); j++) {
-            std::string value = result[i][j];
+        for (size_t j = 0; j < result.data[i].size(); j++) {
+            std::string value = result.data[i][j];
 
             if (j == 0) {
                 bw::Datetime date = bw::Datetime(bw::from_str<time_t>(value));
@@ -388,7 +388,7 @@ bool MonthReportGenerator::haveWindData() const
 
 bool MonthReportGenerator::haveWeatherData(const std::string &data) const
 {
-    common::Database::DbResultVector result = reportgen()->database().executeSqlQuery(
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
         "SELECT   count(*) "
         "FROM     day_statistics "
         "WHERE    date BETWEEN date(?, 'localtime') AND date(?, 'localtime') AND "
@@ -397,7 +397,7 @@ bool MonthReportGenerator::haveWeatherData(const std::string &data) const
         data.c_str()
     );
 
-    return (bw::from_str<int>(result.at(0).at(0)) > 0);
+    return (bw::from_str<int>(result.data.front().front()) > 0);
 }
 
 
