@@ -52,8 +52,8 @@ void IndexGenerator::generateReports()
     try {
         std::vector<std::string> dataYears = m_dbAccess.dataYears();
 
-        std::vector<std::string>::const_iterator it;
-        for (it = dataYears.begin(); it != dataYears.end(); ++it) {
+        std::vector<std::string>::const_reverse_iterator it;
+        for (it = dataYears.rbegin(); it != dataYears.rend(); ++it) {
             const std::string &year = *it;
             html.addSectionAsLink(year, year, year, nameProvider().yearlyDirLink(year));
 
