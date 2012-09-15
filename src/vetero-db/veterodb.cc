@@ -90,7 +90,10 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
 void VeteroDb::openDatabase()
 {
     try {
-        m_database.open(m_dbPath, common::Sqlite3Database::FLAG_READONLY);
+        int flags = 0;
+        if (m_action != RegenerateMetadata)
+            flags |= common::Sqlite3Database::FLAG_READONLY;
+        m_database.open(m_dbPath, flags);
     } catch (const vetero::common::DatabaseError &err) {
         throw common::ApplicationError("Unable to open DB: " + std::string(err.what()) );
     }
