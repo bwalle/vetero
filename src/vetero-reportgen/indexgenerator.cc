@@ -54,8 +54,8 @@ void IndexGenerator::generateReports()
 
         std::vector<std::string>::const_iterator it;
         for (it = dataYears.begin(); it != dataYears.end(); ++it) {
-            std::string year = *it;
-            html.addSection(year, year, year);
+            const std::string &year = *it;
+            html.addSectionAsLink(year, year, year, nameProvider().yearlyDirLink(year));
 
             generateYear(html, bw::from_str<int>(year));
             html.addTopLink();

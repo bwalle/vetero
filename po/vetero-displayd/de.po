@@ -18,25 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: vetero_displayd.cc:181
-msgid "Temperature"
-msgstr "Temperatur"
+#: vetero_displayd.cc:209
+msgid "Air pressure"
+msgstr "Luftdruck"
 
 #: vetero_displayd.cc:189
 msgid "Humid"
 msgstr "Feuchte"
 
-#: vetero_displayd.cc:196
-msgid "Wind speed"
-msgstr "Windgeschw."
-
 #: vetero_displayd.cc:204
 msgid "Rain"
 msgstr "Niederschlag"
 
-#: vetero_displayd.cc:209
-msgid "Air pressure"
-msgstr "Luftdruck"
+#: vetero_displayd.cc:181
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: vetero_displayd.cc:196
+msgid "Wind speed"
+msgstr "Windgeschw."
 
 #~ msgid "Dew point"
 #~ msgstr "Taupunkt"

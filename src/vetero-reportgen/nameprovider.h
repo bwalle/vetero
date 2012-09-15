@@ -177,6 +177,14 @@ class NameProvider
         std::string yearlyDirLink(const bw::Datetime &date) const;
 
         /**
+         * \brief Returns the link to the yearly directory
+         *
+         * \param[in] year the year as string (4 digits)
+         * \return a link relative to the document root, including a trailing <tt>"/"</tt>
+         */
+        std::string yearlyDirLink(const std::string &year) const;
+
+        /**
          * \brief Returns the full path name for the index page for the yearly report
          *
          * \param[in] date the date for which the report has to be generated (the time

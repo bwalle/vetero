@@ -92,6 +92,17 @@ void HtmlDocument::addSection(const std::string &title,
     m_sections.push_back(section);
 }
 
+void HtmlDocument::addSectionAsLink(const std::string &title, const std::string &shortName,
+                                    const std::string &id, const std::string &targetUrl)
+{
+    m_bodyStream << "<h2>" << generateLink(targetUrl, replaceHtml(title), "", true)
+                 << "<a name='" << id << "'>&nbsp;</a>" << "</h2>";
+    Section section;
+    section.id = id;
+    section.shortTitle = shortName;
+    m_sections.push_back(section);
+}
+
 void HtmlDocument::startParagraph()
 {
     m_bodyStream << "<p>";

@@ -104,6 +104,11 @@ std::string NameProvider::yearlyDirLink(const bw::Datetime &date) const
     return date.strftime("/%Y/");
 }
 
+std::string NameProvider::yearlyDirLink(const std::string &year) const
+{
+    return "/" + year + "/";
+}
+
 std::string NameProvider::yearlyIndex(const bw::Datetime &date) const
 {
     return bw::FileUtils::join(yearlyDir(date), INDEX_HTML);

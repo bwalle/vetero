@@ -18,18 +18,96 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: monthreportgenerator.cc:335
+msgid "%Y-%m-%d"
+msgstr "%d.%m.%Y"
+
+#: currentreportgenerator.cc:89
+msgid "%Y-%m-%d %H:%M"
+msgstr "%d.%m.%Y %H:%M"
+
+#: dayreportgenerator.cc:331
+msgid "Air pressure"
+msgstr "Luftdruck"
+
+#: dayreportgenerator.cc:259
+msgid "Air pressure [hPa]"
+msgstr "Luftdruck [hPa]"
+
+#: dayreportgenerator.cc:331
+msgid "Air pressure profile"
+msgstr "Verlauf des Luftdrucks"
+
 #: htmldocument.cc:224
 #, c-format
 msgid "Created by %s %s on %s\n"
 msgstr "Erstellt von %s %s am %s\n"
 
-#: gnuplot.cc:207
-msgid "Wind speed [km/h])"
-msgstr "Windgeschwindigkeit [km/h]"
+#: indexgenerator.cc:47
+msgid "Current"
+msgstr "Aktuell"
 
-#: gnuplot.cc:208
-msgid "Wind strength [Beaufort]"
-msgstr "Windstärke [Beaufort]"
+#: indexgenerator.cc:47
+msgid "Current weather data"
+msgstr "Aktuelle Wetterdaten"
+
+#: monthreportgenerator.cc:105 monthreportgenerator.cc:146
+#: monthreportgenerator.cc:182
+msgid "Day"
+msgstr "Tag"
+
+#: dayreportgenerator.cc:313
+msgid "Humidity"
+msgstr "Luftfeuchtigkeit"
+
+#: dayreportgenerator.cc:143
+msgid "Humidity [%]"
+msgstr "Luftfeuchtigkeit [%]"
+
+#: dayreportgenerator.cc:313
+msgid "Humidity profile"
+msgstr "Verlauf der Luftfeuchtigkeit"
+
+#: yearreportgenerator.cc:95 yearreportgenerator.cc:124
+msgid "Month"
+msgstr "Monat"
+
+#: monthreportgenerator.cc:250 yearreportgenerator.cc:178
+msgid "Numeric values"
+msgstr "Numerische Werte"
+
+#: indexgenerator.cc:44
+msgid "Overview Weather data"
+msgstr "Übersicht Wetterdaten"
+
+#: dayreportgenerator.cc:325 monthreportgenerator.cc:245
+#: yearreportgenerator.cc:173
+msgid "Rain"
+msgstr "Niederschlag"
+
+#: dayreportgenerator.cc:220 monthreportgenerator.cc:183
+#: yearreportgenerator.cc:125
+msgid "Rain [l/m²]"
+msgstr "Niederschlag [l/m²]"
+
+#: dayreportgenerator.cc:325
+msgid "Rain profile"
+msgstr "Niederschlagsverlauf"
+
+#: dayreportgenerator.cc:308 monthreportgenerator.cc:234
+#: yearreportgenerator.cc:168
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: dayreportgenerator.cc:111 monthreportgenerator.cc:106
+#: yearreportgenerator.cc:96
+msgid "Temperature [°C]"
+msgstr "Temperatur [°C]"
+
+#: dayreportgenerator.cc:308 monthreportgenerator.cc:234
+#: yearreportgenerator.cc:168
+msgid "Temperature profile"
+msgstr "Temperaturverlauf"
 
 #: dayreportgenerator.cc:110 dayreportgenerator.cc:142
 #: dayreportgenerator.cc:181 dayreportgenerator.cc:219
@@ -37,104 +115,26 @@ msgstr "Windstärke [Beaufort]"
 msgid "Time [HH:MM]"
 msgstr "Zeit [HH:MM]"
 
-#: dayreportgenerator.cc:111 monthreportgenerator.cc:106
-#: yearreportgenerator.cc:96
-msgid "Temperature [°C]"
-msgstr "Temperatur [°C]"
-
-#: dayreportgenerator.cc:143
-msgid "Humidity [%]"
-msgstr "Luftfeuchtigkeit [%]"
-
-#: dayreportgenerator.cc:220 monthreportgenerator.cc:183
-#: yearreportgenerator.cc:125
-msgid "Rain [l/m²]"
-msgstr "Niederschlag [l/m²]"
-
-#: dayreportgenerator.cc:259
-msgid "Air pressure [hPa]"
-msgstr "Luftdruck [hPa]"
-
-#: dayreportgenerator.cc:308 monthreportgenerator.cc:234
-#: yearreportgenerator.cc:168
-msgid "Temperature profile"
-msgstr "Temperaturverlauf"
-
-#: dayreportgenerator.cc:308 monthreportgenerator.cc:234
-#: yearreportgenerator.cc:168
-msgid "Temperature"
-msgstr "Temperatur"
-
-#: dayreportgenerator.cc:313
-msgid "Humidity profile"
-msgstr "Verlauf der Luftfeuchtigkeit"
-
-#: dayreportgenerator.cc:313
-msgid "Humidity"
-msgstr "Luftfeuchtigkeit"
-
-#: dayreportgenerator.cc:319
-msgid "Wind speed profile"
-msgstr "Verlauf der Windgeschwindigkeit"
+#: monthreportgenerator.cc:250 yearreportgenerator.cc:178
+msgid "Values"
+msgstr "Werte"
 
 #: dayreportgenerator.cc:319 monthreportgenerator.cc:239
 msgid "Wind"
 msgstr "Wind"
 
-#: dayreportgenerator.cc:325
-msgid "Rain profile"
-msgstr "Niederschlagsverlauf"
-
-#: dayreportgenerator.cc:325 monthreportgenerator.cc:245
-#: yearreportgenerator.cc:173
-msgid "Rain"
-msgstr "Niederschlag"
-
-#: dayreportgenerator.cc:331
-msgid "Air pressure profile"
-msgstr "Verlauf des Luftdrucks"
-
-#: dayreportgenerator.cc:331
-msgid "Air pressure"
-msgstr "Luftdruck"
-
-#: currentreportgenerator.cc:89
-msgid "%Y-%m-%d %H:%M"
-msgstr "%d.%m.%Y %H:%M"
-
-#: monthreportgenerator.cc:105 monthreportgenerator.cc:146
-#: monthreportgenerator.cc:182
-msgid "Day"
-msgstr "Tag"
-
 #: monthreportgenerator.cc:239
 msgid "Wind speed"
 msgstr "Windgeschwindigkeit"
 
-#: monthreportgenerator.cc:250 yearreportgenerator.cc:178
-msgid "Numeric values"
-msgstr "Numerische Werte"
+#: gnuplot.cc:207
+msgid "Wind speed [km/h])"
+msgstr "Windgeschwindigkeit [km/h]"
 
-#: monthreportgenerator.cc:250 yearreportgenerator.cc:178
-msgid "Values"
-msgstr "Werte"
+#: dayreportgenerator.cc:319
+msgid "Wind speed profile"
+msgstr "Verlauf der Windgeschwindigkeit"
 
-#: monthreportgenerator.cc:335
-msgid "%Y-%m-%d"
-msgstr "%d.%m.%Y"
-
-#: yearreportgenerator.cc:95 yearreportgenerator.cc:124
-msgid "Month"
-msgstr "Monat"
-
-#: indexgenerator.cc:44
-msgid "Overview Weather data"
-msgstr "Übersicht Wetterdaten"
-
-#: indexgenerator.cc:47
-msgid "Current weather data"
-msgstr "Aktuelle Wetterdaten"
-
-#: indexgenerator.cc:47
-msgid "Current"
-msgstr "Aktuell"
+#: gnuplot.cc:208
+msgid "Wind strength [Beaufort]"
+msgstr "Windstärke [Beaufort]"

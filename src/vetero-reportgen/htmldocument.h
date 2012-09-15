@@ -134,6 +134,17 @@ class HtmlDocument
         void addSection(const std::string &title, const std::string &shortName, const std::string &id);
 
         /**
+         * \brief Adds a new section for the document with the title as link
+         *
+         * \param[in] title the title string that is displayed in the document
+         * \param[in] shortName the short name that is displayed in the index
+         * \param[in] id a string suitable for the HTML anchor
+         * \param[in] targetUrl the link target
+         */
+        void addSectionAsLink(const std::string &title, const std::string &shortName,
+                              const std::string &id, const std::string &targetUrl);
+
+        /**
          * \brief Inserts the paragraph start tag
          *
          * Inserts <tt>&lt;p&gt;</tt>.
