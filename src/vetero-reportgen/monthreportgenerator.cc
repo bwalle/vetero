@@ -226,7 +226,10 @@ void MonthReportGenerator::createHtml()
             : "",
         lastMonth.strftime("%B %Y")
     );
-    html.setUpNavigation("", "");
+    html.setUpNavigation(
+        nameProvider().yearlyDirLink(m_month),
+        m_month.strftime("%Y")
+    );
 
     html.addSection(_("Temperature profile"), _("Temperature"), "temperature");
     html.img(nameProvider().monthlyDiagramLink(m_month, "temperature"));
