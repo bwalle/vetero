@@ -401,15 +401,15 @@ std::vector<std::string> DbAccess::dataYears(bool nocache) const
     common::Database::Result result;
     if (nocache)
         result = m_db->executeSqlQuery(
-            "SELECT     DISTINCT STRFTIME('%%Y', timestamp) AS m "
+            "SELECT     DISTINCT STRFTIME('%%Y', timestamp) AS y "
             "FROM       weatherdata "
-            "ORDER BY   m DESC"
+            "ORDER BY   y ASC"
         );
     else
         result = m_db->executeSqlQuery(
             "SELECT     DISTINCT SUBSTR(month, 0, 5) "
             "FROM       month_statistics "
-            "ORDER BY   month DESC"
+            "ORDER BY   month ASC"
         );
 
     for (int i = 0; i < result.data.size(); ++i)
