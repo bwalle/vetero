@@ -55,47 +55,14 @@ class YearReportGenerator : public ReportGenerator
         virtual void generateReports();
 
     protected:
-        /**
-         * \brief Generates one report
-         *
-         * \param[in] year the date string
-         */
         void generateOneReport(const std::string &year);
-
-        /**
-         * \brief Creates the temperature diagram for one month
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createTemperatureDiagram();
-
-        /**
-         * \brief Creates the rain diagram for one month
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createRainDiagram();
-
-        /**
-         * \brief Creates the HTML page
-         *
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createHtml();
-
-        /**
-         * \brief Creates the table with the numeric values
-         *
-         * \param[in] html the HTML document that is used to write the HTML table
-         * \exception common::ApplicationError on general error
-         * \exception common::DatabaseError if the SQL is invalid
-         */
         void createTable(HtmlDocument &html);
-
         bool haveRainData() const;
+
+        std::string buildxticksMonths() const;
 
     private:
         std::string m_yearString;
@@ -105,9 +72,7 @@ class YearReportGenerator : public ReportGenerator
         std::string m_lastDayStr;
 
         // 0=false, 1=true, -1=not set
-        mutable int m_havePressure;
         mutable int m_haveRain;
-        mutable int m_haveWind;
 };
 
 } // end namespace reportgen

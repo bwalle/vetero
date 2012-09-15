@@ -60,6 +60,12 @@ std::string Calendar::dayAbbreviation(int wday)
     return datetime.strftime("%a");
 }
 
+std::string Calendar::monthAbbreviation(int month)
+{
+    bw::Datetime datetime(2010, month, 1, 0, 0, 0, false);
+    return datetime.strftime("%B");
+}
+
 bool Calendar::isLeapYear(int year)
 {
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);

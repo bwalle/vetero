@@ -62,6 +62,16 @@ class Calendar
         static std::string dayAbbreviation(int wday);
 
         /**
+         * \brief Returns the locale-specific month abbreviation
+         *
+         * The global locale is used.
+         *
+         * \param[in] month the month according to enum Month
+         * \return the three letter abbreviation, e.g. <tt>"Jan"</tt>
+         */
+        static std::string monthAbbreviation(int month);
+
+        /**
          * \brief Checks if \p year is a leap year
          *
          * \param[in] year the 4-digit year, e.g. 2010

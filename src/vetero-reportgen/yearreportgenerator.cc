@@ -22,6 +22,7 @@
 #include "common/translation.h"
 #include "yearreportgenerator.h"
 #include "gnuplot.h"
+#include "calendar.h"
 
 namespace vetero {
 namespace reportgen {
@@ -29,7 +30,8 @@ namespace reportgen {
 YearReportGenerator::YearReportGenerator(VeteroReportgen    *reportGenerator,
                                          const std::string  &year)
     : ReportGenerator(reportGenerator),
-      m_yearString(year)
+      m_yearString(year),
+      m_haveRain(-1)
 {}
 
 void YearReportGenerator::generateReports()
@@ -80,14 +82,12 @@ void YearReportGenerator::generateOneReport(const std::string &date)
 void YearReportGenerator::createTemperatureDiagram()
 {
     common::Database::Result result = reportgen()->database().executeSqlQuery(
-        "SELECT month, temp_min, temp_max, temp_avg "
+        "SELECT substr(month, 6), temp_min, temp_max, temp_avg "
         "FROM   month_statistics_float "
         "WHERE  month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
         "       AND temp_min != temp_max",
         m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
-
-    BW_DEBUG_STREAM_DBG("firstday=" << m_firstDayStr << ", lastday=" << m_lastDayStr);
 
     Gnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
@@ -95,24 +95,44 @@ void YearReportGenerator::createTemperatureDiagram()
     plot << "set xlabel '" << _("Month") << "'\n";
     plot << "set ylabel '" << _("Temperature [°C]") << "'\n";
     plot << "set grid\n";
-    plot << "set xdata time\n";
-    plot << "set format x '%Y-%m'\n";
-    plot << "set timefmt '%Y-%m'\n";
-    plot << "set xrange ['" << m_firstDayStr << "' : '" << m_lastDayStr << "']\n";
+    plot << "set xrange [0.5:12.5]\n";
     plot << "set mxtics 0\n";
-    plot << "set xtics format \"%3b\"\n";
-    plot << "set xtics 2721600\n";
+    plot << "set xtics " << buildxticksMonths() << "\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER
-         << "' using 1:2 with lines title 'Min' linecolor rgb '#0022FF' lw 2, "
+         << "' using 1:2 with linespoints title 'Min' linecolor rgb '#0022FF' lw 2 pt 7 ps 1, "
          << "'" << Gnuplot::PLACEHOLDER
-         << "' using 1:3 with lines title 'Max' linecolor rgb '#FF0000' lw 2, "
+         << "' using 1:3 with linespoints title 'Max' linecolor rgb '#FF0000' lw 2 pt 7 ps 1, "
          << "'" << Gnuplot::PLACEHOLDER
-         << "' using 1:4 with lines title 'Avg' linecolor rgb '#555555' lw 2\n";
+         << "' using 1:4 with linespoints title 'Avg' linecolor rgb '#555555' lw 2 pt 7 ps 1\n";
     plot.plot(result.data);
 }
 
 void YearReportGenerator::createRainDiagram()
 {
+    // using '-16' as date centers the boxes
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
+        "SELECT substr(month, 6), rain, rain "
+        "FROM   month_statistics_float "
+        "WHERE  month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
+        "       AND temp_min != temp_max",
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
+    );
+
+    Gnuplot plot(reportgen()->configuration());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
+    plot.setOutputFile(nameProvider().yearlyDiagram(m_year, "rain"));
+    plot << "set xlabel '" << _("Month") << "'\n";
+    plot << "set ylabel '" << _("Rain [l/m²]") << "'\n";
+    plot << "set grid\n";
+    plot << "set xrange [0.5:12.5]\n";
+    plot << "set mxtics 0\n";
+    plot << "set xtics " << buildxticksMonths() << "\n";
+    plot << "set boxwidth 0.8\n";
+    plot << "set style fill solid 1.0 border\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER
+         << "' using 1:2 with boxes notitle linecolor rgb '#ADD0FF' lw 1\n";
+
+    plot.plot(result.data);
 }
 
 void YearReportGenerator::createHtml()
@@ -170,7 +190,32 @@ void YearReportGenerator::createTable(HtmlDocument &html)
 
 bool YearReportGenerator::haveRainData() const
 {
-    return false;
+    if (m_haveRain == -1) {
+        common::Database::Result result = reportgen()->database().executeSqlQuery(
+            "SELECT   count(*) "
+            "FROM     month_statistics "
+            "WHERE  month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
+            "       AND rain IS NOT NULL",
+            m_firstDayStr.c_str(), m_lastDayStr.c_str()
+        );
+
+        m_haveRain = (bw::from_str<int>(result.data.front().front()) > 0);
+    }
+
+    return m_haveRain;
+}
+
+std::string YearReportGenerator::buildxticksMonths() const
+{
+    std::ostringstream xticsStream;
+    xticsStream << "(";
+    for (int month = bw::Datetime::January; month <= bw::Datetime::December; month++) {
+        xticsStream << "'" << Calendar::monthAbbreviation(month) << "' " << month;
+        if (month != bw::Datetime::December)
+            xticsStream << ", ";
+    }
+    xticsStream << ")";
+    return xticsStream.str();
 }
 
 
