@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2011-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include "dayreportgenerator.h"
 #include "currentreportgenerator.h"
 #include "monthreportgenerator.h"
+#include "yearreportgenerator.h"
 #include "indexgenerator.h"
 
 namespace vetero {
@@ -224,6 +225,15 @@ void VeteroReportgen::exec()
 
             try {
                 IndexGenerator(this).generateReports();
+            } catch (const common::ApplicationError &err) {
+                BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
+            }
+        }
+
+        if (jobName == "year" || jobName == "all") {
+            jobsExecuted++;
+            try {
+                YearReportGenerator(this, jobArgument).generateReports();
             } catch (const common::ApplicationError &err) {
                 BW_ERROR_ERR("Error when executing job '%s': %s", currentJob.c_str(), err.what());
             }

@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2011-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ ValidDataCache::ValidDataCache(common::DbAccess &dbAccess)
 {
     m_dataDays = m_dbAccess.dataDays();
     m_dataMonths = m_dbAccess.dataMonths();
+    m_dataYears = m_dbAccess.dataYears();
 }
 
 ValidDataCache::~ValidDataCache()
@@ -43,6 +44,12 @@ bool ValidDataCache::dataInMonth(const bw::Datetime &month) const
 {
     std::string monthStr = month.strftime("%Y-%m");
     return std::binary_search(m_dataMonths.begin(), m_dataMonths.end(), monthStr);
+}
+
+bool ValidDataCache::dataInYear(const bw::Datetime &year) const
+{
+    std::string yearStr = year.strftime("%Y");
+    return std::binary_search(m_dataYears.begin(), m_dataYears.end(), yearStr);
 }
 
 } // namespace reportgen

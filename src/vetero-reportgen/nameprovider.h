@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2011-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,6 +157,53 @@ class NameProvider
          * \return a link relative to the document root, including a trailing <tt>"/"</tt>
          */
         std::string monthlyDiagramLink(const bw::Datetime &date, const std::string &type) const;
+
+        /**
+         * \brief Returns the directory where the yearly diagrams and index page(s) are
+         *
+         * \param[in] date the date for which the report has to be generated (the time
+         *            in the bw::Datetime object doesn't matter)
+         * \return a full path to a directory (it's not checked if the directories exist)
+         */
+        std::string yearlyDir(const bw::Datetime &date) const;
+
+        /**
+         * \brief Returns the link to the yearly directory
+         *
+         * \param[in] date the date for which the report has to be generated (the time
+         *            in the bw::Datetime object doesn't matter)
+         * \return a link relative to the document root, including a trailing <tt>"/"</tt>
+         */
+        std::string yearlyDirLink(const bw::Datetime &date) const;
+
+        /**
+         * \brief Returns the full path name for the index page for the yearly report
+         *
+         * \param[in] date the date for which the report has to be generated (the time
+         *            in the bw::Datetime object doesn't matter)
+         * \return a full path (it's not checked if the directories exist)
+         */
+        std::string yearlyIndex(const bw::Datetime &date) const;
+
+        /**
+         * \brief Returns the full path name for the index page for the yearly report
+         *
+         * \param[in] date the date for which the report has to be generated (the time
+         *            in the bw::Datetime object doesn't matter)
+         * \param[in] type the type of the diagram, e.g. <tt>"wind"</tt>
+         * \return a full path (it's not checked if the directories exist)
+         */
+        std::string yearlyDiagram(const bw::Datetime &date, const std::string &type) const;
+
+        /**
+         * \brief Returns the link to the yearly diagram
+         *
+         * \param[in] date the date for which the report has to be generated (the time
+         *            in the bw::Datetime object doesn't matter)
+         * \param[in] type the type of the diagram, e.g. <tt>"wind"</tt>
+         * \return a link relative to the document root, including a trailing <tt>"/"</tt>
+         */
+        std::string yearlyDiagramLink(const bw::Datetime &date, const std::string &type) const;
 
         /**
          * \brief Returns the directory in which the index page resides

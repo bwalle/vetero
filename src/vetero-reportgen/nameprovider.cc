@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2011-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,34 @@ std::string NameProvider::monthlyDiagram(const bw::Datetime &date, const std::st
 std::string NameProvider::monthlyDiagramLink(const bw::Datetime &date, const std::string &type) const
 {
     return bw::FileUtils::join(date.strftime("/%Y/%m"), type + SVG_EXTENSION);
+}
+
+std::string NameProvider::yearlyDir(const bw::Datetime &date) const
+{
+    return bw::FileUtils::join(
+        m_reportgen.configuration().reportDirectory(),
+        date.strftime("%Y")
+                );
+}
+
+std::string NameProvider::yearlyDirLink(const bw::Datetime &date) const
+{
+    return date.strftime("/%Y/");
+}
+
+std::string NameProvider::yearlyIndex(const bw::Datetime &date) const
+{
+    return bw::FileUtils::join(yearlyDir(date), INDEX_HTML);
+}
+
+std::string NameProvider::yearlyDiagram(const bw::Datetime &date, const std::string &type) const
+{
+    return bw::FileUtils::join(yearlyDir(date), type + SVG_EXTENSION);
+}
+
+std::string NameProvider::yearlyDiagramLink(const bw::Datetime &date, const std::string &type) const
+{
+    return bw::FileUtils::join(date.strftime("/%Y"), type + SVG_EXTENSION);
 }
 
 std::string NameProvider::indexDir() const

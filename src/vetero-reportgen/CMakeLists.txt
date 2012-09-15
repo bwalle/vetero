@@ -1,5 +1,5 @@
 # {{{
-# (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+# (c) 2012, Bernhard Walle <bernhard@bwalle.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ set(VETERO_REPORTGEN_SRCS
     dayreportgenerator.cc
     currentreportgenerator.cc
     monthreportgenerator.cc
+    yearreportgenerator.cc
     indexgenerator.cc
     main.cc
     calendar.cc

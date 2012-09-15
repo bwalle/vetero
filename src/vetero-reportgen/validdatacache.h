@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2011, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2011-2012, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,10 +70,19 @@ class ValidDataCache
          */
         bool dataInMonth(const bw::Datetime &month) const;
 
+        /**
+         * \brief Checks if there is data available at the given year
+         *
+         * \param[in] year the bw::Datetime object representing the month
+         * \return \c true if there's weather data available, \c false otherwise
+         */
+        bool dataInYear(const bw::Datetime &year) const;
+
     private:
         common::DbAccess &m_dbAccess;
         std::vector<std::string> m_dataMonths;
         std::vector<std::string> m_dataDays;
+        std::vector<std::string> m_dataYears;
 };
 
 } // namespace reportgen
