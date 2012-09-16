@@ -153,7 +153,7 @@ msgstr "Tag"
 
 #: monthreportgenerator.cc:306 yearreportgenerator.cc:232
 msgid "rain"
-msgstr "Niedrschlag"
+msgstr "Niederschlag"
 
 #: monthreportgenerator.cc:320
 msgid "sum"
