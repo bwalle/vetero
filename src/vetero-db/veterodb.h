@@ -27,6 +27,7 @@ class VeteroDb : public common::VeteroApplication
 {
 public:
     enum Action {
+        NoAction,
         ExecuteSql,
         RegenerateMetadata,
         InteractiveSql

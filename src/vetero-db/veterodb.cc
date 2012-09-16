@@ -39,7 +39,7 @@ namespace db {
 VeteroDb::VeteroDb()
     : common::VeteroApplication("vetero-db"),
       m_dbPath("vetero.db"),
-      m_action(ExecuteSql),
+      m_action(NoAction),
       m_readonly(false)
 {}
 
@@ -85,12 +85,15 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
 
     std::vector<std::string> args = op.getArgs();
 
-    if (args.empty())
-        m_action = InteractiveSql;
-    else {
-        std::ostringstream oss;
-        std::copy(args.begin(), args.end(), std::ostream_iterator<std::string>(oss));
-        m_sql = oss.str();
+    if (m_action == NoAction) {
+        if (args.empty())
+            m_action = InteractiveSql;
+        else {
+            m_action = ExecuteSql;
+            std::ostringstream oss;
+            std::copy(args.begin(), args.end(), std::ostream_iterator<std::string>(oss));
+            m_sql = oss.str();
+        }
     }
 
     setupErrorLogging("stderr");
@@ -213,6 +216,9 @@ void VeteroDb::exec()
         case ExecuteSql:
             execSql();
             break;
+
+        default:
+            throw common::ApplicationError("No action specified.");
     }
 }
 
