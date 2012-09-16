@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     try {
         if (!veterodb.parseCommandLine(argc, argv))
             return EXIT_SUCCESS;
-        veterodb.openDatabase();
         veterodb.exec();
     } catch (const vetero::common::ApplicationError &err) {
         std::cerr << err.what() << std::endl;

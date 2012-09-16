@@ -19,12 +19,14 @@
 #include <iterator>
 #include <numeric>
 #include <algorithm>
+#include <memory>
 
 #include <unistd.h>
 
 #include <libbw/optionparser.h>
 #include <libbw/log/debug.h>
 #include <libbw/log/errorlog.h>
+#include <libbw/completion.h>
 
 #include "common/dbaccess.h"
 #include "common/consoleprogress.h"
@@ -37,7 +39,8 @@ namespace db {
 VeteroDb::VeteroDb()
     : common::VeteroApplication("vetero-db"),
       m_dbPath("vetero.db"),
-      m_action(ExecuteSql)
+      m_action(ExecuteSql),
+      m_readonly(false)
 {}
 
 bool VeteroDb::parseCommandLine(int argc, char *argv[])
@@ -50,6 +53,8 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
                  "Prints the version and exits.");
     op.addOption("database", 'd', bw::OT_STRING,
                  "Use the specified path as database instead of '" + m_dbPath + "'.");
+    op.addOption("readonly", 'r', bw::OT_FLAG,
+                 "Open the database readonly.");
     op.addOption("regenerate-metadata", 'M', bw::OT_FLAG,
                  "Regenerate all cached values in the database. This may take some time.");
 
@@ -66,6 +71,10 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
         return false;
     }
 
+    // readonly?
+    if (op.getValue("readonly"))
+        m_readonly = true;
+
     // actions
     if (op.getValue("regenerate-metadata"))
         m_action = RegenerateMetadata;
@@ -76,7 +85,9 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
 
     std::vector<std::string> args = op.getArgs();
 
-    if (!args.empty()) {
+    if (args.empty())
+        m_action = InteractiveSql;
+    else {
         std::ostringstream oss;
         std::copy(args.begin(), args.end(), std::ostream_iterator<std::string>(oss));
         m_sql = oss.str();
@@ -85,18 +96,6 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
     setupErrorLogging("stderr");
 
     return true;
-}
-
-void VeteroDb::openDatabase()
-{
-    try {
-        int flags = 0;
-        if (m_action != RegenerateMetadata)
-            flags |= common::Sqlite3Database::FLAG_READONLY;
-        m_database.open(m_dbPath, flags);
-    } catch (const vetero::common::DatabaseError &err) {
-        throw common::ApplicationError("Unable to open DB: " + std::string(err.what()) );
-    }
 }
 
 void VeteroDb::execRegenerateMetadata()
@@ -129,7 +128,32 @@ void VeteroDb::execSql()
     if (m_sql.empty())
         throw common::ApplicationError("No SQL specified");
 
-    common::Database::Result result = m_database.executeSqlQuery("%s", m_sql.c_str());
+    runSqlStatement(m_sql);
+}
+
+void VeteroDb::execInteractiveSql()
+{
+    std::auto_ptr<bw::LineReader> lineReader(bw::LineReader::defaultLineReader("(vetero-db) "));
+
+    while (!lineReader->eof()) {
+        std::string line = lineReader->readLine();
+        if (line == "exit")
+            break;
+
+        try {
+            runSqlStatement(line);
+        } catch (const common::DatabaseError &dbError) {
+            std::cerr << "Unable to execute SQL: " << dbError.what() << std::endl;
+        }
+    }
+}
+
+void VeteroDb::runSqlStatement(const std::string &stmt)
+{
+    common::Database::Result result = m_database.executeSqlQuery("%s", stmt.c_str());
+
+    if (result.data.empty())
+        return;
 
     std::vector<size_t> columnWidths(result.data.front().size());
 
@@ -163,13 +187,27 @@ void VeteroDb::execSql()
         std::cout << std::endl;
     }
     std::cout << line << std::endl;
+
 }
 
 void VeteroDb::exec()
 {
+    try {
+        int flags = 0;
+        if (m_readonly)
+            flags |= common::Sqlite3Database::FLAG_READONLY;
+        m_database.open(m_dbPath, flags);
+    } catch (const vetero::common::DatabaseError &err) {
+        throw common::ApplicationError("Unable to open DB: " + std::string(err.what()) );
+    }
+
     switch (m_action) {
         case RegenerateMetadata:
             execRegenerateMetadata();
+            break;
+
+        case InteractiveSql:
+            execInteractiveSql();
             break;
 
         case ExecuteSql:

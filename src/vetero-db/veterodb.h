@@ -28,24 +28,27 @@ class VeteroDb : public common::VeteroApplication
 public:
     enum Action {
         ExecuteSql,
-        RegenerateMetadata
+        RegenerateMetadata,
+        InteractiveSql
     };
 
 public:
     VeteroDb();
-    void openDatabase();
     bool parseCommandLine(int argc, char *argv[]);
     void exec();
 
 private:
     void execRegenerateMetadata();
     void execSql();
+    void execInteractiveSql();
+    void runSqlStatement(const std::string &stmt);
 
 private:
     std::string m_sql;
     Action m_action;
     std::string m_dbPath;
     vetero::common::Sqlite3Database m_database;
+    bool m_readonly;
 };
 
 } // namespace db
