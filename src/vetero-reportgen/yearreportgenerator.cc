@@ -224,7 +224,7 @@ void YearReportGenerator::createTable(HtmlDocument &html)
     html << "</tr>\n"
          << "<tr bgcolor='#FFFFFF'>\n"
          << "  <th style='padding: 5px'><b>" << _("date") << "</b></th>\n"
-         << "  <th style='padding: 5px'><b>avg</b></th>\n"
+         << "  <th style='padding: 5px'><b>⌀</b></th>\n"
          << "  <th style='padding: 5px'><b>min</b></th>\n"
          << "  <th style='padding: 5px'><b>max</b></th>\n";
 

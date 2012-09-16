@@ -297,27 +297,27 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
          << "<tr bgcolor='#FFFFFF'>\n"
          << "  <th style='padding: 5px' colspan=\"2\"><b></b></th>\n"
-         << "  <th style='padding: 5px' colspan=\"3\"><b>Temperatur</b></th>\n";
+         << "  <th style='padding: 5px' colspan=\"3\"><b>" << _("temperature") << "</b></th>\n";
 
     if (haveWindData())
-        html << "  <th style='padding: 5px' colspan=\"2\"><b>Wind</b></th>\n";
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>" << _("wind") << "</b></th>\n";
 
     if (haveRainData())
-        html << "  <th style='padding: 5px' colspan=\"2\"><b>Niederschlag</b></th>\n";
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>" << _("rain") << "</b></th>\n";
 
     html << "</tr>\n"
          << "<tr bgcolor='#FFFFFF'>\n"
-         << "  <th style='padding: 5px' colspan=\"2\"><b>Datum</b></th>\n"
-         << "  <th style='padding: 5px'><b>Avg.</b></th>\n"
-         << "  <th style='padding: 5px'><b>Min.</b></th>\n"
-         << "  <th style='padding: 5px'><b>Max.</b></th>\n";
+         << "  <th style='padding: 5px' colspan=\"2\"><b>" << _("date") << "</b></th>\n"
+         << "  <th style='padding: 5px'><b>⌀</b></th>\n"
+         << "  <th style='padding: 5px'><b>min</b></th>\n"
+         << "  <th style='padding: 5px'><b>max</b></th>\n";
 
     if (haveWindData())
-        html << "  <th style='padding: 5px' colspan=\"2\"><b>Max.</b></th>\n";
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>max</b></th>\n";
 
     if (haveRainData()) {
-        html << "  <th style='padding: 5px'><b>Tag</b></th>\n"
-             << "  <th style='padding: 5px'><b>Summe</b></th>\n";
+        html << "  <th style='padding: 5px'><b>" << _("day") << "</b></th>\n"
+             << "  <th style='padding: 5px'><b>" << _("sum") << "</b></th>\n";
     }
 
     html << "</tr>\n";
