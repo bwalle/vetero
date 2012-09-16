@@ -346,6 +346,11 @@ void Veterod::exec()
 
                 // current month to avoid dead links although there's no data yet
                 jobs.push_back("month:" + timestamp.strftime("%Y-%m"));
+
+                // update the year report each day
+                jobs.push_back("year:" + lastDay.strftime("%Y"));
+                if ( (timestamp.month() == bw::Datetime::January) && (timestamp.day() == 1) )
+                    jobs.push_back("year:" + timestamp.strftime("%Y"));
             }
             updateReports(jobs, true);
 
