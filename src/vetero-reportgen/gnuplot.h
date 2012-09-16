@@ -151,10 +151,10 @@ class Gnuplot
          * is deleted automatically.
          *
          * \param[in] data a two-dimensional string array
-         * \param[in] fd the file descriptor where the data is written to
+         * \param[in] fp the file object
          * \exception common::ApplicationError is writing failed
          */
-        void storeData(int fd, const StringStringVector &data);
+        void storeData(FILE *fp, const StringStringVector &data);
 
         /**
          * \brief Dumps the error information from the given file descriptor to the logging system
@@ -168,6 +168,7 @@ class Gnuplot
         std::stringstream m_stream;
         std::string m_workingDirectory;
         std::string m_outputFile;
+        bool m_writeToFile;
 };
 
 template<typename T>

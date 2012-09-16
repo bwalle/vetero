@@ -26,6 +26,7 @@
 #include <libbw/stringutil.h>
 #include <libbw/io/tempfile.h>
 #include <libbw/log/errorlog.h>
+#include <libbw/log/debug.h>
 
 #include "common/translation.h"
 #include "common/utils.h"
@@ -36,15 +37,19 @@ namespace reportgen {
 
 /* Gnuplot {{{ */
 
-std::string Gnuplot::PLACEHOLDER = "@TEMPFILE@";
+std::string Gnuplot::PLACEHOLDER = "-";
 
 Gnuplot::Gnuplot(const common::Configuration &config)
-    : m_config(config)
+    : m_config(config),
+      m_writeToFile(false)
 {
     *this << "set locale '" << m_config.locale() << "'\n";
     *this << "set terminal svg size 1000 400 font 'Arial,9'\n";
     *this << "set lmargin 10\n";
     *this << "set rmargin 10\n";
+
+    if (getenv("VETERO_GNUPLOT_FILE"))
+        m_writeToFile = true;
 }
 
 Gnuplot::~Gnuplot()
@@ -79,43 +84,39 @@ void Gnuplot::plot(const StringStringVector &data)
         return;
     }
 
-    char oldWorkingdir[PATH_MAX] = "";
     try {
-        bw::io::TempFile tempfile("vetero-plot", bw::io::TempFile::DeleteOnExit);
-        storeData(tempfile.nativeHandle(), data);
         std::string gnuplotCommands = m_stream.str();
-
-        // replace the placeholder
-        std::string::size_type tempPos = -1;
-        do {
-            tempPos = gnuplotCommands.find(PLACEHOLDER, tempPos+1);
-            if (tempPos != std::string::npos)
-                gnuplotCommands.replace(tempPos, PLACEHOLDER.size(), tempfile.name());
-        } while (tempPos != std::string::npos);
-
-        // change to the working directory as popen() doesn't have the possibility to set
-        // the working directory and gnuplot doesn't work with absolute paths
-        if (!m_workingDirectory.empty()) {
-            getcwd(oldWorkingdir, sizeof(oldWorkingdir));
-
-            int ret = chdir(m_workingDirectory.c_str());
-            if (ret != 0)
-                throw common::SystemError("Unable to change working directory to '" +
-                                          m_workingDirectory + "'", errno);
-        }
 
         bw::io::TempFile errorTempfile("vetero-plot-error", bw::io::TempFile::DeleteOnExit);
         std::string gnuplotCommand("gnuplot");
         gnuplotCommand += " 2>" + errorTempfile.name();
 
-        std::FILE *gnuplotProcess = popen(gnuplotCommand.c_str(), "w");
-        if (!gnuplotProcess)
+        int (*fileCloseFunction)(FILE *fp);
+        FILE *gnuplotFp;
+        if (m_writeToFile) {
+            std::string plotname = m_outputFile;
+            plotname = bw::replace_char(plotname, '/', "_");
+            plotname = bw::replace_char(plotname, '.', "_");
+
+            std::string filename = "/tmp/vetero_" + plotname + ".plot";
+            BW_DEBUG_INFO("Writing output to '%s'", filename.c_str());
+
+            gnuplotFp = fopen(filename.c_str(), "w");
+            fileCloseFunction = fclose;
+        } else {
+            gnuplotFp = popen(gnuplotCommand.c_str(), "w");
+            fileCloseFunction = pclose;
+        }
+
+        if (!gnuplotFp)
             throw common::SystemError("Unable to execute 'gnuplot'", errno);
 
-        if (fputs(gnuplotCommands.c_str(), gnuplotProcess) == EOF)
+        if (fputs(gnuplotCommands.c_str(), gnuplotFp) == EOF)
             throw common::SystemError("Unable to write to gnuplot", errno);
 
-        int ret = pclose(gnuplotProcess);
+        storeData(gnuplotFp, data);
+
+        int ret = fileCloseFunction(gnuplotFp);
         if (ret != 0) {
             dumpError(errorTempfile.nativeHandle());
             throw common::ApplicationError("Unable to generate diagram, Gnuplot terminated with " +
@@ -123,50 +124,46 @@ void Gnuplot::plot(const StringStringVector &data)
         }
     } catch (const bw::IOError &err) {
         throw common::ApplicationError(err.what());
-    } catch (...) {
-        if (*oldWorkingdir)
-            chdir(oldWorkingdir);
-        throw;
     }
-
     std::string outputfile = common::realpath(m_outputFile);
-
-    if (*oldWorkingdir)
-        chdir(oldWorkingdir);
 
     common::compress_file(outputfile);
 }
 
-void Gnuplot::storeData(int fd, const StringStringVector &data)
+void Gnuplot::storeData(FILE *fp, const StringStringVector &data)
 {
-    std::stringstream ss;
-
-    bool firstLine = true;
-    StringStringVector::const_iterator lineIter;
-    for (lineIter = data.begin(); lineIter != data.end(); ++lineIter) {
-        const StringVector &line = *lineIter;
-
-        if (firstLine)
-            firstLine = false;
-        else
-            ss << "\n";
-
-        bool firstCol = true;
-        StringVector::const_iterator colIter;
-        for (colIter = line.begin(); colIter != line.end(); ++colIter) {
-            if (firstCol)
-                firstCol = false;
-            else
-                ss << "\t";
-            ss << *colIter;
-        }
+    if (data.empty()) {
+        BW_ERROR_ERR("Attempting to plot empty data");
+        return;
     }
 
-    std::string contents = ss.str();
+    // since gnuplot cannot seek in stdin, we need to provide the data multiple times
+    const int times = data.front().size()-1;
+    for (int i = 0; i < times; i++) {
 
-    ssize_t ret = write(fd, contents.c_str(), contents.size());
-    if (ret != static_cast<ssize_t>(contents.size()))
-        throw common::SystemError("Unable to write all bytes to the temporary file", errno);
+        StringStringVector::const_iterator lineIter;
+        for (lineIter = data.begin(); lineIter != data.end(); ++lineIter) {
+            const StringVector &line = *lineIter;
+
+            bool firstCol = true;
+            StringVector::const_iterator colIter;
+            for (colIter = line.begin(); colIter != line.end(); ++colIter) {
+                if (firstCol)
+                    firstCol = false;
+                else {
+                    if (fputs("\t", fp) == EOF)
+                        throw common::SystemError("Unable to write to the Gnuplot process", errno);
+                }
+
+                if (fputs(colIter->c_str(), fp) == EOF)
+                    throw common::SystemError("Unable to write to the Gnuplot process", errno);
+            }
+
+            fputs("\n", fp);
+        }
+        // "e\n" is the separator for Gnuplot
+        fputs("e\n", fp);
+    }
 }
 
 void Gnuplot::dumpError(int fd)
