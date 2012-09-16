@@ -28,5 +28,6 @@ set(COMMON_SRCS
 )
 
 add_library(vetero ${COMMON_SRCS})
+target_link_libraries(vetero bw)
 
 # vim: set sw=4 ts=4 et fdm=marker:
