@@ -64,6 +64,8 @@ class YearReportGenerator : public ReportGenerator
 
         std::string buildxticksMonths() const;
 
+        void reset();
+
     private:
         std::string m_yearString;
         bw::Datetime m_year;

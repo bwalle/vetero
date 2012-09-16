@@ -109,6 +109,8 @@ class MonthReportGenerator : public ReportGenerator
 
         bool haveWeatherData(const std::string &name) const;
 
+        void reset();
+
     private:
         std::string m_monthString;
         bw::Datetime m_month;

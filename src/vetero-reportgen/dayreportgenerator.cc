@@ -387,6 +387,9 @@ bool DayReportGenerator::haveWeatherData(const std::string &data) const
 void DayReportGenerator::reset()
 {
     m_havePressure = -1;
+    m_haveHumidity = -1;
+    m_haveWind = -1;
+    m_haveRain = -1;
 }
 
 } // end namespace reportgen

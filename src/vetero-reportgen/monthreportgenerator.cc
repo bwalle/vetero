@@ -62,6 +62,7 @@ void MonthReportGenerator::generateReports()
 void MonthReportGenerator::generateOneReport(const std::string &date)
 {
     BW_DEBUG_INFO("Generating month report for %s", date.c_str());
+    reset();
 
     m_monthString = date;
 
@@ -401,6 +402,13 @@ bool MonthReportGenerator::haveWeatherData(const std::string &data) const
     );
 
     return (bw::from_str<int>(result.data.front().front()) > 0);
+}
+
+void MonthReportGenerator::reset()
+{
+    m_havePressure = -1;
+    m_haveRain = -1;
+    m_haveWind = -1;
 }
 
 

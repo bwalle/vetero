@@ -58,6 +58,7 @@ void YearReportGenerator::generateReports()
 void YearReportGenerator::generateOneReport(const std::string &date)
 {
     BW_DEBUG_INFO("Generating year report for %s", date.c_str());
+    reset();
 
     m_yearString = date;
 
@@ -300,6 +301,11 @@ std::string YearReportGenerator::buildxticksMonths() const
     }
     xticsStream << ")";
     return xticsStream.str();
+}
+
+void YearReportGenerator::reset()
+{
+    m_haveRain = -1;
 }
 
 
