@@ -243,9 +243,9 @@ void YearReportGenerator::createTable(HtmlDocument &html)
             if (j == 0) {
                 bw::Datetime date = bw::Datetime::strptime(value, "%Y-%m-%d");
                 std::string dateStr = date.strftime(_("%B %Y"));
-                std::string dateLink = nameProvider().dailyDirLink(date);
+                std::string monthLink = nameProvider().monthlyDirLink(date);
 
-                html << "<td style='padding: 5px'><a href='" << dateLink << "'>"
+                html << "<td style='padding: 5px'><a href='" << monthLink << "'>"
                      << dateStr << "</a></td>\n";
             } else {
                 assert(j < BW_ARRAY_SIZE(format));
