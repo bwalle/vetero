@@ -15,11 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
 
+#include <cassert>
+
 #include <libbw/log/debug.h>
 #include <libbw/stringutil.h>
 #include <libbw/fileutils.h>
 
 #include "common/translation.h"
+#include "common/utils.h"
 #include "yearreportgenerator.h"
 #include "gnuplot.h"
 #include "calendar.h"
@@ -186,6 +189,87 @@ void YearReportGenerator::createHtml()
 
 void YearReportGenerator::createTable(HtmlDocument &html)
 {
+    struct FormatDescription {
+        const char *unit;
+        int        precision;
+        bool       active;
+    } format[] = {
+        { NULL,   -1, true },               // date
+        { "°C",    1, true },               // temp_avg
+        { "°C",    1, true },               // temp_min
+        { "°C",    1, true },               // temp_avg
+        { "l/m²",  1, haveRainData() },     // rain
+    };
+
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
+        "SELECT month || '-1', "
+        "       temp_avg, "
+        "       temp_min, "
+        "       temp_max, "
+        "       rain "
+        "FROM   month_statistics_float "
+        "WHERE  month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
+        "       AND temp_min != temp_max",
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
+    );
+
+    html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
+         << "<tr bgcolor='#FFFFFF'>\n"
+         << "  <th style='padding: 5px'><b></b></th>\n"
+         << "  <th style='padding: 5px' colspan=\"3\"><b>" << _("temperature") << "</b></th>\n";
+
+    if (haveRainData())
+        html << "  <th style='padding: 5px'><b></b></th>\n";
+
+    html << "</tr>\n"
+         << "<tr bgcolor='#FFFFFF'>\n"
+         << "  <th style='padding: 5px'><b>" << _("date") << "</b></th>\n"
+         << "  <th style='padding: 5px'><b>avg</b></th>\n"
+         << "  <th style='padding: 5px'><b>min</b></th>\n"
+         << "  <th style='padding: 5px'><b>max</b></th>\n";
+
+    if (haveRainData())
+        html << "  <th style='padding: 5px'><b>" << _("rain") << "</b></th>\n";
+
+    html << "</tr>\n";
+
+    std::string localeStr = reportgen()->configuration().locale();
+    for (size_t i = 0; i < result.data.size(); i++) {
+        html << "<tr bgcolor='#FFFFFF'>\n";
+
+        for (size_t j = 0; j < result.data[i].size(); j++) {
+            std::string value = result.data[i][j];
+
+            if (j == 0) {
+                bw::Datetime date = bw::Datetime::strptime(value, "%Y-%m-%d");
+                std::string dateStr = date.strftime(_("%B %Y"));
+                std::string dateLink = nameProvider().dailyDirLink(date);
+
+                html << "<td style='padding: 5px'><a href='" << dateLink << "'>"
+                     << dateStr << "</a></td>\n";
+            } else {
+                assert(j < BW_ARRAY_SIZE(format));
+                FormatDescription *desc = &format[j];
+
+                if (!desc->active)
+                    continue;
+
+                if (desc->precision > 0) {
+                    double numericValue = bw::from_str<double>(value, std::locale::classic());
+                    value = common::str_printf_l("%.*lf", localeStr.c_str(), desc->precision,
+                                                 numericValue);
+                }
+                if (desc->unit)
+                    value += " " + std::string(desc->unit);
+
+                html << "<td align='right' style='padding: 5px'>" << value << "</td>\n";
+            }
+        }
+
+        html << "</tr>\n";
+    }
+
+    html << "</table>\n";
 }
 
 bool YearReportGenerator::haveRainData() const
