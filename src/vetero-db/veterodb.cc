@@ -215,6 +215,10 @@ void VeteroDb::runSqlStatement(const std::string &stmt)
 void VeteroDb::exec()
 {
     try {
+        // don't create new databases by accident
+        if (!bw::FileUtils::exists(m_dbPath))
+            throw common::ApplicationError("Database file '" + m_dbPath + "' does not exit.");
+
         int flags = 0;
         if (m_readonly)
             flags |= common::Sqlite3Database::FLAG_READONLY;
