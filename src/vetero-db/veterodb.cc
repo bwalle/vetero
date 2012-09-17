@@ -27,6 +27,7 @@
 #include <libbw/log/debug.h>
 #include <libbw/log/errorlog.h>
 #include <libbw/completion.h>
+#include <libbw/fileutils.h>
 
 #include "common/dbaccess.h"
 #include "common/consoleprogress.h"
@@ -137,6 +138,13 @@ void VeteroDb::execSql()
 void VeteroDb::execInteractiveSql()
 {
     std::auto_ptr<bw::LineReader> lineReader(bw::LineReader::defaultLineReader("(vetero-db) "));
+    std::string historyPath = bw::FileUtils::join(bw::FileUtils::homeDirectory(), ".vetero-db.history");
+
+    try {
+        lineReader->readHistory(historyPath);
+    } catch (const bw::Error &error) {
+        BW_ERROR_STREAM_WARNING("Unable to read history file '" << historyPath << "': " << error.what());
+    }
 
     while (!lineReader->eof()) {
         std::string line = lineReader->readLine();
@@ -149,6 +157,13 @@ void VeteroDb::execInteractiveSql()
             std::cerr << "Unable to execute SQL: " << dbError.what() << std::endl;
         }
     }
+
+    try {
+        lineReader->writeHistory(historyPath);
+    } catch (const bw::Error &error) {
+        BW_ERROR_STREAM_WARNING("Unable to read write file '" << historyPath << "': " << error.what());
+    }
+
 }
 
 void VeteroDb::runSqlStatement(const std::string &stmt)
