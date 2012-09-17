@@ -146,10 +146,14 @@ void VeteroDb::execInteractiveSql()
         BW_ERROR_STREAM_WARNING("Unable to read history file '" << historyPath << "': " << error.what());
     }
 
-    while (!lineReader->eof()) {
+    for (;;) {
         std::string line = lineReader->readLine();
-        if (line == "exit")
+        if (line == "exit" || line == "quit")
             break;
+        else if (lineReader->eof()) {
+            std::cout << std::endl;
+            break;
+        }
 
         try {
             runSqlStatement(line);
