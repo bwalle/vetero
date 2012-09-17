@@ -279,8 +279,8 @@ bool YearReportGenerator::haveRainData() const
         common::Database::Result result = reportgen()->database().executeSqlQuery(
             "SELECT   count(*) "
             "FROM     month_statistics "
-            "WHERE  month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
-            "       AND rain IS NOT NULL",
+            "WHERE    month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
+            "         AND rain IS NOT NULL",
             m_firstDayStr.c_str(), m_lastDayStr.c_str()
         );
 
