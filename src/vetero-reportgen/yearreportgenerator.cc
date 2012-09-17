@@ -115,7 +115,7 @@ void YearReportGenerator::createRainDiagram()
 {
     // using '-16' as date centers the boxes
     common::Database::Result result = reportgen()->database().executeSqlQuery(
-        "SELECT substr(month, 6), rain, rain "
+        "SELECT substr(month, 6), rain "
         "FROM   month_statistics_float "
         "WHERE  month BETWEEN strftime('%%Y-%%m', ?, 'localtime') AND strftime('%%Y-%%m', ?, 'localtime')"
         "       AND temp_min != temp_max",
