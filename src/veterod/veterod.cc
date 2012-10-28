@@ -21,6 +21,7 @@
 #include <fstream>
 
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include <libbw/optionparser.h>
 #include <libbw/stringutil.h>

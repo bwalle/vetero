@@ -18,6 +18,7 @@
 #include <cmath>
 #include <cerrno>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>

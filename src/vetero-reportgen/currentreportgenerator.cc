@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
 
 #include <libbw/log/errorlog.h>
 #include <libbw/log/debug.h>
