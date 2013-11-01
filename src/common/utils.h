@@ -21,6 +21,7 @@
 #include <stdexcept>
 #include <string>
 #include <cstdarg>
+#include <sys/types.h>
 
 #include <libbw/compiler.h>
 
