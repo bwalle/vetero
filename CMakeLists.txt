@@ -55,6 +55,18 @@ find_library(SQLITE3_LIBRARIES_FULL ${SQLITE3_LIBRARIES})
 set(EXTRA_LIBS ${EXTRA_LIBS} ${SQLITE3_LIBRARIES_FULL})
 
 #
+# libintl
+#
+
+include(FindLibintl)
+if (NOT LIBINTL_FOUND)
+    message(FATAL_ERROR "libintl library could not be found")
+endif (NOT LIBINTL_FOUND)
+include_directories(${LIBINTL_LIBRARIES})
+set(EXTRA_LIBS ${EXTRA_LIBS} ${LIBINTL_LIBRARIES})
+
+
+#
 # libconfuse
 #
 
