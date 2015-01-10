@@ -264,6 +264,45 @@ bool Veterod::havePressureSensor() const
            (m_configuration->pressureHeight() >= 0);
 }
 
+void Veterod::updateEnvironment(const vetero::common::UsbWde1Dataset &dataset, int rainValue)
+{
+    if (!getenv("VETERO_DB"))
+        setenv("VETERO_DB", m_configuration->databasePath().c_str(), true);
+
+    if (dataset.sensorType().hasTemperature())
+        setenv("VETERO_CURRENT_TEMPERATURE", bw::str(dataset.temperature()/100.0).c_str(), true);
+    else
+        unsetenv("VETERO_CURRENT_TEMPERATURE");
+
+    if (dataset.sensorType().hasHumidity())
+        setenv("VETERO_CURRENT_HUMIDITY", bw::str(dataset.humidity()/100.0).c_str(), true);
+    else
+        unsetenv("VETERO_CURRENT_HUMIDITY");
+
+    if (dataset.sensorType().hasRain())
+        setenv("VETERO_CURRENT_RAIN", bw::str(rainValue/1000.0).c_str(), true);
+    else
+        unsetenv("VETERO_CURRENT_RAIN");
+
+    if (dataset.sensorType().hasWind())
+        setenv("VETERO_CURRENT_WIND", bw::str(dataset.windSpeed()/100.0).c_str(), true);
+    else
+        unsetenv("VETERO_CURRENT_WIND");
+}
+
+void Veterod::runPostscript(const vetero::common::UsbWde1Dataset &dataset, int rainValue)
+{
+    std::string script = m_configuration->updatePostscript();
+
+    if (script.empty())
+        return;
+
+    updateEnvironment(dataset, rainValue);
+    int rc = system(script.c_str());
+    if (rc != 0)
+        BW_ERROR_ERR("Unable to run '%s': %d", script.c_str(), WEXITSTATUS(rc));
+}
+
 void Veterod::createPidfile()
 {
     const std::string pidfile = "/var/run/veterod.pid";
@@ -298,6 +337,7 @@ void Veterod::exec()
     while (true) {
         try {
             vetero::common::UsbWde1Dataset dataset = reader.read();
+            int rainValue;
 
             // do some sanity check before inserting in the DB
             // Normally all values are corrupted, so it's okay to check just the temperature.
@@ -307,7 +347,8 @@ void Veterod::exec()
                 continue;
             }
 
-            dbAccess.insertUsbWde1Dataset(dataset);
+            dbAccess.insertUsbWde1Dataset(dataset, rainValue);
+            runPostscript(dataset, rainValue);
 
             try {
                 if (havePressureSensor())

@@ -99,7 +99,7 @@ std::string Configuration::error() const
 
 void Configuration::read(const std::string &filename)
 {
-    char *serial_device = NULL, *database_path = NULL;
+    char *serial_device = NULL, *database_path = NULL, *update_postscript = NULL;
     char *sensor_type = NULL;
     int sensor_number = -1;
     char *report_title_color1 = NULL, *report_title_color2 = NULL;
@@ -120,6 +120,7 @@ void Configuration::read(const std::string &filename)
         CFG_SIMPLE_INT(const_cast<char *>("pressure_height"),           &pressure_height),
 
         CFG_SIMPLE_STR(const_cast<char *>("database_path"),             &database_path),
+        CFG_SIMPLE_STR(const_cast<char *>("update_postscript"),         &update_postscript),
 
         CFG_SIMPLE_STR(const_cast<char *>("report_directory"),          &report_directory),
         CFG_SIMPLE_STR(const_cast<char *>("report_title_color1"),       &report_title_color1),
@@ -176,6 +177,11 @@ void Configuration::read(const std::string &filename)
     if (database_path) {
         m_databasePath = database_path;
         std::free(database_path);
+    }
+
+    if (update_postscript) {
+        m_updatePostscript = update_postscript;
+        std::free(update_postscript);
     }
 
     if (report_directory) {
@@ -263,6 +269,11 @@ int Configuration::pressureHeight() const
 std::string Configuration::databasePath() const
 {
     return m_databasePath;
+}
+
+std::string Configuration::updatePostscript() const
+{
+    return m_updatePostscript;
 }
 
 std::string Configuration::reportDirectory() const

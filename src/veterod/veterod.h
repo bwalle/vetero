@@ -137,6 +137,19 @@ class Veterod : public common::VeteroApplication
          */
         bool havePressureSensor() const;
 
+        /**
+         * \brief Sets some weather values in the process environment
+         *
+         * This environment can be used the vetero postscript.
+         */
+        void updateEnvironment(const vetero::common::UsbWde1Dataset &dataset,
+                int rainValue);
+
+        /**
+         * \brief Executes the postscript, if there's any
+         */
+        void runPostscript(const vetero::common::UsbWde1Dataset &dataset,
+                int rainValue);
     private:
         bool m_daemonize;
         std::string m_errorLogfile;

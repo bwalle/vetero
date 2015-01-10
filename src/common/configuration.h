@@ -53,6 +53,7 @@ class Configuration
         // Database
 
         std::string databasePath() const;
+        std::string updatePostscript() const;
 
         // Report generation
 
@@ -86,6 +87,7 @@ class Configuration
         std::string m_reportUploadCommand;
         std::string m_locationString;
         std::string m_databasePath;
+        std::string m_updatePostscript;
         std::string m_displayName;
         std::string m_displayConnection;
         bool        m_configurationRead;

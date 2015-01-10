@@ -43,11 +43,14 @@ private:
     void execSql();
     void execInteractiveSql();
     void runSqlStatement(const std::string &stmt);
+    void printResultPretty(const common::Database::Result &result);
+    void printResultMachineReadable(const common::Database::Result &result);
 
 private:
     std::string m_sql;
     Action m_action;
     std::string m_dbPath;
+    bool m_machineReadable;
     vetero::common::Sqlite3Database m_database;
     bool m_readonly;
 };

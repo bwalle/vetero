@@ -26,7 +26,7 @@
 namespace vetero {
 namespace common {
 
-/* UsbWde1Dataset {{{ */
+/* SensorType {{{ */
 
 class SensorType {
 
@@ -88,6 +88,9 @@ private:
 };
 
 std::ostream &operator<<(std::ostream &os, const SensorType &type);
+
+/* }}} */
+/* UsbWde1Dataset {{{ */
 
 //
 // \class UsbWde1Dataset

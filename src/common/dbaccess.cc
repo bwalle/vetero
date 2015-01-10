@@ -235,7 +235,7 @@ std::string DbAccess::readMiscEntry(const std::string &key) const
     }
 }
 
-void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
+void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset, int &rainValue) const
 {
     // rain calculation
     std::string rain("NULL");
@@ -246,7 +246,10 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const
         int rainGaugeDiff = dataset.rainGauge() - lastRain;
         if (rainGaugeDiff < 0)
             rainGaugeDiff += 4096 + 1;
-        rain = bw::str(rainGaugeDiff * UsbWde1Dataset::RAIN_GAUGE_FACTOR);
+        rainValue = rainGaugeDiff * UsbWde1Dataset::RAIN_GAUGE_FACTOR;
+        rain = bw::str(rainValue);
+    } else {
+        rainValue = -1;
     }
 
     // wind bft

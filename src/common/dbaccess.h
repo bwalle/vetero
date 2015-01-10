@@ -62,7 +62,7 @@ class DbAccess : private bw::Noncopyable
         template <typename T>
         T readMiscEntry(const std::string &key, const T &defaultValue=T()) const;
 
-        void insertUsbWde1Dataset(const UsbWde1Dataset &dataset) const;
+        void insertUsbWde1Dataset(const UsbWde1Dataset &dataset, int &rainValue) const;
         void insertPressure(int pressure) const;
 
         CurrentWeather queryCurrentWeather() const;

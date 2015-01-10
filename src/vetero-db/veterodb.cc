@@ -41,7 +41,8 @@ VeteroDb::VeteroDb()
     : common::VeteroApplication("vetero-db"),
       m_dbPath("vetero.db"),
       m_action(NoAction),
-      m_readonly(false)
+      m_readonly(false),
+      m_machineReadable(false)
 {
     const char *db_path = getenv("VETERO_DB");
     if (db_path)
@@ -60,6 +61,8 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
                  "Use the specified path as database instead of '" + m_dbPath + "'.");
     op.addOption("readonly", 'r', bw::OT_FLAG,
                  "Open the database readonly.");
+    op.addOption("machine-readable", 'm', bw::OT_FLAG,
+                 "Print the output machine-readable.");
     op.addOption("regenerate-metadata", 'M', bw::OT_FLAG,
                  "Regenerate all cached values in the database. This may take some time.");
 
@@ -79,6 +82,10 @@ bool VeteroDb::parseCommandLine(int argc, char *argv[])
     // readonly?
     if (op.getValue("readonly"))
         m_readonly = true;
+
+    // machine readable output?
+    if (op.getValue("machine-readable"))
+        m_machineReadable = true;
 
     // actions
     if (op.getValue("regenerate-metadata"))
@@ -174,13 +181,8 @@ void VeteroDb::execInteractiveSql()
 
 }
 
-void VeteroDb::runSqlStatement(const std::string &stmt)
+void VeteroDb::printResultPretty(const common::Database::Result &result)
 {
-    common::Database::Result result = m_database.executeSqlQuery("%s", stmt.c_str());
-
-    if (result.data.empty())
-        return;
-
     std::vector<size_t> columnWidths(result.data.front().size());
 
     // count the size
@@ -212,6 +214,29 @@ void VeteroDb::runSqlStatement(const std::string &stmt)
         std::cout << std::endl;
     }
     std::cout << line << std::endl;
+
+}
+
+void VeteroDb::printResultMachineReadable(const common::Database::Result &result)
+{
+    for (size_t line = 0; line < result.data.size(); ++line) {
+        for (size_t col = 0; col < result.data.front().size(); ++col)
+            std::cout << result.data[line][col] << "\t";
+        std::cout << std::endl;
+    }
+}
+
+void VeteroDb::runSqlStatement(const std::string &stmt)
+{
+    common::Database::Result result = m_database.executeSqlQuery("%s", stmt.c_str());
+
+    if (result.data.empty())
+        return;
+
+    if (m_machineReadable)
+        printResultMachineReadable(result);
+    else
+        printResultPretty(result);
 
 }
 
