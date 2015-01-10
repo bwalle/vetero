@@ -42,7 +42,11 @@ VeteroDb::VeteroDb()
       m_dbPath("vetero.db"),
       m_action(NoAction),
       m_readonly(false)
-{}
+{
+    const char *db_path = getenv("VETERO_DB");
+    if (db_path)
+        m_dbPath = db_path;
+}
 
 bool VeteroDb::parseCommandLine(int argc, char *argv[])
 {
@@ -192,7 +196,6 @@ void VeteroDb::runSqlStatement(const std::string &stmt)
     // print it
 
     size_t totalWidth = std::accumulate(columnWidths.begin(), columnWidths.end(), 0);
-    std::cout << "total=" << totalWidth << std::endl;
     totalWidth += 3 * columnWidths.size() + 1; // separator
     std::string line(totalWidth, '-');
 
