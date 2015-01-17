@@ -244,7 +244,7 @@ void HtmlDocument::write(std::ostream &os)
 
 void HtmlDocument::writeCss(std::ostream &os)
 {
-    os << "<link href='http://fonts.googleapis.com/css?family=Droid+Serif:regular,bold' "
+    os << "<link href='https://fonts.googleapis.com/css?family=Droid+Serif:regular,bold' "
        << "    rel='stylesheet' type='text/css' />\n";
 
     os << "<style type=\"text/css\">\n";
