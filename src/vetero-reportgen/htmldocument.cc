@@ -178,7 +178,7 @@ void HtmlDocument::write(std::ostream &os)
     os << "</head>" << std::endl;
 
     // body start
-    os << "<body><a name=\"top\"><a/>" << std::endl;
+    os << "<body><a name=\"top\"></a>" << std::endl;
 
     // index table
     os << "<table width=\"100%\" bgcolor='" << titleColor1 << "' "
