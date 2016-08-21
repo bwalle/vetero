@@ -101,13 +101,13 @@ void Configuration::read(const std::string &filename)
 {
     char *serial_device = NULL, *database_path = NULL, *update_postscript = NULL;
     char *sensor_type = NULL;
-    int sensor_number = -1;
+    long sensor_number = -1;
     char *report_title_color1 = NULL, *report_title_color2 = NULL;
     char *report_directory = NULL, *report_upload_command = NULL;
     char *display_name = NULL, *display_connection = NULL;
     char *location_string = NULL;
     char *locale = NULL;
-    int serial_baud = -1, pressure_sensor_i2c_bus = -1, pressure_height = -1;
+    long serial_baud = -1, pressure_sensor_i2c_bus = -1, pressure_height = -1;
 
     cfg_opt_t opts[] = {
         CFG_SIMPLE_STR(const_cast<char *>("serial_device"),             &serial_device),
