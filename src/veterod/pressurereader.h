@@ -96,7 +96,7 @@ class PressureReader
          * \param[in] pressure the pressure in 1/100 hPa
          * \return the corrected pressure in 1/100 hPa
          */
-        int calculateSeaLevelPressure(int pressure) const;
+        int calculateSeaLevelPressure(double pressure) const;
 
     private:
         std::string m_filename;

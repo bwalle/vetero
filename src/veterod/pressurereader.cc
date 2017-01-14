@@ -33,7 +33,7 @@ namespace daemon {
 /* PressureReader {{{ */
 
 PressureReader::PressureReader(int i2cBus)
-    : m_filename( common::str_printf("/sys/bus/i2c/drivers/bmp085/%d-0077/pressure0_input", i2cBus) )
+    : m_filename( common::str_printf("/sys/bus/i2c/devices/%d-0077/iio:device0/in_pressure_input", i2cBus) )
     , m_height(0)
 {
     BW_DEBUG_DBG("Pressure sensor device file: '%s'", m_filename.c_str());
@@ -79,11 +79,13 @@ int PressureReader::readPressure()
 
     buffer[readChars] = '\0';
 
-    int pressure = bw::from_str<int>(bw::stripr(buffer));
+    // we need 1/100 hPa since that was the old interface, the new interface
+    // returns kPa instead of hPa
+    double pressure = bw::from_str<double>(bw::stripr(buffer)) * 10.0 * 100.0;
     return calculateSeaLevelPressure(pressure);
 }
 
-int PressureReader::calculateSeaLevelPressure(int pressure) const
+int PressureReader::calculateSeaLevelPressure(double pressure) const
 {
     if (m_height == 0)
         return pressure;
