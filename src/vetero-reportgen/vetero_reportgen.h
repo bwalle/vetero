@@ -125,13 +125,13 @@ class VeteroReportgen : public common::VeteroApplication
 
     private:
         common::Sqlite3Database m_database;
-        std::auto_ptr<common::DbAccess> m_dbAccess;
-        std::auto_ptr<ValidDataCache> m_validDataCache;
+        std::unique_ptr<common::DbAccess> m_dbAccess;
+        std::unique_ptr<ValidDataCache> m_validDataCache;
         std::vector<std::string> m_jobs;
 
         std::string m_configfile;
         bool m_noConfigFatal;
-        std::auto_ptr<vetero::common::Configuration> m_configuration;
+        std::unique_ptr<vetero::common::Configuration> m_configuration;
 
         bool m_upload;
 };

@@ -123,7 +123,7 @@ class VeteroDisplayd : public common::VeteroApplication
         std::string m_configfile;
         bool m_noConfigFatal;
         vetero::common::Sqlite3Database m_database;
-        std::auto_ptr<vetero::common::Configuration> m_configuration;
+        std::unique_ptr<vetero::common::Configuration> m_configuration;
         SerdisplibConnection *m_serdispConnection;
         SerdisplibTextDisplay *m_display;
 };
