@@ -156,7 +156,7 @@ class Veterod : public common::VeteroApplication
         std::string m_configfile;
         bool m_noConfigFatal;
         vetero::common::Sqlite3Database m_database;
-        std::unique_ptr<vetero::common::Configuration> m_configuration;
+        std::auto_ptr<vetero::common::Configuration> m_configuration;
 };
 
 /* }}} */

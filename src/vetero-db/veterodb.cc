@@ -119,7 +119,7 @@ void VeteroDb::execRegenerateMetadata()
 
     bool showProgress = isatty(STDIN_FILENO);
 
-    std::unique_ptr<common::ConsoleProgress> progressNotifier;
+    std::auto_ptr<common::ConsoleProgress> progressNotifier;
     common::DbAccess dbAccess(&m_database);
 
     dbAccess.deleteStatistics();
@@ -148,7 +148,7 @@ void VeteroDb::execSql()
 
 void VeteroDb::execInteractiveSql()
 {
-    std::unique_ptr<bw::LineReader> lineReader(bw::LineReader::defaultLineReader("(vetero-db) "));
+    std::auto_ptr<bw::LineReader> lineReader(bw::LineReader::defaultLineReader("(vetero-db) "));
     std::string historyPath = bw::FileUtils::join(bw::FileUtils::homeDirectory(), ".vetero-db.history");
 
     try {
