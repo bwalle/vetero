@@ -23,7 +23,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cerrno>
-#include <xlocale.h>
+#include <locale.h>
 #include <sys/stat.h>
 
 #include <zlib.h>
