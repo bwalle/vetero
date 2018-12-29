@@ -142,13 +142,13 @@ class Veterod : public common::VeteroApplication
          *
          * This environment can be used the vetero postscript.
          */
-        void updateEnvironment(const vetero::common::UsbWde1Dataset &dataset,
+        void updateEnvironment(const vetero::common::Dataset &dataset,
                 int rainValue);
 
         /**
          * \brief Executes the postscript, if there's any
          */
-        void runPostscript(const vetero::common::UsbWde1Dataset &dataset,
+        void runPostscript(const vetero::common::Dataset &dataset,
                 int rainValue);
     private:
         bool m_daemonize;

@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2018, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
+#include <thread>
+#include <chrono>
+
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
 #include <libbw/datetime.h>
@@ -25,12 +28,28 @@ namespace daemon {
 
 /* DataReader {{{ */
 
+DataReader *DataReader::create(const common::Configuration &configuration)
+{
+    BW_DEBUG_STREAM_DBG("Sensor type " << configuration.sensorType());
+    if (configuration.sensorType() == common::SensorType::FreeTec)
+        return new FreeTecDataReader(configuration);
+    else
+        return new UsbWde1DataReader(configuration);
+}
+
 DataReader::DataReader(const common::Configuration &configuration)
-    : m_configuration(configuration),
+    : m_configuration(configuration)
+{}
+
+/* }}} */
+/* UsbWde1DataReader {{{ */
+
+UsbWde1DataReader::UsbWde1DataReader(const common::Configuration &configuration)
+    : DataReader(configuration),
       m_serialDevice(configuration.serialDevice())
 {}
 
-void DataReader::openConnection()
+void UsbWde1DataReader::openConnection()
 {
     if (!m_serialDevice.openPort())
         throw common::ApplicationError("Unable to open port '"+ m_configuration.serialDevice() + "': " +
@@ -42,7 +61,7 @@ void DataReader::openConnection()
     BW_DEBUG_INFO("Connection to serial port etablished.");
 }
 
-vetero::common::UsbWde1Dataset DataReader::read()
+vetero::common::Dataset UsbWde1DataReader::read()
 {
     std::string line;
 
@@ -64,7 +83,7 @@ vetero::common::UsbWde1Dataset DataReader::read()
         throw common::ApplicationError("Received data doesn't start with '$1', maybe not in LogView "
                                "mode? (" + line + ")");
 
-    vetero::common::UsbWde1Dataset data = parseDataset(line);
+    vetero::common::Dataset data = parseDataset(line);
     data.setTimestamp(bw::Datetime::now());
     data.setSensorType(m_configuration.sensorType());
 
@@ -73,14 +92,14 @@ vetero::common::UsbWde1Dataset DataReader::read()
     return data;
 }
 
-vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line) const
+vetero::common::Dataset UsbWde1DataReader::parseDataset(const std::string &line) const
 {
     std::vector<std::string> parts = bw::stringsplit(line, ";");
     if (parts.size() != 25)
         throw common::ApplicationError("Invalid data set received: " + bw::str(parts.size()) +
                                " instead of 25 parts.");
 
-    vetero::common::UsbWde1Dataset data;
+    vetero::common::Dataset data;
 
     if (m_configuration.sensorType() == common::SensorType::Kombi) {
 
@@ -132,6 +151,160 @@ vetero::common::UsbWde1Dataset DataReader::parseDataset(const std::string &line)
     }
 
     return data;
+}
+
+/* }}} */
+/* FreeTecDataReader {{{ */
+
+FreeTecDataReader::FreeTecDataReader(const common::Configuration &configuration)
+    : DataReader(configuration)
+{}
+
+void FreeTecDataReader::openConnection()
+{
+    static constexpr unsigned int VENDOR_ID = 0x1941;
+    static constexpr unsigned int PRODUCT_ID = 0x8021;
+
+    usb::UsbManager &manager = usb::UsbManager::instance();
+    manager.detectDevices();
+
+    usb::Device *weatherStation = nullptr;
+
+    for (size_t i = 0; i < manager.getNumberOfDevices() && weatherStation == nullptr; i++) {
+        usb::Device *device = manager.getDevice(i);
+        usb::DeviceDescriptor descriptor = device->getDescriptor();
+
+        int vendorId = descriptor.getVendorId();
+        int productId = descriptor.getProductId();
+
+        BW_DEBUG_DBG("Checking USB device %04X:%04X", vendorId, productId);
+
+        if ((vendorId == VENDOR_ID) && (productId == PRODUCT_ID))
+            weatherStation = device;
+    }
+
+    if (!weatherStation)
+        throw common::ApplicationError("Weather station USB device not found");
+
+    usb::DeviceHandle *usb_handle = weatherStation->open();
+
+    try {
+        std::unique_ptr<usb::ConfigDescriptor> configDescriptor(weatherStation->getConfigDescriptor(0));
+        BW_DEBUG_TRACE("usb::DeviceHandle::setConfiguration(%d)", configDescriptor->getConfigurationValue());
+        usb_handle->setConfiguration(configDescriptor->getConfigurationValue());
+    } catch (const usb::Error &err) {
+        throw common::ApplicationError("Unable to set configuration: " + std::string(err.what()));
+    }
+
+    unsigned int interfaceNumber;
+    try {
+        std::unique_ptr<usb::ConfigDescriptor> configDescriptor(weatherStation->getConfigDescriptor(0));
+        std::unique_ptr<usb::InterfaceDescriptor> interfaceDescriptor(configDescriptor->getInterfaceDescriptor(0, 0));
+        interfaceNumber = interfaceDescriptor->getInterfaceNumber();
+        BW_DEBUG_TRACE("usb::DeviceHandle::claimInterface(%d)", interfaceNumber);
+        usb_handle->claimInterface(interfaceNumber);
+    } catch (const usb::Error &err) {
+        throw common::ApplicationError("Unable to claim interface: " + std::string(err.what()));
+    }
+  
+
+    m_handle.reset(usb_handle);
+
+    using std::chrono::system_clock;
+    m_nextRead = system_clock::to_time_t(system_clock::now());
+}
+
+
+vetero::common::Dataset FreeTecDataReader::read()
+{
+    using namespace std::chrono_literals;
+    using std::chrono::system_clock;
+
+    vetero::common::Dataset data;
+    data.setTimestamp(bw::Datetime::now());
+    data.setSensorType(m_configuration.sensorType());
+
+    std::this_thread::sleep_until(system_clock::from_time_t(m_nextRead));
+
+    unsigned char fixed_block[BLOCK_SIZE];
+    unsigned char current_block[BLOCK_SIZE];
+
+    readBlock(0, fixed_block);
+    if (fixed_block[0] != 0x55)
+        throw common::ApplicationError("Bad data returned");
+
+    // Bytes 31 and 32 when combined create an unsigned short int
+    // that tells us where to find the weather data we want
+    size_t curpos = fixed_block[31] << 8 | fixed_block[30];
+    BW_DEBUG_TRACE("Current block offset %x", curpos);
+
+    readBlock(curpos, current_block);
+
+    data.setHumidity(current_block[4] * 100);
+
+    unsigned char tlsb = current_block[5];
+    unsigned char tmsb = current_block[6] & 0x7f;
+    unsigned char tsign = current_block[6] >> 7;
+    double outdoor_temperature = (tmsb * 256 + tlsb) * 0.1;
+    if (tsign)
+        outdoor_temperature *= -1;
+
+    data.setTemperature(outdoor_temperature*100);
+
+    unsigned char wind = current_block[9];
+    unsigned char wind_extra = current_block[11];
+    unsigned char wind_dir = current_block[12];
+
+    data.setWindSpeed( (wind + ((wind_extra & 0x0F) << 8)) * 0.36 * 100 );
+    data.setWindDirection( wind_dir * 22.5 );
+    data.setRainGauge(current_block[14] << 8 | current_block[13]);
+
+    m_nextRead += 5*60;
+
+    BW_DEBUG_STREAM_DBG("Read data" << data);
+    return data;
+}
+
+void FreeTecDataReader::readBlock(size_t offset, unsigned char block[BLOCK_SIZE])
+{
+    unsigned char least_significant_bit = offset & 0xFF;
+    unsigned char most_significant_bit = (offset >> 8) & 0xFF;
+
+    unsigned char msg[] = {
+        0xA1,
+        most_significant_bit,
+        least_significant_bit,
+        32,
+        0xA1,
+        most_significant_bit,
+        least_significant_bit,
+        32
+    };
+
+    static constexpr int timeout = 1000; // ms
+
+    BW_DEBUG_DBG("Setting up reading block offset %d", offset);
+
+    m_handle->controlTransfer(0x21,           // bmRequestType,
+                              0x09,           // bRequest,
+                              0x200,          // wValue,
+                              0,              // wIndex,
+                              msg,            // data
+                              sizeof(msg),    // size
+                              timeout);       // timeout
+
+    BW_DEBUG_DBG("Reading block offset %d", offset);
+
+    int transferred = 0;
+    m_handle->bulkTransfer(0x81,              // endpoint
+                           block,             // data
+                           BLOCK_SIZE,        // length
+                           &transferred,      // transferred data
+                           timeout);          // timeout
+
+    if (transferred != BLOCK_SIZE)
+        throw common::ApplicationError("Unable to read " + std::to_string(BLOCK_SIZE) + " bytes of data. Only " +
+                                       std::to_string(transferred) + " bytes read.");
 }
 
 /* }}} */

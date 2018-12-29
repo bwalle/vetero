@@ -20,7 +20,7 @@ if (LIBUSB1_LIBRARIES AND LIBUSB1_INCLUDE_DIRS)
 else (LIBUSB1_LIBRARIES AND LIBUSB1_INCLUDE_DIRS)
   find_path(LIBUSB1_INCLUDE_DIR
     NAMES
-      libusb-1.0/libusb.h
+      libusb.h
     PATHS
       /usr/include
       /usr/local/include

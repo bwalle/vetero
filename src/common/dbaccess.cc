@@ -79,6 +79,7 @@ void DbAccess::initTables() const
         "    dewpoint     INTEGER,"
         "    wind         INTEGER,"
         "    wind_bft     INTEGER,"
+        "    wind_dir     INTEGER,"
         "    rain         INTEGER,"
         "    pressure     INTEGER"
         ")"
@@ -161,6 +162,7 @@ void DbAccess::initTables() const
         "    round(dewpoint/100.0, 1)         AS dewpoint,"
         "    round(wind/100.0, 1)             AS wind,"
         "    wind_bft                         AS wind_bft,"
+        "    wind_dir                         AS wind_dir,"
         "    round(rain/1000.0, 3)            AS rain, "
         "    round(pressure/100.0, 0)         AS pressure "
         "FROM weatherdata"
@@ -212,7 +214,7 @@ void DbAccess::initTables() const
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 4);
+    writeMiscEntry(DatabaseSchemaRevision, 5);
 }
 
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const
@@ -235,7 +237,7 @@ std::string DbAccess::readMiscEntry(const std::string &key) const
     }
 }
 
-void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset, int &rainValue) const
+void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
 {
     // rain calculation
     std::string rain("NULL");
@@ -246,7 +248,7 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset, int &rainValu
         int rainGaugeDiff = dataset.rainGauge() - lastRain;
         if (rainGaugeDiff < 0)
             rainGaugeDiff += 4096 + 1;
-        rainValue = rainGaugeDiff * UsbWde1Dataset::RAIN_GAUGE_FACTOR;
+        rainValue = rainGaugeDiff * dataset.rainGaugeFactor();
         rain = bw::str(rainValue);
     } else {
         rainValue = -1;
@@ -255,10 +257,13 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset, int &rainValu
     // wind bft
     std::string windSpeed("NULL");
     std::string windStrength("NULL");
-    if (dataset.sensorType().hasWind()) {
+    std::string windDirection("NULL");
+    if (dataset.sensorType().hasWindSpeed()) {
         windSpeed = bw::str( dataset.windSpeed() );
         windStrength = bw::str(Weather::windSpeedToBft(dataset.windSpeed()));
     }
+    if (dataset.sensorType().hasWindDirection())
+        windDirection = bw::str( dataset.windDirection() );
 
     // dew point calculation
     std::string humidity("NULL");
@@ -269,12 +274,12 @@ void DbAccess::insertUsbWde1Dataset(const UsbWde1Dataset &dataset, int &rainValu
     }
 
     m_db->executeSql("INSERT INTO weatherdata "
-                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, rain) "
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_dir, rain) "
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                      c_str_null(dataset.timestamp().str()),
                      c_str_null(bw::str( dataset.temperature() )),
                      c_str_null(humidity), c_str_null(dewpoint),
-                     c_str_null(windSpeed), c_str_null(windStrength), c_str_null(rain) );
+                     c_str_null(windSpeed), c_str_null(windStrength), c_str_null(windDirection), c_str_null(rain) );
 
     if (dataset.sensorType().hasRain())
         writeMiscEntry(LastRain, dataset.rainGauge());
@@ -300,7 +305,7 @@ CurrentWeather DbAccess::queryCurrentWeather() const
 
     Database::Result result = m_db->executeSqlQuery(
         "SELECT   strftime('%%s', datetime(timestamp, 'utc')), "
-        "         temp, humid, dewpoint, wind, wind_bft, pressure "
+        "         temp, humid, dewpoint, wind, wind_bft, wind_dir, pressure "
         "FROM     weatherdata "
         "ORDER BY timestamp DESC "
         "LIMIT 1"
@@ -323,7 +328,10 @@ CurrentWeather DbAccess::queryCurrentWeather() const
     }
 
     if (!data.at(6).empty())
-        ret.setPressure( bw::from_str<int>(data.at(6)) );
+        ret.setWindDirection( bw::from_str<int>(data.at(6)) );
+
+    if (!data.at(7).empty())
+        ret.setPressure( bw::from_str<int>(data.at(7)) );
 
     result = m_db->executeSqlQuery(
         "SELECT   temp_min, temp_max, wind_max, wind_bft_max, rain "

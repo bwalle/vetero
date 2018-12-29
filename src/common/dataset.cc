@@ -31,6 +31,7 @@ SensorType SensorType::Kombi(IdKombi);
 SensorType SensorType::KombiNoRain(IdKombiNoRain);
 SensorType SensorType::Pool(IdPool);
 SensorType SensorType::Normal(IdNormal);
+SensorType SensorType::FreeTec(IdFreeTec);
 
 std::string SensorType::str() const
 {
@@ -46,6 +47,9 @@ std::string SensorType::str() const
 
         case IdNormal:
             return "normal";
+
+        case IdFreeTec:
+            return "freetec";
 
         case IdInvalid:
         default:
@@ -63,6 +67,8 @@ SensorType SensorType::fromString(const std::string &value)
         return Pool;
     else if (strcasecmp(value.c_str(), "normal") == 0)
         return Normal;
+    else if (strcasecmp(value.c_str(), "freetec") == 0)
+        return FreeTec;
     else
         return Invalid;
 }
@@ -73,9 +79,9 @@ std::ostream &operator<<(std::ostream &os, const SensorType &type)
 }
 
 /* }}} */
-/* UsbWde1Dataset {{{ */
+/* Dataset {{{ */
 
-UsbWde1Dataset::UsbWde1Dataset()
+Dataset::Dataset()
     : m_sensorType(SensorType::Invalid)
     , m_temperature(0)
     , m_humidity(0)
@@ -84,89 +90,108 @@ UsbWde1Dataset::UsbWde1Dataset()
     , m_IsRain(false)
 {}
 
-SensorType UsbWde1Dataset::sensorType() const
+SensorType Dataset::sensorType() const
 {
     return m_sensorType;
 }
 
-void UsbWde1Dataset::setSensorType(const SensorType &type)
+void Dataset::setSensorType(const SensorType &type)
 {
     m_sensorType = type;
 }
 
-bw::Datetime UsbWde1Dataset::timestamp() const
+bw::Datetime Dataset::timestamp() const
 {
     return m_timestamp;
 }
 
-void UsbWde1Dataset::setTimestamp(const bw::Datetime &time)
+void Dataset::setTimestamp(const bw::Datetime &time)
 {
     m_timestamp = time;
 }
 
-int UsbWde1Dataset::temperature() const
+int Dataset::temperature() const
 {
     return m_temperature;
 }
 
-void UsbWde1Dataset::setTemperature(int temperature)
+void Dataset::setTemperature(int temperature)
 {
     m_temperature = temperature;
 }
 
-int UsbWde1Dataset::humidity() const
+int Dataset::humidity() const
 {
     return m_humidity;
 }
 
-void UsbWde1Dataset::setHumidity(int humidity)
+void Dataset::setHumidity(int humidity)
 {
     m_humidity = humidity;
 }
 
-int UsbWde1Dataset::windSpeed() const
+int Dataset::windSpeed() const
 {
     return m_windSpeed;
 }
 
-void UsbWde1Dataset::setWindSpeed(int windSpeed)
+void Dataset::setWindSpeed(int windSpeed)
 {
     m_windSpeed = windSpeed;
 }
 
-int UsbWde1Dataset::rainGauge() const
+int Dataset::windDirection() const
+{
+    return m_windDirection;
+}
+
+void Dataset::setWindDirection(int windDirection)
+{
+    m_windDirection = windDirection;
+}
+
+int Dataset::rainGauge() const
 {
     return m_rainGauge;
 }
 
-void UsbWde1Dataset::setRainGauge(int rainGauge)
+void Dataset::setRainGauge(int rainGauge)
 {
     m_rainGauge = rainGauge;
 }
 
-bool UsbWde1Dataset::isRain() const
+bool Dataset::isRain() const
 {
     return m_IsRain;
 }
 
-void UsbWde1Dataset::setIsRain(bool rain)
+void Dataset::setIsRain(bool rain)
 {
     m_IsRain = rain;
 }
 
-std::string UsbWde1Dataset::str() const
+int Dataset::rainGaugeFactor() const
+{
+    if (m_sensorType == SensorType::FreeTec)
+        return 300;
+    else
+        return 295;
+}
+
+std::string Dataset::str() const
 {
     std::stringstream ss;
-    ss << "time="       << timestamp() << ", "
-       << "temp="       << temperature() << "C, "
-       << "humid="      << humidity() << "%, "
-       << "wind="       << windSpeed() << "km/h, "
-       << "rainGauge="  << rainGauge() << ", "
-       << "rain="       << std::boolalpha << isRain();
+    ss << "time="             << timestamp() << ", "
+       << "temp="             << temperature() << "C, "
+       << "humid="            << humidity() << "%, "
+       << "wind="             << windSpeed() << "km/h, "
+       << "windDirection="    << windDirection() << "deg, "
+       << "rainGauge="        << rainGauge() << ", "
+       << "rain="             << std::boolalpha << isRain();
     return ss.str();
 }
 
-std::ostream &operator<<(std::ostream &os, const UsbWde1Dataset &dataset)
+std::ostream &operator<<(std::ostream &os, const Dataset &dataset)
 {
     os << dataset.str();
     return os;
@@ -174,28 +199,6 @@ std::ostream &operator<<(std::ostream &os, const UsbWde1Dataset &dataset)
 
 /* }}} */
 /* CurrentWeather {{{ */
-
-CurrentWeather::CurrentWeather()
-    : m_temperature(0),
-      m_minTemperature(0),
-      m_maxTemperature(0),
-
-      m_hasHumidity(false),
-      m_humidity(0),
-      m_dewpoint(0),
-
-      m_hasPressure(false),
-      m_pressure(0),
-
-      m_hasWind(false),
-      m_windSpeed(0),
-      m_maxWindSpeed(0),
-      m_windBft(0),
-      m_maxWindBft(0),
-
-      m_hasRain(false),
-      m_rain(0)
-{}
 
 bw::Datetime CurrentWeather::timestamp() const
 {
@@ -320,9 +323,9 @@ void CurrentWeather::setPressure(int pressure)
 /* }}} */
 /* Wind {{{ */
 
-bool CurrentWeather::hasWind() const
+bool CurrentWeather::hasWindSpeed() const
 {
-    return m_hasWind;
+    return m_hasWindSpeed;
 }
 
 int CurrentWeather::windSpeed() const
@@ -337,7 +340,7 @@ double CurrentWeather::windSpeedReal() const
 
 void CurrentWeather::setWindSpeed(int windSpeed)
 {
-    m_hasWind = true;
+    m_hasWindSpeed = true;
     m_windSpeed = windSpeed;
 }
 
@@ -348,7 +351,7 @@ int CurrentWeather::windBeaufort() const
 
 void CurrentWeather::setWindBeaufort(int bft)
 {
-    m_hasWind = true;
+    m_hasWindSpeed = true;
     m_windBft = bft;
 }
 
@@ -375,6 +378,33 @@ int CurrentWeather::maxWindBeaufort() const
 void CurrentWeather::setMaxWindBeaufort(int bft)
 {
     m_maxWindBft = bft;
+}
+
+bool CurrentWeather::hasWindDirection() const
+{
+    return m_hasWindDirection;
+}
+
+int CurrentWeather::windDirection() const
+{
+    return m_windDirection;
+}
+
+void CurrentWeather::setWindDirection(int windDirection)
+{
+    m_hasWindDirection = true;
+    m_windDirection = windDirection;
+}
+
+std::string CurrentWeather::windDirectionStr() const
+{
+    const char *windDirs[] = {
+        "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+	"S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
+    };
+
+    int index = m_windDirection/22 % 16;
+    return windDirs[index];
 }
 
 /* }}} */
@@ -418,12 +448,15 @@ std::string CurrentWeather::str() const
     if (hasPressure())
         ss << "pressure=" << hasPressure() << "hPa, ";
 
-    if (hasWind()) {
+    if (hasWindSpeed()) {
         ss << "windSpeed=" << windSpeedReal() << ", "
            << "windSpeed=" << windBeaufort() << " Bft, "
            << "maxWindSpeed=" << maxWindSpeedReal() << ", "
            << "maxWindSpeed=" << maxWindBeaufort() << " Bft, ";
     }
+
+    if (hasWindDirection())
+        ss << "windDirection=" << windDirection() << " deg, ";
 
     if (hasRain())
         ss << "rain=" << rainReal() << ", ";

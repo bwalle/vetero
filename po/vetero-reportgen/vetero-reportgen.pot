@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-16 09:36+0200\n"
+"POT-Creation-Date: 2018-12-29 15:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,11 @@ msgstr ""
 msgid "Created by %s %s on %s\n"
 msgstr ""
 
-#: gnuplot.cc:207
+#: gnuplot.cc:204
 msgid "Wind speed [km/h])"
 msgstr ""
 
-#: gnuplot.cc:208
+#: gnuplot.cc:205
 msgid "Wind strength [Beaufort]"
 msgstr ""
 
@@ -36,8 +36,8 @@ msgstr ""
 msgid "Time [HH:MM]"
 msgstr ""
 
-#: dayreportgenerator.cc:111 monthreportgenerator.cc:106
-#: yearreportgenerator.cc:99
+#: dayreportgenerator.cc:111 monthreportgenerator.cc:107
+#: yearreportgenerator.cc:100
 msgid "Temperature [°C]"
 msgstr ""
 
@@ -45,8 +45,8 @@ msgstr ""
 msgid "Humidity [%]"
 msgstr ""
 
-#: dayreportgenerator.cc:220 monthreportgenerator.cc:183
-#: yearreportgenerator.cc:128
+#: dayreportgenerator.cc:220 monthreportgenerator.cc:184
+#: yearreportgenerator.cc:129
 msgid "Rain [l/m²]"
 msgstr ""
 
@@ -54,13 +54,13 @@ msgstr ""
 msgid "Air pressure [hPa]"
 msgstr ""
 
-#: dayreportgenerator.cc:308 monthreportgenerator.cc:234
-#: yearreportgenerator.cc:171
+#: dayreportgenerator.cc:308 monthreportgenerator.cc:235
+#: yearreportgenerator.cc:172
 msgid "Temperature profile"
 msgstr ""
 
-#: dayreportgenerator.cc:308 monthreportgenerator.cc:234
-#: yearreportgenerator.cc:171
+#: dayreportgenerator.cc:308 monthreportgenerator.cc:235
+#: yearreportgenerator.cc:172
 msgid "Temperature"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Wind speed profile"
 msgstr ""
 
-#: dayreportgenerator.cc:319 monthreportgenerator.cc:239
+#: dayreportgenerator.cc:319 monthreportgenerator.cc:240
 msgid "Wind"
 msgstr ""
 
@@ -84,8 +84,8 @@ msgstr ""
 msgid "Rain profile"
 msgstr ""
 
-#: dayreportgenerator.cc:325 monthreportgenerator.cc:245
-#: yearreportgenerator.cc:176
+#: dayreportgenerator.cc:325 monthreportgenerator.cc:246
+#: yearreportgenerator.cc:177
 msgid "Rain"
 msgstr ""
 
@@ -97,60 +97,124 @@ msgstr ""
 msgid "Air pressure"
 msgstr ""
 
-#: currentreportgenerator.cc:89
+#: currentreportgenerator.cc:40
+msgid "N"
+msgstr ""
+
+#: currentreportgenerator.cc:41
+msgid "NNE"
+msgstr ""
+
+#: currentreportgenerator.cc:42
+msgid "NE"
+msgstr ""
+
+#: currentreportgenerator.cc:43
+msgid "ENE"
+msgstr ""
+
+#: currentreportgenerator.cc:44
+msgid "E"
+msgstr ""
+
+#: currentreportgenerator.cc:45
+msgid "ESE"
+msgstr ""
+
+#: currentreportgenerator.cc:46
+msgid "SE"
+msgstr ""
+
+#: currentreportgenerator.cc:47
+msgid "SSE"
+msgstr ""
+
+#: currentreportgenerator.cc:48
+msgid "S"
+msgstr ""
+
+#: currentreportgenerator.cc:49
+msgid "SSW"
+msgstr ""
+
+#: currentreportgenerator.cc:50
+msgid "SW"
+msgstr ""
+
+#: currentreportgenerator.cc:51
+msgid "WSW"
+msgstr ""
+
+#: currentreportgenerator.cc:52
+msgid "W"
+msgstr ""
+
+#: currentreportgenerator.cc:53
+msgid "WNW"
+msgstr ""
+
+#: currentreportgenerator.cc:54
+msgid "NW"
+msgstr ""
+
+#: currentreportgenerator.cc:55
+msgid "NNW"
+msgstr ""
+
+#: currentreportgenerator.cc:116
 msgid "%Y-%m-%d %H:%M"
 msgstr ""
 
-#: monthreportgenerator.cc:105 monthreportgenerator.cc:146
-#: monthreportgenerator.cc:182
+#: monthreportgenerator.cc:106 monthreportgenerator.cc:147
+#: monthreportgenerator.cc:183
 msgid "Day"
 msgstr ""
 
-#: monthreportgenerator.cc:239
+#: monthreportgenerator.cc:240
 msgid "Wind speed"
 msgstr ""
 
-#: monthreportgenerator.cc:250 yearreportgenerator.cc:181
+#: monthreportgenerator.cc:251 yearreportgenerator.cc:182
 msgid "Numeric values"
 msgstr ""
 
-#: monthreportgenerator.cc:250 yearreportgenerator.cc:181
+#: monthreportgenerator.cc:251 yearreportgenerator.cc:182
 msgid "Values"
 msgstr ""
 
-#: monthreportgenerator.cc:300 yearreportgenerator.cc:219
+#: monthreportgenerator.cc:301 yearreportgenerator.cc:220
 msgid "temperature"
 msgstr ""
 
-#: monthreportgenerator.cc:303
+#: monthreportgenerator.cc:304
 msgid "wind"
 msgstr ""
 
-#: monthreportgenerator.cc:306 yearreportgenerator.cc:232
+#: monthreportgenerator.cc:307 yearreportgenerator.cc:233
 msgid "rain"
 msgstr ""
 
-#: monthreportgenerator.cc:310 yearreportgenerator.cc:226
+#: monthreportgenerator.cc:311 yearreportgenerator.cc:227
 msgid "date"
 msgstr ""
 
-#: monthreportgenerator.cc:319
+#: monthreportgenerator.cc:320
 msgid "day"
 msgstr ""
 
-#: monthreportgenerator.cc:320
+#: monthreportgenerator.cc:321
 msgid "sum"
 msgstr ""
 
-#: monthreportgenerator.cc:335
+#: monthreportgenerator.cc:336
 msgid "%Y-%m-%d"
 msgstr ""
 
-#: yearreportgenerator.cc:98 yearreportgenerator.cc:127
+#: yearreportgenerator.cc:99 yearreportgenerator.cc:128
 msgid "Month"
 msgstr ""
 
-#: yearreportgenerator.cc:245
+#: yearreportgenerator.cc:246
 msgid "%B %Y"
 msgstr ""
 

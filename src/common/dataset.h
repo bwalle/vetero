@@ -46,6 +46,9 @@ public:
     // sensor with temperature and humidity
     static SensorType Normal;
 
+    // sensor from the FreeTec station
+    static SensorType FreeTec;
+
 public:
     static SensorType fromString(const std::string &string);
 
@@ -58,12 +61,16 @@ public:
         return (m_typeId != IdInvalid) && (m_typeId != IdPool);
     }
 
-    inline bool hasWind() const {
-        return (m_typeId == IdKombi) || (m_typeId == IdKombiNoRain);
+    inline bool hasWindSpeed() const {
+        return (m_typeId == IdKombi) || (m_typeId == IdKombiNoRain) || (m_typeId == IdFreeTec);
+    }
+
+    inline bool hasWindDirection() const {
+        return (m_typeId == IdFreeTec);
     }
 
     inline bool hasRain() const {
-        return m_typeId == IdKombi;
+        return (m_typeId == IdKombi) || (m_typeId == IdFreeTec);
     }
 
     bool operator==(const SensorType &other) const {
@@ -77,8 +84,10 @@ public:
     std::string str() const;
 
 private:
+    // the first IDs are for the USB WDE-01 from ELV, the IdFreeTec
+    // is the FreeTec station from Pearl
     enum TypeId {
-        IdInvalid = -1, IdKombi, IdKombiNoRain, IdPool, IdNormal
+        IdInvalid = -1, IdKombi, IdKombiNoRain, IdPool, IdNormal, IdFreeTec
     };
     SensorType(TypeId type) : m_typeId(type) {}
 
@@ -90,24 +99,20 @@ private:
 std::ostream &operator<<(std::ostream &os, const SensorType &type);
 
 /* }}} */
-/* UsbWde1Dataset {{{ */
+/* Dataset {{{ */
 
 //
-// \class UsbWde1Dataset
-// \brief Dataset as received by the USB-WDE1 weather station.
+// \class Dataset
+// \brief Dataset as received by the weather station.
 //
 // This contains class now only implements the Kombisensor. Future versions \em may include more
 // receivers.
 //
-class UsbWde1Dataset {
+class Dataset {
 
     public:
-        // The amount of a rain gauge in 1/1000 mm.
-        static const int RAIN_GAUGE_FACTOR = 295;
-
-    public:
-        UsbWde1Dataset();
-        virtual ~UsbWde1Dataset() {}
+        Dataset();
+        virtual ~Dataset() {}
 
     public:
         SensorType sensorType() const;
@@ -125,13 +130,19 @@ class UsbWde1Dataset {
         int windSpeed() const;
         void setWindSpeed(int windSpeed);
 
+        int windDirection() const;
+        void setWindDirection(int windDirection);
+
         int rainGauge() const;
         void setRainGauge(int rainGauge);
+
+        int rainGaugeFactor() const;
 
         bool isRain() const;
         void setIsRain(bool rain);
 
         std::string str() const;
+
 
     private:
         SensorType m_sensorType;
@@ -141,9 +152,10 @@ class UsbWde1Dataset {
         int m_windSpeed;
         int m_rainGauge;
         bool m_IsRain;
+        int m_windDirection = 0; // degrees
 };
 
-std::ostream &operator<<(std::ostream &os, const UsbWde1Dataset &dataset);
+std::ostream &operator<<(std::ostream &os, const Dataset &dataset);
 
 /* }}} */
 /* CurrentWeather {{{ */
@@ -151,13 +163,12 @@ std::ostream &operator<<(std::ostream &os, const UsbWde1Dataset &dataset);
 // \class CurrentWeather
 // \brief Current weather data
 //
-// This is a container class for the current weather. The difference to the UsbWde1Dataset is that
+// This is a container class for the current weather. The difference to the Dataset is that
 // this class contains the accumulated rain amount of a day and the min/max/avg values of the day.
 //
 class CurrentWeather
 {
     public:
-        CurrentWeather();
         virtual ~CurrentWeather() {}
 
     public:
@@ -199,7 +210,7 @@ class CurrentWeather
 
         // Wind
 
-        bool hasWind() const;
+        bool hasWindSpeed() const;
 
         int windSpeed() const;
         double windSpeedReal() const;
@@ -214,6 +225,11 @@ class CurrentWeather
 
         int maxWindBeaufort() const;
         void setMaxWindBeaufort(int bft);
+
+        bool hasWindDirection() const;
+        int windDirection() const;
+        void setWindDirection(int windDirection);
+        std::string windDirectionStr() const;
 
         // Rain
 
@@ -236,19 +252,23 @@ class CurrentWeather
 
     private:
         bw::Datetime m_timestamp;
-        int m_temperature, m_minTemperature, m_maxTemperature;
+        int m_temperature = 0, m_minTemperature = 0, m_maxTemperature = 0;
 
-        bool m_hasHumidity;
-        int m_humidity, m_dewpoint;
+        bool m_hasHumidity = false;
+        int m_humidity = 0, m_dewpoint = 0;
 
-        bool m_hasPressure;
-        int m_pressure;
+        bool m_hasPressure = false;
+        int m_pressure = 0;
 
-        bool m_hasWind;
-        int m_windSpeed, m_maxWindSpeed, m_windBft, m_maxWindBft;
+        bool m_hasWindSpeed = false;
+        int m_windSpeed = 0, m_maxWindSpeed = 0, m_windBft = 0, m_maxWindBft = 0;
 
-        bool m_hasRain;
-        int m_rain;
+        bool m_hasWindDirection = false;
+        int m_windDirection = 0; // degrees
+
+        bool m_hasRain = false;
+        int m_rain = 0;
+
 };
 
 /**

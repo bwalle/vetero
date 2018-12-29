@@ -29,4 +29,15 @@
  */
 #define _(str) gettext(str)
 
+/**
+ * \brief Marks a string for gettext without runtime translation
+ *
+ * https://www.gnu.org/software/gettext/manual/html_node/Special-cases.html#Special-cases
+ *
+ * \param[in] str the string that needs to be translated
+ * \ingroup common
+ */
+#define gettext_noop(str) str
+
+
 #endif // VETERO_COMMON_TRANSLATION_H_

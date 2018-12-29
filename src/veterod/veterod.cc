@@ -264,7 +264,7 @@ bool Veterod::havePressureSensor() const
            (m_configuration->pressureHeight() >= 0);
 }
 
-void Veterod::updateEnvironment(const vetero::common::UsbWde1Dataset &dataset, int rainValue)
+void Veterod::updateEnvironment(const vetero::common::Dataset &dataset, int rainValue)
 {
     if (!getenv("VETERO_DB"))
         setenv("VETERO_DB", m_configuration->databasePath().c_str(), true);
@@ -284,13 +284,13 @@ void Veterod::updateEnvironment(const vetero::common::UsbWde1Dataset &dataset, i
     else
         unsetenv("VETERO_CURRENT_RAIN");
 
-    if (dataset.sensorType().hasWind())
+    if (dataset.sensorType().hasWindSpeed())
         setenv("VETERO_CURRENT_WIND", bw::str(dataset.windSpeed()/100.0).c_str(), true);
     else
         unsetenv("VETERO_CURRENT_WIND");
 }
 
-void Veterod::runPostscript(const vetero::common::UsbWde1Dataset &dataset, int rainValue)
+void Veterod::runPostscript(const vetero::common::Dataset &dataset, int rainValue)
 {
     std::string script = m_configuration->updatePostscript();
 
@@ -325,8 +325,8 @@ void Veterod::exec()
         createPidfile();
     }
 
-    DataReader reader(*m_configuration.get());
-    reader.openConnection();
+    std::unique_ptr<DataReader> reader( DataReader::create(*m_configuration.get() ) );
+    reader->openConnection();
     PressureReader pressureReader(m_configuration->pressureSensorI2cBus());
     pressureReader.setHeight(m_configuration->pressureHeight());
     startDisplay();
@@ -336,7 +336,7 @@ void Veterod::exec()
 
     while (true) {
         try {
-            vetero::common::UsbWde1Dataset dataset = reader.read();
+            vetero::common::Dataset dataset = reader->read();
             int rainValue;
 
             // do some sanity check before inserting in the DB
@@ -347,7 +347,7 @@ void Veterod::exec()
                 continue;
             }
 
-            dbAccess.insertUsbWde1Dataset(dataset, rainValue);
+            dbAccess.insertDataset(dataset, rainValue);
             runPostscript(dataset, rainValue);
 
             try {

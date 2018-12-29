@@ -116,16 +116,18 @@ endif (NOT SERDISPLIB_FOUND)
 # libusb
 #
 
-if (SERDISPLIB_FOUND)
-    include(Findlibusb)
-    if (LIBUSB_FOUND)
-        set(EXTRA_LCD_LIBS ${EXTRA_LCD_LIBS} ${LIBUSB_LIBRARIES})
-        include (Findlibusb1)
-        if (LIBUSB1_FOUND)
-            set(EXTRA_LCD_LIBS ${EXTRA_LCD_LIBS} ${LIBUSB1_LIBRARIES})
-        endif (LIBUSB1_FOUND)
-    endif (LIBUSB_FOUND)
-endif (SERDISPLIB_FOUND)
+include(Findlibusb)
+if (LIBUSB_FOUND)
+    set(EXTRA_LIBS ${EXTRA_LIBS} ${LIBUSB_LIBRARIES})
+    set(LIBUSB_VERSION "0.1")
+endif (LIBUSB_FOUND)
+
+include (Findlibusb1)
+if (LIBUSB1_FOUND)
+    include_directories(${LIBUSB1_INCLUDE_DIRS})
+    set(EXTRA_LIBS ${EXTRA_LIBS} ${LIBUSB1_LIBRARIES})
+    set(LIBUSB_VERSION "1.0")
+endif (LIBUSB1_FOUND)
 
 #
 # libbw
@@ -134,6 +136,14 @@ endif (SERDISPLIB_FOUND)
 include_directories(${vetero_SOURCE_DIR}/ext/libbw.git)
 add_subdirectory(ext/libbw.git/libbw)
 set (EXTRA_LIBS ${EXTRA_LIBS} bw)
+
+#
+# usbpp
+#
+
+include_directories(${vetero_SOURCE_DIR}/ext/usbpp.git)
+add_subdirectory(ext/usbpp.git/usbpp)
+set (EXTRA_LIBS ${EXTRA_LIBS} usbpp)
 
 #
 # git version

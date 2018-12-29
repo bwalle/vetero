@@ -1,5 +1,5 @@
 /* {{{
- * (c) 2010-2012, Bernhard Walle <bernhard@bwalle.de>
+ * (c) 2010-2018, Bernhard Walle <bernhard@bwalle.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 #ifndef VETERO_VETEROD_DATAREADER_H
 #define VETERO_VETEROD_DATAREADER_H
 
+#include <memory>
 #include <libbw/io/serialfile.h>
+#include <usbpp/usbpp.h>
 
 #include "common/dataset.h"
 #include "common/error.h"
@@ -38,19 +40,58 @@ namespace daemon {
 class DataReader
 {
     public:
+        static DataReader *create(const common::Configuration &configuration);
+
+    public:
         DataReader(const common::Configuration &configuration);
         virtual ~DataReader() {}
 
     public:
-        void openConnection();
-        vetero::common::UsbWde1Dataset read();
+        virtual void openConnection() = 0;
+        virtual vetero::common::Dataset read() = 0;
 
     protected:
-        vetero::common::UsbWde1Dataset parseDataset(const std::string &line) const;
+        const common::Configuration &m_configuration;
+};
+
+/* }}} */
+/* UsbWde1DataReader {{{ */
+
+class UsbWde1DataReader : public DataReader
+{
+    public:
+        UsbWde1DataReader(const common::Configuration &configuration);
+
+    public:
+        void openConnection() override;
+        vetero::common::Dataset read() override;
+
+    protected:
+        vetero::common::Dataset parseDataset(const std::string &line) const;
 
     private:
-        const common::Configuration &m_configuration;
         bw::io::SerialFile m_serialDevice;
+};
+
+/* }}} */
+/* FreeTecDataReader */
+
+class FreeTecDataReader : public DataReader
+{
+    public:
+        FreeTecDataReader(const common::Configuration &configuration);
+
+    public:
+        void openConnection() override;
+        vetero::common::Dataset read() override;
+
+    protected:
+	static constexpr size_t BLOCK_SIZE = 32;
+	void readBlock(size_t offset, unsigned char block[BLOCK_SIZE]);
+
+    private:
+	std::unique_ptr<usb::DeviceHandle> m_handle;
+	time_t m_nextRead;
 };
 
 /* }}} */

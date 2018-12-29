@@ -34,6 +34,32 @@
 namespace vetero {
 namespace reportgen {
 
+std::string translateWind(const std::string &englishDirection)
+{
+    const char *windDirs[] = {
+        gettext_noop("N"),
+        gettext_noop("NNE"),
+        gettext_noop("NE"),
+        gettext_noop("ENE"),
+        gettext_noop("E"),
+        gettext_noop("ESE"),
+        gettext_noop("SE"),
+        gettext_noop("SSE"),
+        gettext_noop("S"),
+        gettext_noop("SSW"),
+        gettext_noop("SW"),
+        gettext_noop("WSW"),
+        gettext_noop("W"),
+        gettext_noop("WNW"),
+        gettext_noop("NW"),
+        gettext_noop("NNW"),
+    };
+
+    (void) windDirs;
+
+    return gettext(englishDirection.c_str());
+}
+
 CurrentReportGenerator::CurrentReportGenerator(VeteroReportgen *reportGenerator)
     : ReportGenerator(reportGenerator)
 {}
@@ -102,7 +128,7 @@ void CurrentReportGenerator::generateReports()
 
         pos = line.find("WW.W");
         if (pos != std::string::npos) {
-            if (currentWeather.hasWind())
+            if (currentWeather.hasWindSpeed())
                 value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.windSpeedReal());
             else
                 value = common::dashDecimalValue(loc, 2, 1);
@@ -111,10 +137,19 @@ void CurrentReportGenerator::generateReports()
 
         pos = line.find("WB");
         if (pos != std::string::npos) {
-            if (currentWeather.hasWind())
+            if (currentWeather.hasWindSpeed())
                 value = common::str_printf_l("%d", loc.c_str(), currentWeather.windBeaufort());
             else
                 value = common::dashDecimalValue(loc, 2);
+            line.replace(pos, 2, value);
+        }
+
+        pos = line.find("WD");
+        if (pos != std::string::npos) {
+            if (currentWeather.hasWindDirection())
+                value = translateWind( currentWeather.windDirectionStr() );
+            else
+                value = "---";
             line.replace(pos, 2, value);
         }
 
