@@ -28,7 +28,8 @@ sql "CREATE VIEW weatherdata_float AS SELECT                \
         round(wind/100.0, 1)             AS wind,           \
         wind_bft                         AS wind_bft,       \
         wind_dir                         AS wind_dir,       \
-        round(rain/1000.0, 3)            AS rain            \
+        round(rain/1000.0, 3)            AS rain,           \
+        round(pressure/100.0, 0)         AS pressure        \
         FROM weatherdata"
 
 # update the revision
