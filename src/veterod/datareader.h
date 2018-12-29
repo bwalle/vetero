@@ -18,6 +18,7 @@
 #define VETERO_VETEROD_DATAREADER_H
 
 #include <memory>
+#include <ctime>
 #include <libbw/io/serialfile.h>
 #include <usbpp/usbpp.h>
 

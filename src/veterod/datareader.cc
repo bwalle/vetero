@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>. }}}
  */
-#include <thread>
-#include <chrono>
+#include <unistd.h>
 
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
+#include <libbw/log/errorlog.h>
 #include <libbw/datetime.h>
 
 #include "datareader.h"
@@ -193,7 +193,10 @@ void FreeTecDataReader::openConnection()
         BW_DEBUG_TRACE("usb::DeviceHandle::setConfiguration(%d)", configDescriptor->getConfigurationValue());
         usb_handle->setConfiguration(configDescriptor->getConfigurationValue());
     } catch (const usb::Error &err) {
-        throw common::ApplicationError("Unable to set configuration: " + std::string(err.what()));
+        if (err.code() != 6)
+            BW_ERROR_WARNING("Unable to set configuration: %s", err.what());
+        else
+            throw common::ApplicationError("Unable to set configuration: " + std::string(err.what()));
     }
 
     unsigned int interfaceNumber;
@@ -201,6 +204,14 @@ void FreeTecDataReader::openConnection()
         std::unique_ptr<usb::ConfigDescriptor> configDescriptor(weatherStation->getConfigDescriptor(0));
         std::unique_ptr<usb::InterfaceDescriptor> interfaceDescriptor(configDescriptor->getInterfaceDescriptor(0, 0));
         interfaceNumber = interfaceDescriptor->getInterfaceNumber();
+
+        try {
+            BW_DEBUG_TRACE("usb::DeviceHandle::detachKernelDriver(%d)", interfaceNumber);
+            usb_handle->detachKernelDriver(interfaceNumber);
+        } catch (const usb::Error &err) {
+            BW_DEBUG_DBG( "Unable to claim interface: %s", err.what());
+        }
+
         BW_DEBUG_TRACE("usb::DeviceHandle::claimInterface(%d)", interfaceNumber);
         usb_handle->claimInterface(interfaceNumber);
     } catch (const usb::Error &err) {
@@ -210,21 +221,22 @@ void FreeTecDataReader::openConnection()
 
     m_handle.reset(usb_handle);
 
-    using std::chrono::system_clock;
-    m_nextRead = system_clock::to_time_t(system_clock::now());
+    m_nextRead = time(nullptr);
 }
 
 
 vetero::common::Dataset FreeTecDataReader::read()
 {
-    using namespace std::chrono_literals;
-    using std::chrono::system_clock;
-
     vetero::common::Dataset data;
     data.setTimestamp(bw::Datetime::now());
     data.setSensorType(m_configuration.sensorType());
 
-    std::this_thread::sleep_until(system_clock::from_time_t(m_nextRead));
+    time_t now = time(nullptr);
+    BW_DEBUG_TRACE("now = %lld, next_read=%lld", (unsigned long long)now, (unsigned long long)m_nextRead);
+    while (now < m_nextRead) {
+	    sleep(m_nextRead - now);
+	    now = time(nullptr);
+    }
 
     unsigned char fixed_block[BLOCK_SIZE];
     unsigned char current_block[BLOCK_SIZE];
@@ -259,7 +271,7 @@ vetero::common::Dataset FreeTecDataReader::read()
     data.setWindDirection( wind_dir * 22.5 );
     data.setRainGauge(current_block[14] << 8 | current_block[13]);
 
-    m_nextRead += 5*60;
+    m_nextRead = now + 5*60;
 
     BW_DEBUG_STREAM_DBG("Read data" << data);
     return data;
