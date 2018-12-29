@@ -227,16 +227,16 @@ void FreeTecDataReader::openConnection()
 
 vetero::common::Dataset FreeTecDataReader::read()
 {
-    vetero::common::Dataset data;
-    data.setTimestamp(bw::Datetime::now());
-    data.setSensorType(m_configuration.sensorType());
-
     time_t now = time(nullptr);
     BW_DEBUG_TRACE("now = %lld, next_read=%lld", (unsigned long long)now, (unsigned long long)m_nextRead);
     while (now < m_nextRead) {
 	    sleep(m_nextRead - now);
 	    now = time(nullptr);
     }
+
+    vetero::common::Dataset data;
+    data.setTimestamp(bw::Datetime::now());
+    data.setSensorType(m_configuration.sensorType());
 
     unsigned char fixed_block[BLOCK_SIZE];
     unsigned char current_block[BLOCK_SIZE];
