@@ -144,6 +144,15 @@ void CurrentReportGenerator::generateReports()
             line.replace(pos, 2, value);
         }
 
+        pos = line.find("WDD");
+        if (pos != std::string::npos) {
+            if (currentWeather.hasWindDirection())
+                value = currentWeather.windDirection();
+            else
+                value = "0";
+            line.replace(pos, 3, value);
+        }
+
         pos = line.find("WD");
         if (pos != std::string::npos) {
             if (currentWeather.hasWindDirection())
