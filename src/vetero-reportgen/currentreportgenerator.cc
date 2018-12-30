@@ -147,7 +147,7 @@ void CurrentReportGenerator::generateReports()
         pos = line.find("WDD");
         if (pos != std::string::npos) {
             if (currentWeather.hasWindDirection())
-                value = currentWeather.windDirection();
+                value = std::to_string( (180 + currentWeather.windDirection()) % 360 );
             else
                 value = "0";
             line.replace(pos, 3, value);
