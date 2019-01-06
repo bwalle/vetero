@@ -205,6 +205,10 @@ void CurrentReportGenerator::createJSON(const common::CurrentWeather &weather)
     json::PrettyWriter<json::StringBuffer> writer(s);
 
     writer.StartObject();
+
+    writer.Key("last_update");
+    writer.String( weather.timestamp().strftime(_("%Y-%m-%d %H:%M")).c_str() );
+
     writer.Key("temperature");
     writer.Double(weather.temperatureReal());
     writer.Key("dewpoint");
