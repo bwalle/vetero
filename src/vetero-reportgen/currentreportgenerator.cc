@@ -23,6 +23,10 @@
 #include <libbw/log/debug.h>
 #include <libbw/stringutil.h>
 
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/prettywriter.h>
+
 #include "common/translation.h"
 #include "common/dbaccess.h"
 #include "common/utils.h"
@@ -66,8 +70,6 @@ CurrentReportGenerator::CurrentReportGenerator(VeteroReportgen *reportGenerator)
 
 void CurrentReportGenerator::generateReports()
 {
-    BW_DEBUG_INFO("Updating current_weather.svgz");
-
     common::CurrentWeather currentWeather;
     try {
         common::DbAccess dbAccess(&reportgen()->database());
@@ -76,6 +78,14 @@ void CurrentReportGenerator::generateReports()
         throw common::ApplicationError("Unable to read the current weather from the DB: " +
                                        std::string(e.what()) );
     }
+
+    createSVG(currentWeather);
+    createJSON(currentWeather);
+}
+
+void CurrentReportGenerator::createSVG(const common::CurrentWeather &currentWeather)
+{
+    BW_DEBUG_INFO("Updating current_weather.svgz");
 
     std::string templateFile = findTemplate();
     if (templateFile.empty())
@@ -185,6 +195,53 @@ void CurrentReportGenerator::generateReports()
 
     output.close();
     common::compress_file(outputfilename);
+}
+
+void CurrentReportGenerator::createJSON(const common::CurrentWeather &weather)
+{
+    namespace json = rapidjson;
+
+    json::StringBuffer s;
+    json::PrettyWriter<json::StringBuffer> writer(s);
+
+    writer.StartObject();
+    writer.Key("temperature");
+    writer.Double(weather.temperatureReal());
+    writer.Key("dewpoint");
+    writer.Double(weather.dewpointReal());
+    writer.Key("humidity");
+    writer.Double(weather.humidityReal());
+
+    if (weather.hasWindSpeed()) {
+        writer.Key("wind_speed");
+        writer.Double(weather.windSpeedReal());
+    }
+
+    if (weather.hasWindDirection()) {
+        writer.Key("wind_direction");
+        writer.Uint(weather.windDirection());
+    }
+
+    if (weather.hasRain()) {
+        writer.Key("rain");
+        writer.Double(weather.rainReal());
+    }
+
+    if (weather.hasPressure()) {
+        writer.Key("pressure");
+        writer.Double(weather.pressureReal());
+    }
+
+    writer.EndObject();
+
+    std::string reportDir(reportgen()->configuration().reportDirectory());
+    std::string outputfilename = reportDir + "/current_weather.json";
+
+    std::ofstream output(outputfilename);
+    if (!output.is_open())
+        throw common::ApplicationError("Unable to open output file when generating SVG: " + outputfilename);
+
+    output << s.GetString() << std::endl;
 }
 
 std::string CurrentReportGenerator::findTemplate() const

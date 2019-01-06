@@ -52,6 +52,16 @@ class CurrentReportGenerator : public ReportGenerator {
 
     protected:
         /**
+         * \brief Creates the SVG file
+         */
+        void createSVG(const common::CurrentWeather &weather);
+
+        /**
+         * \brief Creates the JSON file that contains the current weather.
+         */
+        void createJSON(const common::CurrentWeather &weather);
+
+        /**
          * \brief Returns a rendered text of the current weather
          *
          * \param[in] currentWeather the current weather which should be rendered

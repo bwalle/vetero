@@ -131,6 +131,16 @@ if (LIBUSB1_FOUND)
 endif (LIBUSB1_FOUND)
 
 #
+# rapidJSON
+#
+
+find_package(RapidJSON 1.1 REQUIRED MODULE)
+if (NOT RAPIDJSON_FOUND)
+    message(FATAL_ERROR "RapidJSON not found")
+endif (NOT RAPIDJSON_FOUND)
+
+
+#
 # libbw
 #
 
