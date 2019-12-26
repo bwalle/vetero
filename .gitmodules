@@ -1,6 +1,6 @@
 [submodule "ext/libbw.git"]
 	path = ext/libbw.git
-	url = https://bitbucket.org/bwalle/libbw.git
+	url = https://github.com/bwalle/libbw
 [submodule "ext/usbpp"]
 	path = ext/usbpp.git
 	url = https://github.com/bwalle/usbpp.git
