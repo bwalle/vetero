@@ -62,7 +62,7 @@ include(FindLibintl)
 if (NOT LIBINTL_FOUND)
     message(FATAL_ERROR "libintl library could not be found")
 endif (NOT LIBINTL_FOUND)
-include_directories(${LIBINTL_LIBRARIES})
+include_directories(${LIBINTL_INCLUDE_DIR})
 set(EXTRA_LIBS ${EXTRA_LIBS} ${LIBINTL_LIBRARIES})
 
 
