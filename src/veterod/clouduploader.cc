@@ -22,7 +22,6 @@
 #include <libbw/log/errorlog.h>
 
 #include <common/httprequest.h>
-#include <common/weather.h>
 #include "clouduploader.h"
 
 namespace vetero::daemon {
@@ -42,29 +41,27 @@ public:
 
 public:
     void upload(const common::CurrentWeather &weather) override {
-        namespace w = common::weather;
-
         std::ostringstream url;
         url << "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?"
             << "ID=" << m_stationId << "&"
             << "PASSWORD=" << m_stationKey << "&"
-            << "tempf=" << std::setprecision(2) << w::celsius2Fahrenheit( weather.temperatureReal() ) << "&";
+            << "tempf=" << std::setprecision(2) << weather.temperatureRealF() << "&";
 
         if (weather.hasHumidity())
             url << "humidity=" << std::setprecision(2) << weather.humidityReal() << "&"
-                << "dewptf=" << std::setprecision(2) << w::celsius2Fahrenheit( weather.dewpointReal() ) << "&";
+                << "dewptf=" << std::setprecision(2) << weather.dewpointRealF() << "&";
 
         if (weather.hasWindSpeed())
-            url << "windspeedmph=" << std::setprecision(2) << w::kmh2mph( weather.windSpeedReal() ) << "&";
+            url << "windspeedmph=" << std::setprecision(2) << weather.windSpeedRealMph() << "&";
 
         if (weather.hasWindDirection())
             url << "winddir=" << weather.windDirection() << "&";
 
         if (weather.hasRain())
-            url << "dailyrainin=" << std::setprecision(5) << w::mm2in( weather.rainReal() ) << "&";
+            url << "dailyrainin=" << std::setprecision(5) << weather.rainRealIn() << "&";
 
         if (weather.hasPressure())
-            url << "baromin=" << std::setprecision(3) << w::hPa2inHg( weather.pressureReal() ) << "&";
+            url << "baromin=" << std::setprecision(3) << weather.pressureRealIn() << "&";
 
         url << "dateutc=now&"
             << "action=updateraw";

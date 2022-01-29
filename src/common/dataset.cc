@@ -222,6 +222,11 @@ double CurrentWeather::temperatureReal() const
     return m_temperature/100.0;
 }
 
+double CurrentWeather::temperatureRealF() const
+{
+    return weather::celsius2Fahrenheit( temperatureReal() );
+}
+
 void CurrentWeather::setTemperature(int temperature)
 {
     m_temperature = temperature;
@@ -291,6 +296,11 @@ double CurrentWeather::dewpointReal() const
     return m_dewpoint/100.0;
 }
 
+double CurrentWeather::dewpointRealF() const
+{
+    return weather::celsius2Fahrenheit( dewpointReal() );
+}
+
 void CurrentWeather::setDewpoint(int dewpoint)
 {
     m_dewpoint = dewpoint;
@@ -312,6 +322,11 @@ int CurrentWeather::pressure() const
 double CurrentWeather::pressureReal() const
 {
     return m_pressure/100.0;
+}
+
+double CurrentWeather::pressureRealIn() const
+{
+    return weather::hPa2inHg( pressureReal() );
 }
 
 void CurrentWeather::setPressure(int pressure)
@@ -336,6 +351,11 @@ int CurrentWeather::windSpeed() const
 double CurrentWeather::windSpeedReal() const
 {
     return m_windSpeed/100.0;
+}
+
+double CurrentWeather::windSpeedRealMph() const
+{
+    return weather::kmh2mph( windSpeedReal() );
 }
 
 void CurrentWeather::setWindSpeed(int windSpeed)
@@ -423,6 +443,11 @@ int CurrentWeather::rain() const
 double CurrentWeather::rainReal() const
 {
     return m_rain/1000.0;
+}
+
+double CurrentWeather::rainRealIn() const
+{
+    return weather::mm2in( rainReal() );
 }
 
 void CurrentWeather::setRain(int rain)

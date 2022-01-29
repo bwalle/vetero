@@ -179,6 +179,7 @@ class CurrentWeather
 
         int temperature() const;
         double temperatureReal() const;
+        double temperatureRealF() const;
         void setTemperature(int temperature);
 
         int minTemperature() const;
@@ -199,6 +200,7 @@ class CurrentWeather
 
         int dewpoint() const;
         double dewpointReal() const;
+        double dewpointRealF() const;
         void setDewpoint(int dewpoint);
 
         // Pressure
@@ -206,6 +208,7 @@ class CurrentWeather
         bool hasPressure() const;
         int pressure() const;
         double pressureReal() const;
+        double pressureRealIn() const;
         void setPressure(int pressure);
 
         // Wind
@@ -214,6 +217,7 @@ class CurrentWeather
 
         int windSpeed() const;
         double windSpeedReal() const;
+        double windSpeedRealMph() const;
         void setWindSpeed(int windSpeed);
 
         int windBeaufort() const;
@@ -236,6 +240,7 @@ class CurrentWeather
         bool hasRain() const;
         int rain() const;
         double rainReal() const;
+        double rainRealIn() const;
         void setRain(int  rain);
 
         /** \} */                                                                          /* }}} */
