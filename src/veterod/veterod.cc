@@ -232,6 +232,12 @@ void Veterod::updateReports(const std::vector<std::string> &jobs, bool upload)
     }
 }
 
+void Veterod::uploadCloudData(const common::CurrentWeather &weather)
+{
+    if (m_cloudUploader)
+        m_cloudUploader->upload(weather);
+}
+
 void Veterod::notifyDisplay()
 {
     if (s_displayPid == 0)
@@ -325,6 +331,14 @@ void Veterod::exec()
         createPidfile();
     }
 
+    if (!m_configuration->cloudType().empty()) {
+        CloudUploader *uploader = CloudUploader::create(m_configuration->cloudType(), *m_configuration);
+        if (uploader)
+            m_cloudUploader.reset(uploader);
+        else
+            BW_ERROR_WARNING("Cloud type '%s' not supported", m_configuration->cloudType().c_str());
+    }
+
     std::unique_ptr<DataReader> reader( DataReader::create(*m_configuration.get() ) );
     reader->openConnection();
     PressureReader pressureReader(m_configuration->pressureSensorI2cBus());
@@ -359,6 +373,7 @@ void Veterod::exec()
 
             dbAccess.updateDayStatistics(dataset.timestamp().strftime("%Y-%m-%d"));
             notifyDisplay();
+            uploadCloudData( dbAccess.queryCurrentWeather() );
 
             std::vector<std::string> jobs;
             jobs.push_back("current");

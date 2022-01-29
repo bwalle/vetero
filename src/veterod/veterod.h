@@ -23,6 +23,7 @@
 #include "common/configuration.h"
 #include "common/database.h"
 #include "common/veteroapplication.h"
+#include "clouduploader.h"
 
 namespace vetero {
 namespace daemon {
@@ -130,6 +131,13 @@ class Veterod : public common::VeteroApplication
         void notifyDisplay();
 
         /**
+         * \brief Uploads the current data to the cloud service, if configured
+         *
+         * \param[in] weather the current weather
+         */
+        void uploadCloudData(const common::CurrentWeather &weather);
+
+        /**
          * \brief Checks if we have a pressure sensor configured
          *
          * \retval true if a pressure sensor is attached and configured
@@ -157,6 +165,7 @@ class Veterod : public common::VeteroApplication
         bool m_noConfigFatal;
         vetero::common::Sqlite3Database m_database;
         std::unique_ptr<vetero::common::Configuration> m_configuration;
+        std::unique_ptr<CloudUploader> m_cloudUploader;
 };
 
 /* }}} */

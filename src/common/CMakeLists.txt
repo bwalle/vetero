@@ -25,6 +25,7 @@ set(COMMON_SRCS
     lockfile.cc
     veteroapplication.cc
     consoleprogress.cc
+    httprequest.cc
 )
 
 add_library(vetero ${COMMON_SRCS})

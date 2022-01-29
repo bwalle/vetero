@@ -69,6 +69,12 @@ class Configuration
         std::string displayName() const;
         std::string displayConnection() const;
 
+        // cloud
+
+        std::string cloudType() const;
+        std::string cloudStationId() const;
+        std::string cloudStationPassword() const;
+
         std::string str() const;
 
     protected:
@@ -93,6 +99,9 @@ class Configuration
         bool        m_configurationRead;
         std::string m_locale;
         std::string m_error;
+        std::string m_cloudType;
+        std::string m_cloudStationId;
+        std::string m_cloudStationPassword;
 };
 
 } // end namespace common

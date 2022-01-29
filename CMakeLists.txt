@@ -96,6 +96,24 @@ endif (NOT ZLIB_FOUND)
 include_directories(${ZLIB_INCLUDE_DIRS})
 set(EXTRA_LIBS ${EXTRA_LIBS} ${ZLIB_LIBRARIES})
 
+
+#
+# curl
+#
+
+
+find_package(CURL)
+if (CURL_FOUND)
+    include_directories(${CURL_INCLUDE_DIR})
+    set(EXTRA_LIBS ${EXTRA_LIBS} ${CURL_LIBRARY})
+
+    message(STATUS "CURL library found")
+else (CURL_FOUND)
+    message(FATAL_ERROR "curl library not found")
+endif (CURL_FOUND)
+
+
+
 #
 # serdisplib
 #

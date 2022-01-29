@@ -71,6 +71,27 @@ int Weather::dewpoint(int temp, int humid)
     return static_cast<int>(round(dp*100.0));
 }
 
+double Weather::celsius2Fahrenheit(double celsius)
+{
+    return celsius * 1.8 + 32;
+}
+
+double Weather::kmh2mph(double kmh)
+{
+    return kmh * 0.62137;
+}
+
+double Weather::mm2in(double mm)
+{
+    return mm / 25.4;
+}
+
+double Weather::hPa2inHg(double hPa)
+{
+    return hPa * 0.029529980164712;
+}
+
+
 
 } // end namespace common
 } // end namespace vetero

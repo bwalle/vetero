@@ -106,6 +106,7 @@ void Configuration::read(const std::string &filename)
     char *report_directory = NULL, *report_upload_command = NULL;
     char *display_name = NULL, *display_connection = NULL;
     char *location_string = NULL;
+    char *cloud_type = nullptr, *cloud_station_id = nullptr, *cloud_station_password = nullptr;
     char *locale = NULL;
     long serial_baud = -1, pressure_sensor_i2c_bus = -1, pressure_height = -1;
 
@@ -130,6 +131,10 @@ void Configuration::read(const std::string &filename)
 
         CFG_SIMPLE_STR(const_cast<char *>("display_name"),              &display_name),
         CFG_SIMPLE_STR(const_cast<char *>("display_connection"),        &display_connection),
+
+        CFG_SIMPLE_STR(const_cast<char *>("cloud_type"),                &cloud_type),
+        CFG_SIMPLE_STR(const_cast<char *>("cloud_station_id"),          &cloud_station_id),
+        CFG_SIMPLE_STR(const_cast<char *>("cloud_station_password"),    &cloud_station_password),
 
         CFG_SIMPLE_STR(const_cast<char *>("locale"),                    &locale),
         CFG_END()
@@ -230,6 +235,21 @@ void Configuration::read(const std::string &filename)
         std::free(locale);
     }
 
+    if (cloud_type) {
+        m_cloudType = cloud_type;
+        std::free(cloud_type);
+    }
+
+    if (cloud_station_id) {
+        m_cloudStationId = cloud_station_id;
+        std::free(cloud_station_id);
+    }
+
+    if (cloud_station_password) {
+        m_cloudStationPassword = cloud_station_password;
+        std::free(cloud_station_password);
+    }
+
     m_configurationRead = true;
 
     BW_DEBUG_DBG("Parsing of configuration file '%s' finished: %s",
@@ -311,6 +331,21 @@ std::string Configuration::displayConnection() const
     return m_displayConnection;
 }
 
+std::string Configuration::cloudType() const
+{
+    return m_cloudType;
+}
+
+std::string Configuration::cloudStationId() const
+{
+    return m_cloudStationId;
+}
+
+std::string Configuration::cloudStationPassword() const
+{
+    return m_cloudStationPassword;
+}
+
 std::string Configuration::locale() const
 {
     return m_locale;
@@ -329,6 +364,9 @@ std::string Configuration::str() const
        << "databasePath="         << m_databasePath           << ", "
        << "displayName="          << m_displayName            << ", "
        << "displayConnection="    << m_displayConnection      << ", "
+       << "cloudType="            << m_cloudType              << ", "
+       << "cloudStationId="       << m_cloudStationId         << ", "
+       << "cloudStationPassword=" << m_cloudStationPassword   << ", "
        << "locale="               << m_locale;
     return ss.str();
 }

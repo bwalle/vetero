@@ -63,9 +63,41 @@ class Weather
          *
          * \param[in] temp the temperature in 1/100 degrees Celsius
          * \param[in] humid the humidity in 1/100 %
-         * \return the dewpiont in 1/100 degrees Celsius
+         * \return the dewpoint in 1/100 degrees Celsius
          */
         static int dewpoint(int temp, int humid);
+
+        /**
+         * \brief Converts degrees Celsius to degrees Fahrenheit
+         *
+         * \param[in] celsius the temperature in degrees Celsius
+         * \return the temperature in degrees Fahrenheit
+         */
+        static double celsius2Fahrenheit(double celsius);
+
+        /**
+         * \brief Converts km/h (wind speed) to mph
+         *
+         * \param[in] kmh wind speed in km/h
+         * \return wind speed in mph
+         */
+        static double kmh2mph(double kmh);
+
+        /**
+         * \brief Converts rain mm to inch
+         *
+         * \param[in] mm rain in mm
+         * \return rain value in in
+         */
+        static double mm2in(double mm);
+
+        /**
+         * \brief Converts presure from hPa to inHg
+         *
+         * \param[in] hPa pressure in hPa
+         * @return pressure in inHg
+         */
+        static double hPa2inHg(double hPa);
 };
 
 } // end namespace common

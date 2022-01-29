@@ -134,6 +134,37 @@ class DatabaseError : public ApplicationError {
 };
 
 /* }}} */
+/* HttpError {{{ */
+
+/**
+ * \class HttpError
+ * \brief Exception class for http used in the database code.
+ *
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
+ */
+class HttpError : public ApplicationError {
+
+    public:
+        /**
+         * \brief Constructor
+         *
+         * Creates a new DatabaseError.
+         *
+         * \param[in] string the error string
+         */
+        HttpError(const std::string &string)
+            : ApplicationError(string) {}
+
+        /**
+         * \brief Destructor
+         */
+        virtual ~HttpError()
+        throw () {}
+};
+
+/* }}} */
+
 
 } // end namespace vetero
 } // end namespace common

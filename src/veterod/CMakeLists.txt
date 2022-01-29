@@ -21,6 +21,7 @@ set(VETEROD_SRCS
     datareader.cc
     pressurereader.cc
     childprocesswatcher.cc
+    clouduploader.cc
     main.cc
 )
 
