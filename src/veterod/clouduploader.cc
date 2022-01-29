@@ -27,6 +27,11 @@
 
 namespace vetero::daemon {
 
+/**
+ * \brief Uploader for the WeatherUnderground API
+ *
+ * API documentation: https://support.weather.com/s/article/PWS-Upload-Protocol?language=en_US
+ */
 class WeatherUndergroundUploader : public CloudUploader
 {
 public:
