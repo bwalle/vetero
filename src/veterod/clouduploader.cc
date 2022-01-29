@@ -42,27 +42,29 @@ public:
 
 public:
     void upload(const common::CurrentWeather &weather) override {
+        namespace w = common::weather;
+
         std::ostringstream url;
         url << "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?"
             << "ID=" << m_stationId << "&"
             << "PASSWORD=" << m_stationKey << "&"
-            << "tempf=" << std::setprecision(2) << common::Weather::celsius2Fahrenheit( weather.temperatureReal() ) << "&";
+            << "tempf=" << std::setprecision(2) << w::celsius2Fahrenheit( weather.temperatureReal() ) << "&";
 
         if (weather.hasHumidity())
             url << "humidity=" << std::setprecision(2) << weather.humidityReal() << "&"
-                << "dewptf=" << std::setprecision(2) << common::Weather::celsius2Fahrenheit( weather.dewpointReal() ) << "&";
+                << "dewptf=" << std::setprecision(2) << w::celsius2Fahrenheit( weather.dewpointReal() ) << "&";
 
         if (weather.hasWindSpeed())
-            url << "windspeedmph=" << std::setprecision(2) << common::Weather::kmh2mph( weather.windSpeedReal() ) << "&";
+            url << "windspeedmph=" << std::setprecision(2) << w::kmh2mph( weather.windSpeedReal() ) << "&";
 
         if (weather.hasWindDirection())
             url << "winddir=" << weather.windDirection() << "&";
 
         if (weather.hasRain())
-            url << "dailyrainin=" << std::setprecision(5) << common::Weather::mm2in( weather.rainReal() ) << "&";
+            url << "dailyrainin=" << std::setprecision(5) << w::mm2in( weather.rainReal() ) << "&";
 
         if (weather.hasPressure())
-            url << "baromin=" << std::setprecision(3) << common::Weather::hPa2inHg( weather.pressureReal() ) << "&";
+            url << "baromin=" << std::setprecision(3) << w::hPa2inHg( weather.pressureReal() ) << "&";
 
         url << "dateutc=now&"
             << "action=updateraw";

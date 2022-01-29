@@ -372,7 +372,7 @@ void CurrentWeather::setMaxWindSpeed(int windSpeed)
 
 int CurrentWeather::maxWindBeaufort() const
 {
-    return Weather::windSpeedToBft(m_maxWindSpeed);
+    return weather::windSpeedToBft(m_maxWindSpeed);
 }
 
 void CurrentWeather::setMaxWindBeaufort(int bft)

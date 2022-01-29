@@ -19,10 +19,11 @@
 
 #include "weather.h"
 
-namespace vetero {
-namespace common {
+namespace vetero::common {
 
-int Weather::windSpeedToBft(double windspeed)
+namespace weather {
+
+int windSpeedToBft(double windspeed)
 {
     int kmh = static_cast<int>(round(windspeed));
 
@@ -54,44 +55,43 @@ int Weather::windSpeedToBft(double windspeed)
         return 12;
 }
 
-int Weather::windSpeedToBft(int windspeed)
+int windSpeedToBft(int windspeed)
 {
     return windSpeedToBft(windspeed/100.0);
 }
 
-double Weather::dewpoint(double temp, double humid)
+double dewpoint(double temp, double humid)
 {
     return (241.2 * std::log(humid/100.0) + ((4222.03716*temp)/(241.2+temp))) /
             (17.5043 - log(humid/100.0) - ((17.5043*temp)/(241.2+temp)));
 }
 
-int Weather::dewpoint(int temp, int humid)
+int dewpoint(int temp, int humid)
 {
     double dp = dewpoint(temp/100.0, humid/100.0);
     return static_cast<int>(round(dp*100.0));
 }
 
-double Weather::celsius2Fahrenheit(double celsius)
+double celsius2Fahrenheit(double celsius)
 {
     return celsius * 1.8 + 32;
 }
 
-double Weather::kmh2mph(double kmh)
+double kmh2mph(double kmh)
 {
     return kmh * 0.62137;
 }
 
-double Weather::mm2in(double mm)
+double mm2in(double mm)
 {
     return mm / 25.4;
 }
 
-double Weather::hPa2inHg(double hPa)
+double hPa2inHg(double hPa)
 {
     return hPa * 0.029529980164712;
 }
 
+} // end namespace weather
 
-
-} // end namespace common
-} // end namespace vetero
+} // end namespace vetero::common

@@ -260,7 +260,7 @@ void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
     std::string windDirection("NULL");
     if (dataset.sensorType().hasWindSpeed()) {
         windSpeed = bw::str( dataset.windSpeed() );
-        windStrength = bw::str(Weather::windSpeedToBft(dataset.windSpeed()));
+        windStrength = bw::str(weather::windSpeedToBft(dataset.windSpeed()));
     }
     if (dataset.sensorType().hasWindDirection())
         windDirection = bw::str( dataset.windDirection() );
@@ -270,7 +270,7 @@ void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
     std::string dewpoint("NULL");
     if (dataset.sensorType().hasHumidity()) {
         humidity = bw::str(dataset.humidity());
-        dewpoint = bw::str(Weather::dewpoint(dataset.temperature(), dataset.humidity()));
+        dewpoint = bw::str(weather::dewpoint(dataset.temperature(), dataset.humidity()));
     }
 
     m_db->executeSql("INSERT INTO weatherdata "
