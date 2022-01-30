@@ -154,6 +154,24 @@ void CurrentReportGenerator::createSVG(const common::CurrentWeather &currentWeat
             line.replace(pos, 2, value);
         }
 
+        pos = line.find("GG.G");
+        if (pos != std::string::npos) {
+            if (currentWeather.hasWindGust())
+                value = common::str_printf_l("%.1lf", loc.c_str(), currentWeather.windGustReal());
+            else
+                value = common::dashDecimalValue(loc, 2, 1);
+            line.replace(pos, 4, value);
+        }
+
+        pos = line.find("WG");
+        if (pos != std::string::npos) {
+            if (currentWeather.hasWindGust())
+                value = common::str_printf_l("%d", loc.c_str(), currentWeather.windGustBeaufort());
+            else
+                value = common::dashDecimalValue(loc, 2);
+            line.replace(pos, 2, value);
+        }
+
         pos = line.find("WDD");
         if (pos != std::string::npos) {
             if (currentWeather.hasWindDirection())

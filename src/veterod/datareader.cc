@@ -217,7 +217,7 @@ void FreeTecDataReader::openConnection()
     } catch (const usb::Error &err) {
         throw common::ApplicationError("Unable to claim interface: " + std::string(err.what()));
     }
-  
+
 
     m_handle.reset(usb_handle);
 
@@ -264,10 +264,12 @@ vetero::common::Dataset FreeTecDataReader::read()
     data.setTemperature(outdoor_temperature*100);
 
     unsigned char wind = current_block[9];
+    unsigned char gust = current_block[10];
     unsigned char wind_extra = current_block[11];
     unsigned char wind_dir = current_block[12];
 
-    data.setWindSpeed( (wind + ((wind_extra & 0x0F) << 8)) * 0.36 * 100 );
+    data.setWindSpeed( (wind + ((wind_extra & 0x0F) << 8)) * 0.38 * 100 );
+    data.setWindGust(  (gust + ((wind_extra & 0xF0) << 4)) * 0.38 * 100 );
     data.setWindDirection( wind_dir * 22.5 );
     data.setRainGauge(current_block[14] << 8 | current_block[13]);
 

@@ -57,6 +57,9 @@ public:
         if (weather.hasWindDirection())
             url << "winddir=" << weather.windDirection() << "&";
 
+        if (weather.hasWindGust())
+            url << "windgustmph=" << std::setprecision(2) << weather.windGustRealMph() << "&";
+
         if (weather.hasRain())
             url << "dailyrainin=" << std::setprecision(5) << weather.rainRealIn() << "&";
 

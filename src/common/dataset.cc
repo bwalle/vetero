@@ -140,6 +140,16 @@ void Dataset::setWindSpeed(int windSpeed)
     m_windSpeed = windSpeed;
 }
 
+int Dataset::windGust() const
+{
+    return m_windGust;
+}
+
+void Dataset::setWindGust(int windGust)
+{
+    m_windGust = windGust;
+}
+
 int Dataset::windDirection() const
 {
     return m_windDirection;
@@ -395,10 +405,68 @@ int CurrentWeather::maxWindBeaufort() const
     return weather::windSpeedToBft(m_maxWindSpeed);
 }
 
-void CurrentWeather::setMaxWindBeaufort(int bft)
+/* }}} */
+/* Wind Gust {{{ */
+
+bool CurrentWeather::hasWindGust() const
 {
-    m_maxWindBft = bft;
+    return m_hasWindGust;
 }
+
+int CurrentWeather::windGust() const
+{
+    return m_windGust;
+}
+
+double CurrentWeather::windGustReal() const
+{
+    return m_windGust/100.0;
+}
+
+double CurrentWeather::windGustRealMph() const
+{
+    return weather::kmh2mph( windGustReal() );
+}
+
+void CurrentWeather::setWindGust(int windSpeed)
+{
+    m_hasWindGust = true;
+    m_windGust = windSpeed;
+}
+
+int CurrentWeather::windGustBeaufort() const
+{
+    return m_windGustBft;
+}
+
+void CurrentWeather::setWindGustBeaufort(int bft)
+{
+    m_hasWindGust = true;
+    m_windGustBft = bft;
+}
+
+int CurrentWeather::maxWindGust() const
+{
+    return m_maxWindGust;
+}
+
+double CurrentWeather::maxWindGustReal() const
+{
+    return m_maxWindGust/100.0;
+}
+
+void CurrentWeather::setMaxWindGust(int windSpeed)
+{
+    m_maxWindGust = windSpeed;
+}
+
+int CurrentWeather::maxWindGustBeaufort() const
+{
+    return weather::windSpeedToBft(m_maxWindGust);
+}
+
+/* }}} */
+/* Wind Direction {{{ */
 
 bool CurrentWeather::hasWindDirection() const
 {
@@ -478,6 +546,13 @@ std::string CurrentWeather::str() const
            << "windSpeed=" << windBeaufort() << " Bft, "
            << "maxWindSpeed=" << maxWindSpeedReal() << ", "
            << "maxWindSpeed=" << maxWindBeaufort() << " Bft, ";
+    }
+
+    if (hasWindGust()) {
+        ss << "windGust=" << windGustReal() << ", "
+           << "windGust=" << windGustBeaufort() << ", "
+           << "maxWindGust=" << maxWindGust() << ", "
+           << "maxWindGust=" << maxWindGustBeaufort() << "Bft, ";
     }
 
     if (hasWindDirection())

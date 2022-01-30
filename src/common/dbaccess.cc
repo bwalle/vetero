@@ -72,62 +72,76 @@ void DbAccess::initTables() const
     // TABLE weatherdata
     m_db->executeSql(
         "CREATE TABLE weatherdata ("
-        "    timestamp    DATETIME PRIMARY KEY UNIQUE,"
-        "    jdate        INTEGER,"
-        "    temp         INTEGER,"
-        "    humid        INTEGER,"
-        "    dewpoint     INTEGER,"
-        "    wind         INTEGER,"
-        "    wind_bft     INTEGER,"
-        "    wind_dir     INTEGER,"
-        "    rain         INTEGER,"
-        "    pressure     INTEGER"
+        "    timestamp     DATETIME PRIMARY KEY UNIQUE,"
+        "    jdate         INTEGER,"
+        "    temp          INTEGER,"
+        "    humid         INTEGER,"
+        "    dewpoint      INTEGER,"
+        "    wind          INTEGER,"
+        "    wind_bft      INTEGER,"
+        "    wind_gust     INTEGER,"
+        "    wind_gust_bft INTEGER,"
+        "    wind_dir      INTEGER,"
+        "    rain          INTEGER,"
+        "    pressure      INTEGER"
         ")"
     );
 
     // TABLE day_statistics
     m_db->executeSql(
         "CREATE TABLE day_statistics ("
-        "    date         DATE PRIMARY KEY UNIQUE,"
-        "    temp_min     INTEGER,"
-        "    temp_max     INTEGER,"
-        "    temp_avg     INTEGER,"
-        "    humid_min    INTEGER,"
-        "    humid_max    INTEGER,"
-        "    humid_avg    INTEGER,"
-        "    dewpoint_min INTEGER,"
-        "    dewpoint_max INTEGER,"
-        "    dewpoint_avg INTEGER,"
-        "    wind_min     INTEGER,"
-        "    wind_max     INTEGER,"
-        "    wind_avg     INTEGER,"
-        "    wind_bft_min INTEGER,"
-        "    wind_bft_max INTEGER,"
-        "    wind_bft_avg INTEGER,"
-        "    rain         INTEGER"
+        "    date                 DATE PRIMARY KEY UNIQUE,"
+        "    temp_min             INTEGER,"
+        "    temp_max             INTEGER,"
+        "    temp_avg             INTEGER,"
+        "    humid_min            INTEGER,"
+        "    humid_max            INTEGER,"
+        "    humid_avg            INTEGER,"
+        "    dewpoint_min         INTEGER,"
+        "    dewpoint_max         INTEGER,"
+        "    dewpoint_avg         INTEGER,"
+        "    wind_min             INTEGER,"
+        "    wind_max             INTEGER,"
+        "    wind_avg             INTEGER,"
+        "    wind_bft_min         INTEGER,"
+        "    wind_bft_max         INTEGER,"
+        "    wind_bft_avg         INTEGER,"
+        "    wind_gust_min        INTEGER,"
+        "    wind_gust_max        INTEGER,"
+        "    wind_gust_avg        INTEGER,"
+        "    wind_gust_bft_min    INTEGER,"
+        "    wind_gust_bft_max    INTEGER,"
+        "    wind_gust_bft_avg    INTEGER,"
+        "    rain                 INTEGER"
         ")"
     );
 
     // TABLE month_statistics
     m_db->executeSql(
         "CREATE TABLE month_statistics ("
-        "    month        TEXT PRIMARY KEY UNIQUE,"
-        "    temp_min     INTEGER,"
-        "    temp_max     INTEGER,"
-        "    temp_avg     INTEGER,"
-        "    humid_min    INTEGER,"
-        "    humid_max    INTEGER,"
-        "    humid_avg    INTEGER,"
-        "    dewpoint_min INTEGER,"
-        "    dewpoint_max INTEGER,"
-        "    dewpoint_avg INTEGER,"
-        "    wind_min     INTEGER,"
-        "    wind_max     INTEGER,"
-        "    wind_avg     INTEGER,"
-        "    wind_bft_min INTEGER,"
-        "    wind_bft_max INTEGER,"
-        "    wind_bft_avg INTEGER,"
-        "    rain         INTEGER"
+        "    month             TEXT PRIMARY KEY UNIQUE,"
+        "    temp_min          INTEGER,"
+        "    temp_max          INTEGER,"
+        "    temp_avg          INTEGER,"
+        "    humid_min         INTEGER,"
+        "    humid_max         INTEGER,"
+        "    humid_avg         INTEGER,"
+        "    dewpoint_min      INTEGER,"
+        "    dewpoint_max      INTEGER,"
+        "    dewpoint_avg      INTEGER,"
+        "    wind_min          INTEGER,"
+        "    wind_max          INTEGER,"
+        "    wind_avg          INTEGER,"
+        "    wind_bft_min      INTEGER,"
+        "    wind_bft_max      INTEGER,"
+        "    wind_bft_avg      INTEGER,"
+        "    wind_gust_min     INTEGER,"
+        "    wind_gust_max     INTEGER,"
+        "    wind_gust_avg     INTEGER,"
+        "    wind_gust_bft_min INTEGER,"
+        "    wind_gust_bft_max INTEGER,"
+        "    wind_gust_bft_avg INTEGER,"
+        "    rain              INTEGER"
         ")"
     );
 
@@ -162,6 +176,8 @@ void DbAccess::initTables() const
         "    round(dewpoint/100.0, 1)         AS dewpoint,"
         "    round(wind/100.0, 1)             AS wind,"
         "    wind_bft                         AS wind_bft,"
+        "    round(wind_gust/100.0, 1)        AS wind_gust,"
+        "    wind_gust_bft                    AS wind_gust_bft,"
         "    wind_dir                         AS wind_dir,"
         "    round(rain/1000.0, 3)            AS rain, "
         "    round(pressure/100.0, 0)         AS pressure "
@@ -187,6 +203,12 @@ void DbAccess::initTables() const
         "    wind_bft_min                     AS wind_bft_min,"
         "    wind_bft_max                     AS wind_bft_max,"
         "    wind_bft_avg                     AS wind_bft_avg,"
+        "    round(wind_gust_min/100.0, 1)    AS wind_gust_min,"
+        "    round(wind_gust_max/100.0, 1)    AS wind_gust_max,"
+        "    round(wind_gust_avg/100.0, 1)    AS wind_gust_avg,"
+        "    wind_gust_bft_min                AS wind_gust_bft_min,"
+        "    wind_gust_bft_max                AS wind_gust_bft_max,"
+        "    wind_gust_bft_avg                AS wind_gust_bft_avg,"
         "    round(rain/1000.0, 1)            AS rain "
         "FROM day_statistics"
     );
@@ -194,27 +216,33 @@ void DbAccess::initTables() const
     // VIEW month_statistics_float
     m_db->executeSql(
         "CREATE VIEW month_statistics_float AS SELECT"
-        "    month                            AS month,"
-        "    round(temp_min/100.0, 1)         AS temp_min,"
-        "    round(temp_max/100.0, 1)         AS temp_max,"
-        "    round(temp_avg/100.0, 1)         AS temp_avg,"
-        "    round(humid_min/100.0, 0)        AS humid_min,"
-        "    round(humid_max/100.0, 0)        AS humid_max,"
-        "    round(humid_avg/100.0, 0)        AS humid_avg,"
-        "    round(dewpoint_min/100.0, 1)     AS dewpoint_min,"
-        "    round(dewpoint_max/100.0, 1)     AS dewpoint_max,"
-        "    round(dewpoint_avg/100.0, 1)     AS dewpoint_avg,"
-        "    round(wind_min/100.0, 1)         AS wind_min,"
-        "    round(wind_max/100.0, 1)         AS wind_max,"
-        "    round(wind_avg/100.0, 1)         AS wind_avg,"
-        "    round(wind_bft_min/1000.0, 1)    AS wind_bft_min,"
-        "    round(wind_bft_max/1000.0, 1)    AS wind_bft_max,"
-        "    round(wind_bft_avg/1000.0, 1)    AS wind_bft_avg,"
+        "    month                                AS month,"
+        "    round(temp_min/100.0, 1)             AS temp_min,"
+        "    round(temp_max/100.0, 1)             AS temp_max,"
+        "    round(temp_avg/100.0, 1)             AS temp_avg,"
+        "    round(humid_min/100.0, 0)            AS humid_min,"
+        "    round(humid_max/100.0, 0)            AS humid_max,"
+        "    round(humid_avg/100.0, 0)            AS humid_avg,"
+        "    round(dewpoint_min/100.0, 1)         AS dewpoint_min,"
+        "    round(dewpoint_max/100.0, 1)         AS dewpoint_max,"
+        "    round(dewpoint_avg/100.0, 1)         AS dewpoint_avg,"
+        "    round(wind_min/100.0, 1)             AS wind_min,"
+        "    round(wind_max/100.0, 1)             AS wind_max,"
+        "    round(wind_avg/100.0, 1)             AS wind_avg,"
+        "    round(wind_bft_min/1000.0, 1)        AS wind_bft_min,"
+        "    round(wind_bft_max/1000.0, 1)        AS wind_bft_max,"
+        "    round(wind_bft_avg/1000.0, 1)        AS wind_bft_avg,"
+        "    round(wind_gust_min/100.0, 1)        AS wind_gust_min,"
+        "    round(wind_gust_max/100.0, 1)        AS wind_gust_max,"
+        "    round(wind_gust_avg/100.0, 1)        AS wind_gust_avg,"
+        "    round(wind_gust_bft_min/1000.0, 1)   AS wind_gust_bft_min,"
+        "    round(wind_gust_bft_max/1000.0, 1)   AS wind_gust_bft_max,"
+        "    round(wind_gust_bft_avg/1000.0, 1)   AS wind_gust_bft_avg,"
         "    round(rain/1000.0, 1)            AS rain "
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 5);
+    writeMiscEntry(DatabaseSchemaRevision, 6);
 }
 
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const
@@ -254,14 +282,24 @@ void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
         rainValue = -1;
     }
 
-    // wind bft
+    // wind
     std::string windSpeed("NULL");
     std::string windStrength("NULL");
-    std::string windDirection("NULL");
     if (dataset.sensorType().hasWindSpeed()) {
         windSpeed = bw::str( dataset.windSpeed() );
         windStrength = bw::str(weather::windSpeedToBft(dataset.windSpeed()));
     }
+
+    // wind gust
+    std::string windGust("NULL");
+    std::string windGustStrength("NULL");
+    if (dataset.sensorType().hasWindGust()) {
+        windGust = bw::str( dataset.windGust() );
+        windGustStrength = bw::str(weather::windSpeedToBft(dataset.windGust()));
+    }
+
+    // wind dir
+    std::string windDirection("NULL");
     if (dataset.sensorType().hasWindDirection())
         windDirection = bw::str( dataset.windDirection() );
 
@@ -274,12 +312,14 @@ void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
     }
 
     m_db->executeSql("INSERT INTO weatherdata "
-                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_dir, rain) "
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, rain) "
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      c_str_null(dataset.timestamp().str()),
                      c_str_null(bw::str( dataset.temperature() )),
                      c_str_null(humidity), c_str_null(dewpoint),
-                     c_str_null(windSpeed), c_str_null(windStrength), c_str_null(windDirection), c_str_null(rain) );
+                     c_str_null(windSpeed), c_str_null(windStrength),
+                     c_str_null(windGust), c_str_null(windGustStrength),
+                     c_str_null(windDirection), c_str_null(rain) );
 
     if (dataset.sensorType().hasRain())
         writeMiscEntry(LastRain, dataset.rainGauge());
@@ -305,7 +345,7 @@ CurrentWeather DbAccess::queryCurrentWeather() const
 
     Database::Result result = m_db->executeSqlQuery(
         "SELECT   strftime('%%s', datetime(timestamp, 'utc')), "
-        "         temp, humid, dewpoint, wind, wind_bft, wind_dir, pressure "
+        "         temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, pressure "
         "FROM     weatherdata "
         "ORDER BY timestamp DESC "
         "LIMIT 1"
@@ -327,14 +367,19 @@ CurrentWeather DbAccess::queryCurrentWeather() const
         ret.setWindBeaufort( bw::from_str<int>(data.at(5)) );
     }
 
-    if (!data.at(6).empty())
-        ret.setWindDirection( bw::from_str<int>(data.at(6)) );
+    if (!data.at(6).empty()) {
+        ret.setWindGust( bw::from_str<int>(data.at(6)) );
+        ret.setWindGustBeaufort( bw::from_str<int>(data.at(7)) );
+    }
 
-    if (!data.at(7).empty())
-        ret.setPressure( bw::from_str<int>(data.at(7)) );
+    if (!data.at(8).empty())
+        ret.setWindDirection( bw::from_str<int>(data.at(8)) );
+
+    if (!data.at(9).empty())
+        ret.setPressure( bw::from_str<int>(data.at(9)) );
 
     result = m_db->executeSqlQuery(
-        "SELECT   temp_min, temp_max, wind_max, wind_bft_max, rain "
+        "SELECT   temp_min, temp_max, wind_max, wind_gust_max, rain "
         "FROM     day_statistics "
         "WHERE    date = ?", ret.timestamp().strftime("%Y-%m-%d").c_str()
     );
@@ -343,13 +388,13 @@ CurrentWeather DbAccess::queryCurrentWeather() const
         ret.setMinTemperature(ret.temperature());
         ret.setMaxTemperature(ret.temperature());
         ret.setMaxWindSpeed(ret.windSpeed());
-        ret.setMaxWindBeaufort(ret.windBeaufort());
+        ret.setMaxWindGust(ret.windGust());
     } else {
         data = result.data.front();
         ret.setMinTemperature( bw::from_str<int>(data.at(0)) );
         ret.setMaxTemperature( bw::from_str<int>(data.at(1)) );
         ret.setMaxWindSpeed( bw::from_str<int>(data.at(2)) );
-        ret.setMaxWindBeaufort( bw::from_str<int>(data.at(3)) );
+        ret.setMaxWindGust( bw::from_str<int>(data.at(3)) );
         if (!data.at(4).empty())
             ret.setRain( bw::from_str<int>(data.at(4)) );
     }
@@ -440,7 +485,7 @@ void DbAccess::updateDayStatistics(const std::string &date)
     if (date.empty())
         return updateDayStatistics();
 
-    BW_DEBUG_INFO("Regenerating day statistics for %s", date.c_str());
+    BW_DEBUG_INFO("Regenerating day statistics xfor %s", date.c_str());
 
     m_db->executeSql(
         "INSERT OR REPLACE INTO day_statistics "
@@ -449,12 +494,16 @@ void DbAccess::updateDayStatistics(const std::string &date)
         " dewpoint_min, dewpoint_max, dewpoint_avg, "
         " wind_min, wind_max, wind_avg, "
         " wind_bft_min, wind_bft_max, wind_bft_avg, "
+        " wind_gust_min, wind_gust_max, wind_gust_avg, "
+        " wind_gust_bft_min, wind_gust_bft_max, wind_gust_bft_avg, "
         " rain) "
         " SELECT  ?, MIN(temp), MAX(temp), ROUND(AVG(temp)), "
         "         MIN(humid), MAX(humid), ROUND(AVG(humid)), "
         "         MIN(dewpoint), MAX(dewpoint), ROUND(AVG(dewpoint)), "
         "         MIN(wind), MAX(wind), ROUND(AVG(wind)), "
         "         VETERO_BEAUFORT(MIN(wind)), VETERO_BEAUFORT(MAX(wind)), VETERO_BEAUFORT(AVG(wind)), "
+        "         MIN(wind_gust), MAX(wind_gust), ROUND(AVG(wind_gust)), "
+        "         VETERO_BEAUFORT(MIN(wind_gust)), VETERO_BEAUFORT(MAX(wind_gust)), VETERO_BEAUFORT(AVG(wind_gust)), "
         "         SUM(rain) "
         "  FROM   weatherdata "
         "  WHERE  DATE(timestamp) = ?",
@@ -488,6 +537,8 @@ void DbAccess::updateMonthStatistics(const std::string &month)
         " dewpoint_min, dewpoint_max, dewpoint_avg, "
         " wind_min, wind_max, wind_avg, "
         " wind_bft_min, wind_bft_max, wind_bft_avg, "
+        " wind_gust_min, wind_gust_max, wind_gust_avg, "
+        " wind_gust_bft_min, wind_gust_bft_max, wind_gust_bft_avg, "
         " rain) "
         " SELECT  ?, AVG(temp_min), AVG(temp_max), AVG(temp_avg), "
         "         AVG(humid_min), AVG(humid_max), AVG(humid_avg), "
@@ -495,6 +546,9 @@ void DbAccess::updateMonthStatistics(const std::string &month)
         "         AVG(wind_min), AVG(wind_max), AVG(wind_avg), "
         "         VETERO_BEAUFORT(AVG(wind_min)), VETERO_BEAUFORT(AVG(wind_max)), "
         "         VETERO_BEAUFORT(AVG(wind_avg)), "
+        "         AVG(wind_gust_min), AVG(wind_gust_max), AVG(wind_gust_avg), "
+        "         VETERO_BEAUFORT(AVG(wind_gust_min)), VETERO_BEAUFORT(AVG(wind_gust_max)), "
+        "         VETERO_BEAUFORT(AVG(wind_gust_avg)), "
         "         SUM(rain) "
         "  FROM   day_statistics "
         "  WHERE  STRFTIME('%%Y-%%m', date) = ?",

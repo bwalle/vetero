@@ -69,6 +69,10 @@ public:
         return (m_typeId == IdFreeTec);
     }
 
+    inline bool hasWindGust() const {
+        return (m_typeId == IdFreeTec);
+    }
+
     inline bool hasRain() const {
         return (m_typeId == IdKombi) || (m_typeId == IdFreeTec);
     }
@@ -130,6 +134,9 @@ class Dataset {
         int windSpeed() const;
         void setWindSpeed(int windSpeed);
 
+        int windGust() const;
+        void setWindGust(int windGust);
+
         int windDirection() const;
         void setWindDirection(int windDirection);
 
@@ -150,6 +157,7 @@ class Dataset {
         int m_temperature;
         int m_humidity;
         int m_windSpeed;
+        int m_windGust;
         int m_rainGauge;
         bool m_IsRain;
         int m_windDirection = 0; // degrees
@@ -230,6 +238,27 @@ class CurrentWeather
         int maxWindBeaufort() const;
         void setMaxWindBeaufort(int bft);
 
+        // Wind Gust
+
+        bool hasWindGust() const;
+
+        int windGust() const;
+        double windGustReal() const;
+        double windGustRealMph() const;
+        void setWindGust(int windGust);
+
+        int windGustBeaufort() const;
+        void setWindGustBeaufort(int gustBft);
+
+        int maxWindGust() const;
+        double maxWindGustReal() const;
+        void setMaxWindGust(int windSpeed);
+
+        int maxWindGustBeaufort() const;
+        void setMaxGustWindBeaufort(int bft);
+
+        // Wind Direction
+
         bool hasWindDirection() const;
         int windDirection() const;
         void setWindDirection(int windDirection);
@@ -266,7 +295,10 @@ class CurrentWeather
         int m_pressure = 0;
 
         bool m_hasWindSpeed = false;
-        int m_windSpeed = 0, m_maxWindSpeed = 0, m_windBft = 0, m_maxWindBft = 0;
+        int m_windSpeed = 0, m_maxWindSpeed = 0, m_windBft = 0;
+
+        bool m_hasWindGust = false;
+        int m_windGust = 0, m_maxWindGust = 0, m_windGustBft = 0;
 
         bool m_hasWindDirection = false;
         int m_windDirection = 0; // degrees
