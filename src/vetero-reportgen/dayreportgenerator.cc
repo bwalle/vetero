@@ -159,21 +159,24 @@ void DayReportGenerator::createWindDiagram()
     BW_DEBUG_DBG("Generating wind diagrams for %s", m_dateString.c_str());
 
     common::Database::Result result = reportgen()->database().executeSqlQuery(
-        "SELECT   time(timestamp), wind "
+        "SELECT   time(timestamp), wind, IFNULL(wind_gust, -1.0) "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?) "
         "ORDER BY timestamp",
         m_date.strftime("%Y-%m-%d 12:00").c_str()
     );
     common::Database::Result maxResult = reportgen()->database().executeSqlQuery(
-        "SELECT ROUND(wind_max) + 1 "
+        "SELECT ROUND(MAX(wind_max, wind_gust_max)) + 1, MAX(wind_gust_max) "
         "FROM   day_statistics_float "
         "WHERE  date = ?", m_dateString.c_str()
     );
 
     std::string max = "0.0";
     if (maxResult.data.size() > 0 && maxResult.data.front().size() > 0)
-        max = maxResult.data.front().front();
+        max = maxResult.data.front()[0];
+    bool haveGust = !maxResult.data.front()[1].empty();
+
+    BW_DEBUG_TRACE("haveGust=%d", !!haveGust);
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
@@ -188,10 +191,14 @@ void DayReportGenerator::createWindDiagram()
     plot << "set xtics '02:00'\n";
     plot.addWindY();
     plot << "set yrange [0 : " << max << "]\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with points notitle  pt 7 ps 1 "
-            "linecolor rgb '#180076' lw 2\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 notitle with lines  "
+            "linecolor rgb '#3C8EFF' lw 2";
+    if (haveGust)
+        plot << ", '" << Gnuplot::PLACEHOLDER << "' using 1:3 with points title 'Böen' "
+            "pt 9 ps 1 linecolor rgb '#180076' lw 2";
+    plot << "\n";
 
-    plot.plot(result.data);
+    plot.plot(result.data, haveGust ? 2 : 1);
 }
 
 void DayReportGenerator::createRainDiagram()

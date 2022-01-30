@@ -77,7 +77,7 @@ void Gnuplot::setOutputFile(const std::string &output)
     *this << "set output '" << m_outputFile << "'\n";
 }
 
-void Gnuplot::plot(const StringStringVector &data)
+void Gnuplot::plot(const StringStringVector &data, int columns)
 {
     if (data.empty() || data[0].empty()) {
         BW_ERROR_WARNING("Gnuplot: No data to plot for '%s'", m_outputFile.c_str());
@@ -114,7 +114,7 @@ void Gnuplot::plot(const StringStringVector &data)
         if (fputs(gnuplotCommands.c_str(), gnuplotFp) == EOF)
             throw common::SystemError("Unable to write to gnuplot", errno);
 
-        storeData(gnuplotFp, data);
+        storeData(gnuplotFp, data, columns);
 
         int ret = fileCloseFunction(gnuplotFp);
         if (ret != 0) {
@@ -130,7 +130,7 @@ void Gnuplot::plot(const StringStringVector &data)
     common::compress_file(outputfile);
 }
 
-void Gnuplot::storeData(FILE *fp, const StringStringVector &data)
+void Gnuplot::storeData(FILE *fp, const StringStringVector &data, int columns)
 {
     if (data.empty()) {
         BW_ERROR_ERR("Attempting to plot empty data");
@@ -138,24 +138,22 @@ void Gnuplot::storeData(FILE *fp, const StringStringVector &data)
     }
 
     // since gnuplot cannot seek in stdin, we need to provide the data multiple times
-    const int times = data.front().size()-1;
-    for (int i = 0; i < times; i++) {
+    if (columns == 0)
+        columns = data.front().size()-1;
+
+    for (int i = 0; i < columns; i++) {
 
         StringStringVector::const_iterator lineIter;
         for (lineIter = data.begin(); lineIter != data.end(); ++lineIter) {
             const StringVector &line = *lineIter;
 
-            bool firstCol = true;
-            StringVector::const_iterator colIter;
-            for (colIter = line.begin(); colIter != line.end(); ++colIter) {
-                if (firstCol)
-                    firstCol = false;
-                else {
+            for (int col = 0; col <= columns; col++) {
+                if (col != 0) {
                     if (fputs("\t", fp) == EOF)
                         throw common::SystemError("Unable to write to the Gnuplot process", errno);
                 }
 
-                if (fputs(colIter->c_str(), fp) == EOF)
+                if (fputs(line[col].c_str(), fp) == EOF)
                     throw common::SystemError("Unable to write to the Gnuplot process", errno);
             }
 

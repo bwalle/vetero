@@ -139,9 +139,10 @@ class Gnuplot
          * exactly once in the commands.
          *
          * \param[in] data the data which should be plot
+         * \param[in] columns if non-zero, then only the first \p columns columns are written
          * \exception common::ApplicationError on error
          */
-        void plot(const StringStringVector &data);
+        void plot(const StringStringVector &data, int columns=0);
 
     protected:
         /**
@@ -152,9 +153,10 @@ class Gnuplot
          *
          * \param[in] data a two-dimensional string array
          * \param[in] fp the file object
+         * \param[in] columns if non zero, then only \p columns columns are written
          * \exception common::ApplicationError is writing failed
          */
-        void storeData(FILE *fp, const StringStringVector &data);
+        void storeData(FILE *fp, const StringStringVector &data, int columns=0);
 
         /**
          * \brief Dumps the error information from the given file descriptor to the logging system
