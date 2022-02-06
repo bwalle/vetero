@@ -485,7 +485,7 @@ void DbAccess::updateDayStatistics(const std::string &date)
     if (date.empty())
         return updateDayStatistics();
 
-    BW_DEBUG_INFO("Regenerating day statistics xfor %s", date.c_str());
+    BW_DEBUG_INFO("Regenerating day statistics for %s", date.c_str());
 
     m_db->executeSql(
         "INSERT OR REPLACE INTO day_statistics "
