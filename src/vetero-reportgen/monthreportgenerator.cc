@@ -35,11 +35,7 @@ namespace reportgen {
 MonthReportGenerator::MonthReportGenerator(VeteroReportgen    *reportGenerator,
                                            const std::string  &month)
     : ReportGenerator(reportGenerator),
-      m_monthString(month),
-
-      m_havePressure(-1),
-      m_haveWind(-1),
-      m_haveRain(-1)
+      m_monthString(month)
 {}
 
 void MonthReportGenerator::generateReports()
@@ -125,21 +121,24 @@ void MonthReportGenerator::createTemperatureDiagram()
 void MonthReportGenerator::createWindDiagram()
 {
     common::Database::Result result = reportgen()->database().executeSqlQuery(
-        "SELECT date, wind_max "
+        "SELECT date, wind_max, wind_gust_max "
         "FROM   day_statistics_float "
         "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
         "       AND temp_min != temp_max",
         m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
     common::Database::Result maxResult = reportgen()->database().executeSqlQuery(
-        "SELECT ROUND(wind_max) + 1 "
-        "FROM   month_statistics_float "
-        "WHERE  month = ?", m_monthString.c_str()
+        "SELECT ROUND(MAX(wind_max, wind_gust_max)) + 1, MAX(wind_gust_max) "
+        "FROM   day_statistics_float "
+        "WHERE  date BETWEEN date(?, 'localtime') AND date(?, 'localtime')"
+        "       AND temp_min != temp_max",
+        m_firstDayStr.c_str(), m_lastDayStr.c_str()
     );
 
     std::string max = "0.0";
     if (maxResult.data.size() > 0 && maxResult.data.front().size() > 0)
         max = maxResult.data.front().front();
+    bool haveGust = !maxResult.data.front()[1].empty();
 
     WeatherGnuplot plot(reportgen()->configuration());
     plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
@@ -156,8 +155,13 @@ void MonthReportGenerator::createWindDiagram()
     plot.addWindY();
     plot << "set yrange [0 : " << max << "]\n";
     plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with impulses notitle "
-            "linecolor rgb '#180076' lw 4;\n";
-    plot.plot(result.data);
+            "linecolor rgb '#3C8EFF' lw 4";
+    if (haveGust)
+        plot << ", '" << Gnuplot::PLACEHOLDER << "' using 1:3 with points title 'Böen' "
+            "pt 9 ps 1 linecolor rgb '#180076' lw 2";
+    plot << "\n";
+
+    plot.plot(result.data, haveGust ? 2 : 1);
 }
 
 void MonthReportGenerator::createRainDiagram()
@@ -269,6 +273,8 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
         { "°C",    1, true },               // temp_avg
         { "km/h",  1, haveWindData() },     // wind_max
         { "Bft",   0, haveWindData() },     // wind_max_beaufort
+        { "km/h",  1, haveWindGust() },     // wind_gust_max
+        { "Bft",   0, haveWindGust() },     // wind_gust_max_beaufort
         { "l/m²",  1, haveRainData() },     // rain
         { "l/m²",  1, haveRainData() }      // rain_month
     };
@@ -280,6 +286,8 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
         "       temp_max, "
         "       wind_max, "
         "       wind_bft_max, "
+        "       wind_gust_max, "
+        "       wind_gust_bft_max, "
         "       rain, "
         "       rain "
         "FROM   day_statistics_float "
@@ -291,8 +299,8 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
     // accumulate the rain
     double sum = 0.0;
     for (int i = 0; i < result.data.size(); ++i) {
-        sum += bw::from_str<double>( result.data[i].at(7) );
-        result.data[i].at(7) = bw::str(sum);
+        sum += bw::from_str<double>( result.data[i].at(9) );
+        result.data[i].at(9) = bw::str(sum);
     }
 
     html << "<table border='0' bgcolor='#000000' cellspacing='1' cellpadding='0' >\n"
@@ -302,6 +310,9 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
 
     if (haveWindData())
         html << "  <th style='padding: 5px' colspan=\"2\"><b>" << _("wind") << "</b></th>\n";
+
+    if (haveWindGust())
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>" << _("wind gust") << "</b></th>\n";
 
     if (haveRainData())
         html << "  <th style='padding: 5px' colspan=\"2\"><b>" << _("rain") << "</b></th>\n";
@@ -314,6 +325,9 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
          << "  <th style='padding: 5px'><b>max</b></th>\n";
 
     if (haveWindData())
+        html << "  <th style='padding: 5px' colspan=\"2\"><b>max</b></th>\n";
+
+    if (haveWindGust())
         html << "  <th style='padding: 5px' colspan=\"2\"><b>max</b></th>\n";
 
     if (haveRainData()) {
@@ -348,7 +362,9 @@ void MonthReportGenerator::createTable(HtmlDocument &html)
                 if (!desc->active)
                     continue;
 
-                if (desc->precision > 0) {
+                if (value.empty())
+                    value = "--";
+                else if (desc->precision > 0) {
                     double numericValue = bw::from_str<double>(value, std::locale::classic());
                     value = common::str_printf_l("%.*lf", localeStr.c_str(), desc->precision,
                                                  numericValue);
@@ -390,6 +406,14 @@ bool MonthReportGenerator::haveWindData() const
     return m_haveWind;
 }
 
+bool MonthReportGenerator::haveWindGust() const
+{
+    if (m_haveGust == -1)
+        m_haveGust = haveWeatherData("wind_gust_avg");
+
+    return m_haveGust;
+}
+
 bool MonthReportGenerator::haveWeatherData(const std::string &data) const
 {
     common::Database::Result result = reportgen()->database().executeSqlQuery(
@@ -409,6 +433,7 @@ void MonthReportGenerator::reset()
     m_havePressure = -1;
     m_haveRain = -1;
     m_haveWind = -1;
+    m_haveGust = -1;
 }
 
 
