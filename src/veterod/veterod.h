@@ -138,14 +138,6 @@ class Veterod : public common::VeteroApplication
         void uploadCloudData(const common::CurrentWeather &weather);
 
         /**
-         * \brief Checks if we have a pressure sensor configured
-         *
-         * \retval true if a pressure sensor is attached and configured
-         * \retval false if no pressure sensor is attached and configured
-         */
-        bool havePressureSensor() const;
-
-        /**
          * \brief Sets some weather values in the process environment
          *
          * This environment can be used the vetero postscript.

@@ -16,10 +16,14 @@
  */
 #include <unistd.h>
 
+#include <cmath>
+
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
 #include <libbw/log/errorlog.h>
 #include <libbw/datetime.h>
+
+#include <common/weather.h>
 
 #include "datareader.h"
 
@@ -262,6 +266,12 @@ vetero::common::Dataset FreeTecDataReader::read()
         outdoor_temperature *= -1;
 
     data.setTemperature(outdoor_temperature*100);
+
+    uint16_t pressure = current_block[7] | (current_block[8] << 8);
+    using common::weather::calculateSeaLevelPressure;
+    int seaLevelPressure = round(calculateSeaLevelPressure(m_configuration.pressureHeight(), pressure/10.0) * 100.0);
+
+    data.setPressure(seaLevelPressure);
 
     unsigned char wind = current_block[9];
     unsigned char gust = current_block[10];

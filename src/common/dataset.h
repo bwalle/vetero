@@ -77,6 +77,10 @@ public:
         return (m_typeId == IdKombi) || (m_typeId == IdFreeTec);
     }
 
+    inline bool hasPressure() const {
+        return (m_typeId == IdFreeTec);
+    }
+
     bool operator==(const SensorType &other) const {
         return m_typeId == other.m_typeId;
     }
@@ -115,10 +119,6 @@ std::ostream &operator<<(std::ostream &os, const SensorType &type);
 class Dataset {
 
     public:
-        Dataset();
-        virtual ~Dataset() {}
-
-    public:
         SensorType sensorType() const;
         void setSensorType(const SensorType &type);
 
@@ -140,6 +140,9 @@ class Dataset {
         int windDirection() const;
         void setWindDirection(int windDirection);
 
+        int pressure() const;
+        void setPressure(int pressure);
+
         int rainGauge() const;
         void setRainGauge(int rainGauge);
 
@@ -150,16 +153,16 @@ class Dataset {
 
         std::string str() const;
 
-
     private:
-        SensorType m_sensorType;
+        SensorType m_sensorType = SensorType::Invalid;
         bw::Datetime m_timestamp;
-        int m_temperature;
-        int m_humidity;
-        int m_windSpeed;
-        int m_windGust;
-        int m_rainGauge;
-        bool m_IsRain;
+        int m_temperature = 0;
+        int m_humidity = 0;
+        int m_windSpeed = 0;
+        int m_windGust = 0;
+        int m_pressure = 0; // 1/100 hPa, sea level
+        int m_rainGauge = 0;
+        bool m_IsRain = false;
         int m_windDirection = 0; // degrees
 };
 

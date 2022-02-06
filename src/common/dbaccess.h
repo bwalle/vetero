@@ -63,7 +63,6 @@ class DbAccess : private bw::Noncopyable
         T readMiscEntry(const std::string &key, const T &defaultValue=T()) const;
 
         void insertDataset(const Dataset &dataset, int &rainValue) const;
-        void insertPressure(int pressure) const;
 
         CurrentWeather queryCurrentWeather() const;
 

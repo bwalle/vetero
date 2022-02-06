@@ -91,6 +91,15 @@ double mm2in(double mm);
  */
 double hPa2inHg(double hPa);
 
+/**
+ * \brief Calculates the air pressure at sea level
+ *
+ * \param[in] height the height in m
+ * \param[in] pressure the pressure at \p height in hPa
+ * \return the normalized pressure at sea level
+ */
+double calculateSeaLevelPressure(double height, double pressure);
+
 }
 
 } // end namespace vetero::common

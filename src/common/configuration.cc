@@ -51,16 +51,6 @@ static void configuration_error_function(cfg_t *cfg, const char *fmt, va_list ap
 /* Configuration {{{ */
 
 Configuration::Configuration(const std::string &preferredFilename)
-    : m_serialDevice("/dev/ttyS0"),
-      m_serialBaud(9600),
-      m_sensorType(SensorType::Kombi),
-      m_sensorNumber(-1),
-      m_pressureSensorI2cBus(-1),
-      m_pressureHeight(-1),
-      m_databasePath("vetero.db"),
-      m_configurationRead(false),
-      m_reportTitleColor1("#217808"),
-      m_reportTitleColor2("#91d007")
 {
     const std::string configfiles[] = {
             INSTALL_PREFIX "/etc/veterorc",
@@ -108,7 +98,7 @@ void Configuration::read(const std::string &filename)
     char *location_string = NULL;
     char *cloud_type = nullptr, *cloud_station_id = nullptr, *cloud_station_password = nullptr;
     char *locale = NULL;
-    long serial_baud = -1, pressure_sensor_i2c_bus = -1, pressure_height = -1;
+    long serial_baud = -1, pressure_height = -1;
 
     cfg_opt_t opts[] = {
         CFG_SIMPLE_STR(const_cast<char *>("serial_device"),             &serial_device),
@@ -117,7 +107,6 @@ void Configuration::read(const std::string &filename)
         CFG_SIMPLE_STR(const_cast<char *>("sensor_type"),               &sensor_type),
         CFG_SIMPLE_INT(const_cast<char *>("sensor_number"),             &sensor_number),
 
-        CFG_SIMPLE_INT(const_cast<char *>("pressure_sensor_i2c_bus"),   &pressure_sensor_i2c_bus),
         CFG_SIMPLE_INT(const_cast<char *>("pressure_height"),           &pressure_height),
 
         CFG_SIMPLE_STR(const_cast<char *>("database_path"),             &database_path),
@@ -176,7 +165,6 @@ void Configuration::read(const std::string &filename)
         m_sensorNumber = 1;
     }
 
-    m_pressureSensorI2cBus = pressure_sensor_i2c_bus;
     m_pressureHeight = pressure_height;
 
     if (database_path) {
@@ -274,11 +262,6 @@ SensorType Configuration::sensorType() const
 int Configuration::sensorNumber() const
 {
     return m_sensorNumber;
-}
-
-int Configuration::pressureSensorI2cBus() const
-{
-    return m_pressureSensorI2cBus;
 }
 
 int Configuration::pressureHeight() const

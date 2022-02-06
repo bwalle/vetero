@@ -81,15 +81,6 @@ std::ostream &operator<<(std::ostream &os, const SensorType &type)
 /* }}} */
 /* Dataset {{{ */
 
-Dataset::Dataset()
-    : m_sensorType(SensorType::Invalid)
-    , m_temperature(0)
-    , m_humidity(0)
-    , m_windSpeed(0)
-    , m_rainGauge(0)
-    , m_IsRain(false)
-{}
-
 SensorType Dataset::sensorType() const
 {
     return m_sensorType;
@@ -155,6 +146,16 @@ int Dataset::windDirection() const
     return m_windDirection;
 }
 
+int Dataset::pressure() const
+{
+    return m_pressure;
+}
+
+void Dataset::setPressure(int pressure)
+{
+    m_pressure = pressure;
+}
+
 void Dataset::setWindDirection(int windDirection)
 {
     m_windDirection = windDirection;
@@ -196,6 +197,7 @@ std::string Dataset::str() const
        << "humid="            << humidity() << "%, "
        << "wind="             << windSpeed() << "km/h, "
        << "windDirection="    << windDirection() << "deg, "
+       << "pressure="         << pressure() << "hPa, "
        << "rainGauge="        << rainGauge() << ", "
        << "rain="             << std::boolalpha << isRain();
     return ss.str();

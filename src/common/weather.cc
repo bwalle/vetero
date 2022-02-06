@@ -92,6 +92,14 @@ double hPa2inHg(double hPa)
     return hPa * 0.029529980164712;
 }
 
+double calculateSeaLevelPressure(double height, double pressure)
+{
+    if (height < 0.1)
+        return pressure;
+
+    return pressure / pow(1.0 - height/44330.0, 5.255);
+}
+
 } // end namespace weather
 
 } // end namespace vetero::common
