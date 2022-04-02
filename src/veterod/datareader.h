@@ -25,6 +25,7 @@
 #include "common/dataset.h"
 #include "common/error.h"
 #include "common/configuration.h"
+#include "common/datasocket.h"
 
 namespace vetero {
 namespace daemon {
@@ -96,6 +97,28 @@ class FreeTecDataReader : public DataReader
 };
 
 /* }}} */
+
+/* Ws980DataReader */
+
+class Ws980DataReader : public DataReader
+{
+    public:
+        Ws980DataReader(const common::Configuration &configuration);
+
+    public:
+        void openConnection() override;
+        vetero::common::Dataset read() override;
+
+    private:
+        vetero::common::DataSocket connect();
+
+    private:
+        static const int WS980_PORT = 45000;
+        time_t m_nextRead;
+};
+
+/* }}} */
+
 
 } // end namespace vetero
 } // end namespace daemon

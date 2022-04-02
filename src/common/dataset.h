@@ -49,6 +49,9 @@ public:
     // sensor from the FreeTec station
     static SensorType FreeTec;
 
+    // ELV WS980WiFi
+    static SensorType Ws980;
+
 public:
     static SensorType fromString(const std::string &string);
 
@@ -62,19 +65,19 @@ public:
     }
 
     inline bool hasWindSpeed() const {
-        return (m_typeId == IdKombi) || (m_typeId == IdKombiNoRain) || (m_typeId == IdFreeTec);
+        return (m_typeId == IdKombi) || (m_typeId == IdKombiNoRain) || (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasWindDirection() const {
-        return (m_typeId == IdFreeTec);
+        return (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasWindGust() const {
-        return (m_typeId == IdFreeTec);
+        return (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasRain() const {
-        return (m_typeId == IdKombi) || (m_typeId == IdFreeTec);
+        return (m_typeId == IdKombi) || (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasPressure() const {
@@ -95,7 +98,7 @@ private:
     // the first IDs are for the USB WDE-01 from ELV, the IdFreeTec
     // is the FreeTec station from Pearl
     enum TypeId {
-        IdInvalid = -1, IdKombi, IdKombiNoRain, IdPool, IdNormal, IdFreeTec
+        IdInvalid = -1, IdKombi, IdKombiNoRain, IdPool, IdNormal, IdFreeTec, IdWs980
     };
     SensorType(TypeId type) : m_typeId(type) {}
 

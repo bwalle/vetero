@@ -44,6 +44,10 @@ class Configuration
 
         SensorType sensorType() const;
         int sensorNumber() const;
+        std::string sensorIP() const;
+
+        //  Pressure sensor
+
         int pressureHeight() const;
 
         // Database
@@ -81,6 +85,7 @@ class Configuration
         int         m_serialBaud = 9600;
         SensorType  m_sensorType = SensorType::Kombi;
         int         m_sensorNumber = -1;
+        std::string m_sensorIp;
         int         m_pressureHeight = -1;
         std::string m_reportTitleColor1 = "#217808";
         std::string m_reportTitleColor2 = "#91d007";

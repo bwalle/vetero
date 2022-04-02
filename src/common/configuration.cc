@@ -90,7 +90,7 @@ std::string Configuration::error() const
 void Configuration::read(const std::string &filename)
 {
     char *serial_device = NULL, *database_path = NULL, *update_postscript = NULL;
-    char *sensor_type = NULL;
+    char *sensor_type = NULL, *sensor_ip = NULL;
     long sensor_number = -1;
     char *report_title_color1 = NULL, *report_title_color2 = NULL;
     char *report_directory = NULL, *report_upload_command = NULL;
@@ -106,6 +106,7 @@ void Configuration::read(const std::string &filename)
 
         CFG_SIMPLE_STR(const_cast<char *>("sensor_type"),               &sensor_type),
         CFG_SIMPLE_INT(const_cast<char *>("sensor_number"),             &sensor_number),
+        CFG_SIMPLE_STR(const_cast<char *>("sensor_ip"),                 &sensor_ip),
 
         CFG_SIMPLE_INT(const_cast<char *>("pressure_height"),           &pressure_height),
 
@@ -164,6 +165,11 @@ void Configuration::read(const std::string &filename)
         BW_ERROR_ERR("Invalid sensor number provided. Default to 1.");
         m_sensorNumber = 1;
     }
+
+    if (sensor_ip)
+        m_sensorIp = sensor_ip;
+    else if (m_sensorType == SensorType::Ws980)
+        BW_ERROR_ERR("Configuration sensor_ip must set for ws980 sensors.");
 
     m_pressureHeight = pressure_height;
 
@@ -262,6 +268,11 @@ SensorType Configuration::sensorType() const
 int Configuration::sensorNumber() const
 {
     return m_sensorNumber;
+}
+
+std::string Configuration::sensorIP() const
+{
+    return m_sensorIp;
 }
 
 int Configuration::pressureHeight() const
