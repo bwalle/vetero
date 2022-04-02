@@ -196,6 +196,7 @@ std::string Dataset::str() const
        << "temp="             << temperature() << "C, "
        << "humid="            << humidity() << "%, "
        << "wind="             << windSpeed() << "km/h, "
+       << "wind="             << windGust() << "km/h, "
        << "windDirection="    << windDirection() << "deg, "
        << "pressure="         << pressure() << "hPa, "
        << "rainGauge="        << rainGauge() << ", "
