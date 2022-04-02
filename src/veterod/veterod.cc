@@ -62,10 +62,7 @@ static void quit_display_daemon()
 /* Veterod {{{ */
 
 Veterod::Veterod()
-    : common::VeteroApplication("veterod"),
-      m_daemonize(true),
-      m_errorLogfile("stderr"),
-      m_noConfigFatal(false)
+    : common::VeteroApplication("veterod")
 {}
 
 bool Veterod::parseCommandLine(int argc, char *argv[])
@@ -77,6 +74,8 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
                            "Prints the version and exits.");
     generalGroup.addOption("foreground", 'f', bw::OT_FLAG,
                            "Don't fork (run in foreground)");
+    generalGroup.addOption("single-test", 'T', bw::OT_FLAG,
+                           "Just receive one measurement, print it and exit. Implies \"--foreground\".");
 
     bw::OptionGroup loggingGroup("Logging Options");
     loggingGroup.addOption("debug-logfile", 'D', bw::OT_STRING,
@@ -131,6 +130,10 @@ bool Veterod::parseCommandLine(int argc, char *argv[])
 
     if (op.getValue("foreground").getFlag())
         m_daemonize = false;
+    if (op.getValue("single-test").getFlag()) {
+        m_daemonize = false;
+        m_singleTest = true;
+    }
 
     return true;
 }
@@ -315,12 +318,28 @@ void Veterod::createPidfile()
     fout << getpid();
 }
 
+void Veterod::execSingleTest(DataReader &reader)
+{
+    std::cout << "veterod running in test mode. Waiting for a dataset ..." << std::flush;
+    vetero::common::Dataset dataset = reader.read();
+    std::cout << "\n\n";
+
+    std::cout
+       << "Temperature     : " << dataset.temperature()/100.0 << " °C\n"
+       << "Humidity        : " << dataset.humidity()/100.0 << " %\n"
+       << "Wind direction  : " << dataset.windDirection() << "°\n"
+       << "Wind speed      : " << dataset.windSpeed()/100.0 << " km/h\n"
+       << "Wind gust       : " << dataset.windGust()/100.0 << " km/h\n"
+       << "Pressure        : " << dataset.pressure()/100.0 << " hPa\n"
+       << "Rain            : " << dataset.rainGauge()*dataset.rainGaugeFactor()/1000.0 << " mm\n";
+}
+
 void Veterod::exec()
 {
     BW_DEBUG_INFO("Starting application.");
 
     if (m_daemonize) {
-        bw::daemonize(bw::DAEMONIZE_NOCLOSE); // SQLite is already open!
+        bw::daemonize(bw::DAEMONIZE_NOCLOSE);
         createPidfile();
     }
 
@@ -334,7 +353,14 @@ void Veterod::exec()
 
     std::unique_ptr<DataReader> reader( DataReader::create(*m_configuration.get() ) );
     reader->openConnection();
+
+    if (m_singleTest) {
+        execSingleTest(*reader.get());
+        return;
+    }
+
     startDisplay();
+    openDatabase();
     common::DbAccess dbAccess(&m_database);
     // don't assume we need to regenerate everything on startup
     bw::Datetime lastInserted = bw::Datetime::now();
