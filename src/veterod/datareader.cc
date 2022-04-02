@@ -252,7 +252,7 @@ vetero::common::Dataset FreeTecDataReader::read()
     // Bytes 31 and 32 when combined create an unsigned short int
     // that tells us where to find the weather data we want
     size_t curpos = fixed_block[31] << 8 | fixed_block[30];
-    BW_DEBUG_TRACE("Current block offset %x", curpos);
+    BW_DEBUG_TRACE("Current block offset %zx", curpos);
 
     readBlock(curpos, current_block);
 
@@ -307,7 +307,7 @@ void FreeTecDataReader::readBlock(size_t offset, unsigned char block[BLOCK_SIZE]
 
     static constexpr int timeout = 1000; // ms
 
-    BW_DEBUG_DBG("Setting up reading block offset %d", offset);
+    BW_DEBUG_DBG("Setting up reading block offset %zd", offset);
 
     m_handle->controlTransfer(0x21,           // bmRequestType,
                               0x09,           // bRequest,
@@ -317,7 +317,7 @@ void FreeTecDataReader::readBlock(size_t offset, unsigned char block[BLOCK_SIZE]
                               sizeof(msg),    // size
                               timeout);       // timeout
 
-    BW_DEBUG_DBG("Reading block offset %d", offset);
+    BW_DEBUG_DBG("Reading block offset %zd", offset);
 
     int transferred = 0;
     m_handle->bulkTransfer(0x81,              // endpoint
