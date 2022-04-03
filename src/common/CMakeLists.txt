@@ -20,12 +20,14 @@ set(COMMON_SRCS
     database.cc
     dbaccess.cc
     utils.cc
+    error.cc
     configuration.cc
     weather.cc
     lockfile.cc
     veteroapplication.cc
     consoleprogress.cc
     httprequest.cc
+    datasocket.cc
 )
 
 add_library(vetero ${COMMON_SRCS})

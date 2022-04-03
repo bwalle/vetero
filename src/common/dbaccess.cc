@@ -311,32 +311,23 @@ void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
         dewpoint = bw::str(weather::dewpoint(dataset.temperature(), dataset.humidity()));
     }
 
+    // pressure
+    std::string pressure("NULL");
+    if (dataset.sensorType().hasPressure())
+        pressure = bw::str(dataset.pressure());
+
     m_db->executeSql("INSERT INTO weatherdata "
-                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, rain) "
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, pressure, rain) "
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      c_str_null(dataset.timestamp().str()),
                      c_str_null(bw::str( dataset.temperature() )),
                      c_str_null(humidity), c_str_null(dewpoint),
                      c_str_null(windSpeed), c_str_null(windStrength),
                      c_str_null(windGust), c_str_null(windGustStrength),
-                     c_str_null(windDirection), c_str_null(rain) );
+                     c_str_null(windDirection), c_str_null(pressure), c_str_null(rain) );
 
     if (dataset.sensorType().hasRain())
         writeMiscEntry(LastRain, dataset.rainGauge());
-}
-
-void DbAccess::insertPressure(int pressure) const
-{
-    // this SQL is quite expensive, but since we're going to execute it only once
-    // in 4 minutes, well, it's ok :-)
-    m_db->executeSql("UPDATE weatherdata "
-                     "SET pressure = ? "
-                     "WHERE timestamp = ( "
-                     "    SELECT timestamp "
-                     "    FROM weatherdata "
-                     "    ORDER BY timestamp DESC "
-                     "    LIMIT 1)",
-                     bw::str(pressure).c_str() );
 }
 
 CurrentWeather DbAccess::queryCurrentWeather() const
@@ -485,7 +476,7 @@ void DbAccess::updateDayStatistics(const std::string &date)
     if (date.empty())
         return updateDayStatistics();
 
-    BW_DEBUG_INFO("Regenerating day statistics xfor %s", date.c_str());
+    BW_DEBUG_INFO("Regenerating day statistics for %s", date.c_str());
 
     m_db->executeSql(
         "INSERT OR REPLACE INTO day_statistics "

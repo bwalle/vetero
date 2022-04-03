@@ -44,10 +44,10 @@ class Configuration
 
         SensorType sensorType() const;
         int sensorNumber() const;
+        std::string sensorIP() const;
 
         //  Pressure sensor
 
-        int pressureSensorI2cBus() const;
         int pressureHeight() const;
 
         // Database
@@ -81,22 +81,22 @@ class Configuration
         void read(const std::string &filename);
 
     private:
-        std::string m_serialDevice;
-        int         m_serialBaud;
-        SensorType  m_sensorType;
-        int         m_sensorNumber;
-        int         m_pressureSensorI2cBus;
-        int         m_pressureHeight;
-        std::string m_reportTitleColor1;
-        std::string m_reportTitleColor2;
+        std::string m_serialDevice = "/dev/ttyS0";
+        int         m_serialBaud = 9600;
+        SensorType  m_sensorType = SensorType::Kombi;
+        int         m_sensorNumber = -1;
+        std::string m_sensorIp;
+        int         m_pressureHeight = -1;
+        std::string m_reportTitleColor1 = "#217808";
+        std::string m_reportTitleColor2 = "#91d007";
         std::string m_reportDirectory;
         std::string m_reportUploadCommand;
         std::string m_locationString;
-        std::string m_databasePath;
+        std::string m_databasePath = "vetero.db";
         std::string m_updatePostscript;
         std::string m_displayName;
         std::string m_displayConnection;
-        bool        m_configurationRead;
+        bool        m_configurationRead = false;
         std::string m_locale;
         std::string m_error;
         std::string m_cloudType;

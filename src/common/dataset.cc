@@ -32,6 +32,7 @@ SensorType SensorType::KombiNoRain(IdKombiNoRain);
 SensorType SensorType::Pool(IdPool);
 SensorType SensorType::Normal(IdNormal);
 SensorType SensorType::FreeTec(IdFreeTec);
+SensorType SensorType::Ws980(IdWs980);
 
 std::string SensorType::str() const
 {
@@ -51,6 +52,9 @@ std::string SensorType::str() const
         case IdFreeTec:
             return "freetec";
 
+        case IdWs980:
+            return "ws980";
+
         case IdInvalid:
         default:
             return "invalid";
@@ -69,6 +73,8 @@ SensorType SensorType::fromString(const std::string &value)
         return Normal;
     else if (strcasecmp(value.c_str(), "freetec") == 0)
         return FreeTec;
+    else if (strcasecmp(value.c_str(), "ws980") == 0)
+        return Ws980;
     else
         return Invalid;
 }
@@ -80,15 +86,6 @@ std::ostream &operator<<(std::ostream &os, const SensorType &type)
 
 /* }}} */
 /* Dataset {{{ */
-
-Dataset::Dataset()
-    : m_sensorType(SensorType::Invalid)
-    , m_temperature(0)
-    , m_humidity(0)
-    , m_windSpeed(0)
-    , m_rainGauge(0)
-    , m_IsRain(false)
-{}
 
 SensorType Dataset::sensorType() const
 {
@@ -155,6 +152,16 @@ int Dataset::windDirection() const
     return m_windDirection;
 }
 
+int Dataset::pressure() const
+{
+    return m_pressure;
+}
+
+void Dataset::setPressure(int pressure)
+{
+    m_pressure = pressure;
+}
+
 void Dataset::setWindDirection(int windDirection)
 {
     m_windDirection = windDirection;
@@ -184,6 +191,8 @@ int Dataset::rainGaugeFactor() const
 {
     if (m_sensorType == SensorType::FreeTec)
         return 300;
+    else if (m_sensorType == SensorType::Ws980)
+        return 100;
     else
         return 295;
 }
@@ -195,7 +204,9 @@ std::string Dataset::str() const
        << "temp="             << temperature() << "C, "
        << "humid="            << humidity() << "%, "
        << "wind="             << windSpeed() << "km/h, "
+       << "wind="             << windGust() << "km/h, "
        << "windDirection="    << windDirection() << "deg, "
+       << "pressure="         << pressure() << "hPa, "
        << "rainGauge="        << rainGauge() << ", "
        << "rain="             << std::boolalpha << isRain();
     return ss.str();

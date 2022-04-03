@@ -49,6 +49,9 @@ public:
     // sensor from the FreeTec station
     static SensorType FreeTec;
 
+    // ELV WS980WiFi
+    static SensorType Ws980;
+
 public:
     static SensorType fromString(const std::string &string);
 
@@ -62,19 +65,23 @@ public:
     }
 
     inline bool hasWindSpeed() const {
-        return (m_typeId == IdKombi) || (m_typeId == IdKombiNoRain) || (m_typeId == IdFreeTec);
+        return (m_typeId == IdKombi) || (m_typeId == IdKombiNoRain) || (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasWindDirection() const {
-        return (m_typeId == IdFreeTec);
+        return (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasWindGust() const {
-        return (m_typeId == IdFreeTec);
+        return (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     inline bool hasRain() const {
-        return (m_typeId == IdKombi) || (m_typeId == IdFreeTec);
+        return (m_typeId == IdKombi) || (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
+    }
+
+    inline bool hasPressure() const {
+        return (m_typeId == IdFreeTec);
     }
 
     bool operator==(const SensorType &other) const {
@@ -91,7 +98,7 @@ private:
     // the first IDs are for the USB WDE-01 from ELV, the IdFreeTec
     // is the FreeTec station from Pearl
     enum TypeId {
-        IdInvalid = -1, IdKombi, IdKombiNoRain, IdPool, IdNormal, IdFreeTec
+        IdInvalid = -1, IdKombi, IdKombiNoRain, IdPool, IdNormal, IdFreeTec, IdWs980
     };
     SensorType(TypeId type) : m_typeId(type) {}
 
@@ -115,10 +122,6 @@ std::ostream &operator<<(std::ostream &os, const SensorType &type);
 class Dataset {
 
     public:
-        Dataset();
-        virtual ~Dataset() {}
-
-    public:
         SensorType sensorType() const;
         void setSensorType(const SensorType &type);
 
@@ -140,6 +143,9 @@ class Dataset {
         int windDirection() const;
         void setWindDirection(int windDirection);
 
+        int pressure() const;
+        void setPressure(int pressure);
+
         int rainGauge() const;
         void setRainGauge(int rainGauge);
 
@@ -150,16 +156,16 @@ class Dataset {
 
         std::string str() const;
 
-
     private:
-        SensorType m_sensorType;
+        SensorType m_sensorType = SensorType::Invalid;
         bw::Datetime m_timestamp;
-        int m_temperature;
-        int m_humidity;
-        int m_windSpeed;
-        int m_windGust;
-        int m_rainGauge;
-        bool m_IsRain;
+        int m_temperature = 0;
+        int m_humidity = 0;
+        int m_windSpeed = 0;
+        int m_windGust = 0;
+        int m_pressure = 0; // 1/100 hPa, sea level
+        int m_rainGauge = 0;
+        bool m_IsRain = false;
         int m_windDirection = 0; // degrees
 };
 

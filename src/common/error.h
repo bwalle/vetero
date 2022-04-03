@@ -17,6 +17,7 @@
 #ifndef VETERO_COMMON_ERROR_H_
 #define VETERO_COMMON_ERROR_H_
 
+#include <string>
 #include <stdexcept>
 #include <cstring>
 
@@ -77,7 +78,7 @@ class SystemError : public ApplicationError {
          * \param[in] msg the error string
          * \param[in] err the system errno value (positive), e.g. \c EINVAL.
          */
-        SystemError(const std::string &msg, int err)
+        SystemError(const std::string &msg, int err=errno)
             : ApplicationError(msg)
         {
             m_errorstring = msg + " (" + std::strerror(err) + ")";
@@ -85,6 +86,50 @@ class SystemError : public ApplicationError {
 
         virtual ~SystemError()
         throw () {}
+
+        /**
+         * \brief Formats the error.
+         *
+         * Overwritten member function (std::runtime_error::what()).
+         *
+         * \return the error message as pointer to an internal string buffer. The string is
+         *         only valid until this SystemError is freed.
+         */
+        virtual const char *what() const throw ()
+        {
+            return m_errorstring.c_str();
+        }
+
+    private:
+        std::string m_errorstring;
+};
+
+/* }}} */
+/* SystemError {{{ */
+
+/**
+ * \class SystemError
+ *
+ * \brief Exception class for system errors
+ *
+ * A network error is an error triggered by the operating system's network name resolution stack
+ * with an appropriate \c errno value.
+ *
+ * \author Bernhard Walle <bernhard@bwalle.de>
+ * \ingroup common
+ */
+class NetworkAddressError : public ApplicationError {
+    public:
+
+        /**
+         * \brief Constructor
+         *
+         * Creates a new instance of SystemError.
+         *
+         * \param[in] msg the error string
+         * \param[in] err the error value of getaddrinfo()
+         */
+        NetworkAddressError(const std::string &msg, int err);
 
         /**
          * \brief Formats the error.

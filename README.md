@@ -8,5 +8,6 @@ Supported weather stations:
 
   * ELV USB WDE01 (not available any more)
   * Freetec PX-1117-919 (available on Pearl)
+  * ELV WiFi-Wetterstation WS980WiFi
   
 The software also supports an external display CT-INCLUD.

@@ -24,6 +24,7 @@
 #include "common/database.h"
 #include "common/veteroapplication.h"
 #include "clouduploader.h"
+#include "datareader.h"
 
 namespace vetero {
 namespace daemon {
@@ -138,14 +139,6 @@ class Veterod : public common::VeteroApplication
         void uploadCloudData(const common::CurrentWeather &weather);
 
         /**
-         * \brief Checks if we have a pressure sensor configured
-         *
-         * \retval true if a pressure sensor is attached and configured
-         * \retval false if no pressure sensor is attached and configured
-         */
-        bool havePressureSensor() const;
-
-        /**
          * \brief Sets some weather values in the process environment
          *
          * This environment can be used the vetero postscript.
@@ -158,11 +151,15 @@ class Veterod : public common::VeteroApplication
          */
         void runPostscript(const vetero::common::Dataset &dataset,
                 int rainValue);
+
+        void execSingleTest(DataReader &reader);
+
     private:
-        bool m_daemonize;
-        std::string m_errorLogfile;
+        bool m_daemonize = true;
+        bool m_singleTest = false;
+        std::string m_errorLogfile = "stderr";
         std::string m_configfile;
-        bool m_noConfigFatal;
+        bool m_noConfigFatal = false;
         vetero::common::Sqlite3Database m_database;
         std::unique_ptr<vetero::common::Configuration> m_configuration;
         std::unique_ptr<CloudUploader> m_cloudUploader;

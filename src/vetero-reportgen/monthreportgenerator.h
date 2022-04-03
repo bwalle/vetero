@@ -105,6 +105,7 @@ class MonthReportGenerator : public ReportGenerator
 
         bool haveRainData() const;
         bool haveWindData() const;
+        bool haveWindGust() const;
         bool havePressureData() const;
 
         bool haveWeatherData(const std::string &name) const;
@@ -119,9 +120,10 @@ class MonthReportGenerator : public ReportGenerator
         std::string m_lastDayStr;
 
         // 0=false, 1=true, -1=not set
-        mutable int m_havePressure;
-        mutable int m_haveRain;
-        mutable int m_haveWind;
+        mutable int m_havePressure = -1;
+        mutable int m_haveRain = -1;
+        mutable int m_haveWind = -1;
+        mutable int m_haveGust = -1;
 };
 
 } // end namespace reportgen

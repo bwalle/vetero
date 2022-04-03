@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
             return EXIT_SUCCESS;
         veterod.installSignalhandlers();
         veterod.readConfiguration();
-        veterod.openDatabase();
         veterod.exec();
     } catch (const vetero::common::ApplicationError &err) {
         BW_ERROR_CRIT("%s", err.what());

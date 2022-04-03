@@ -16,10 +16,14 @@
  */
 #include <unistd.h>
 
+#include <cmath>
+
 #include <libbw/stringutil.h>
 #include <libbw/log/debug.h>
 #include <libbw/log/errorlog.h>
 #include <libbw/datetime.h>
+
+#include <common/weather.h>
 
 #include "datareader.h"
 
@@ -33,6 +37,8 @@ DataReader *DataReader::create(const common::Configuration &configuration)
     BW_DEBUG_STREAM_DBG("Sensor type " << configuration.sensorType());
     if (configuration.sensorType() == common::SensorType::FreeTec)
         return new FreeTecDataReader(configuration);
+    else if (configuration.sensorType() == common::SensorType::Ws980)
+        return new Ws980DataReader(configuration);
     else
         return new UsbWde1DataReader(configuration);
 }
@@ -248,7 +254,7 @@ vetero::common::Dataset FreeTecDataReader::read()
     // Bytes 31 and 32 when combined create an unsigned short int
     // that tells us where to find the weather data we want
     size_t curpos = fixed_block[31] << 8 | fixed_block[30];
-    BW_DEBUG_TRACE("Current block offset %x", curpos);
+    BW_DEBUG_TRACE("Current block offset %zx", curpos);
 
     readBlock(curpos, current_block);
 
@@ -262,6 +268,12 @@ vetero::common::Dataset FreeTecDataReader::read()
         outdoor_temperature *= -1;
 
     data.setTemperature(outdoor_temperature*100);
+
+    uint16_t pressure = current_block[7] | (current_block[8] << 8);
+    using common::weather::calculateSeaLevelPressure;
+    int seaLevelPressure = round(calculateSeaLevelPressure(m_configuration.pressureHeight(), pressure/10.0) * 100.0);
+
+    data.setPressure(seaLevelPressure);
 
     unsigned char wind = current_block[9];
     unsigned char gust = current_block[10];
@@ -297,7 +309,7 @@ void FreeTecDataReader::readBlock(size_t offset, unsigned char block[BLOCK_SIZE]
 
     static constexpr int timeout = 1000; // ms
 
-    BW_DEBUG_DBG("Setting up reading block offset %d", offset);
+    BW_DEBUG_DBG("Setting up reading block offset %zd", offset);
 
     m_handle->controlTransfer(0x21,           // bmRequestType,
                               0x09,           // bRequest,
@@ -307,7 +319,7 @@ void FreeTecDataReader::readBlock(size_t offset, unsigned char block[BLOCK_SIZE]
                               sizeof(msg),    // size
                               timeout);       // timeout
 
-    BW_DEBUG_DBG("Reading block offset %d", offset);
+    BW_DEBUG_DBG("Reading block offset %zd", offset);
 
     int transferred = 0;
     m_handle->bulkTransfer(0x81,              // endpoint
@@ -319,6 +331,108 @@ void FreeTecDataReader::readBlock(size_t offset, unsigned char block[BLOCK_SIZE]
     if (transferred != BLOCK_SIZE)
         throw common::ApplicationError("Unable to read " + std::to_string(BLOCK_SIZE) + " bytes of data. Only " +
                                        std::to_string(transferred) + " bytes read.");
+}
+
+/* }}} */
+/* Ws980DataReader {{{ */
+
+Ws980DataReader::Ws980DataReader(const common::Configuration &configuration)
+    : DataReader(configuration)
+{}
+
+void Ws980DataReader::openConnection()
+{
+    static const unsigned char get_version[] = { 0xff, 0xff, 0x50, 0x03, 0x53 };
+
+    // just get the version number to test the connection
+    auto socket = connect();
+    socket.write(get_version, sizeof(get_version));
+
+    char version_response[256];
+    memset(&version_response, 0, sizeof (version_response));
+    ssize_t version_len = socket.read(version_response, sizeof(version_response) - 1);
+
+    std::string version = std::string(version_response + 5);
+    BW_DEBUG_INFO("Connected to WS980 at %s:%d: %s\n", m_configuration.sensorIP().c_str(), WS980_PORT,
+        version.c_str());
+
+    m_nextRead = time(nullptr);
+}
+
+
+vetero::common::Dataset Ws980DataReader::read()
+{
+    static const unsigned char get_data[] = { 0xff, 0xff, 0x0b, 0x00, 0x06, 0x04, 0x04, 0x19 };
+
+    time_t now = time(nullptr);
+    BW_DEBUG_TRACE("now = %lld, next_read=%lld", (unsigned long long)now, (unsigned long long)m_nextRead);
+    while (now < m_nextRead) {
+        sleep(m_nextRead - now);
+        now = time(nullptr);
+    }
+
+    auto socket = connect();
+    socket.write(get_data, sizeof(get_data));
+
+    unsigned char response[256];
+    ssize_t data_len = socket.read(response, sizeof(response));
+
+    BW_DEBUG_TRACE("Got %zd bytes of data\n", data_len);
+
+    if (data_len < 82)
+        throw common::ApplicationError("ws980: response too short: got " + std::to_string(data_len) +
+            " bytes instead of 82");
+
+    common::Dataset data;
+    data.setTimestamp(bw::Datetime::now());
+    data.setSensorType(m_configuration.sensorType());
+
+    uint16_t temp = (response[10] << 8) | response[11];
+    BW_DEBUG_TRACE("Temp raw: 0x%0hx", temp);
+    if (temp != 0x7fff)
+        data.setTemperature(temp * 10);
+
+    uint8_t humid = response[24];
+    BW_DEBUG_TRACE("Humid raw: 0x%0hhx", humid);
+    if (humid != 0xff)
+        data.setHumidity(humid * 100);
+
+    uint16_t abs_pressure = (response[26]<<8) | response[27];
+    BW_DEBUG_TRACE("Absolute pressure raw: 0x%0hx", abs_pressure);
+    if (abs_pressure != 0xfff)
+        data.setPressure(abs_pressure * 10);
+
+    uint16_t wind_dir = (response[32]<<8) | response[33];
+    BW_DEBUG_TRACE("Wind dir raw: 0x%0hx", wind_dir);
+    if (wind_dir != 0xfff)
+        data.setWindDirection(wind_dir);
+
+    uint16_t wind_speed = ((response[35] << 8) | response[36]);
+    BW_DEBUG_TRACE("Wind speed raw: 0x%0hx", wind_speed);
+    if (wind_speed != 0xffff)
+        data.setWindDirection(wind_speed * 36); // 1/10 m/s -> 1/100 km/h
+
+    uint16_t wind_gust = ((response[38] << 8) | response[39]);
+    BW_DEBUG_TRACE("Wind gust raw: 0x%0hx", wind_gust);
+    if (wind_gust != 0xffff)
+        data.setWindGust(wind_gust * 36); // 1/10 m/s -> 1/100 km/h
+
+    uint32_t total_rain = ((response[66] << 24) |
+                           (response[67] << 16) |
+                           (response[68] << 8) |
+                            response[69] );
+    BW_DEBUG_TRACE("Total rain raw: 0x%0x", total_rain);
+    data.setRainGauge(total_rain);
+
+    m_nextRead = now + 5*60;
+
+    BW_DEBUG_STREAM_DBG("Read data" << data);
+    return data;
+}
+
+vetero::common::DataSocket Ws980DataReader::connect()
+{
+    return common::DataSocket(m_configuration.sensorIP(), WS980_PORT);
 }
 
 /* }}} */
