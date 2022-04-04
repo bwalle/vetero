@@ -410,7 +410,7 @@ vetero::common::Dataset Ws980DataReader::read()
     uint16_t wind_speed = ((response[35] << 8) | response[36]);
     BW_DEBUG_TRACE("Wind speed raw: 0x%0hx", wind_speed);
     if (wind_speed != 0xffff)
-        data.setWindDirection(wind_speed * 36); // 1/10 m/s -> 1/100 km/h
+        data.setWindSpeed(wind_speed * 36); // 1/10 m/s -> 1/100 km/h
 
     uint16_t wind_gust = ((response[38] << 8) | response[39]);
     BW_DEBUG_TRACE("Wind gust raw: 0x%0hx", wind_gust);
