@@ -387,8 +387,8 @@ vetero::common::Dataset Ws980DataReader::read()
     data.setTimestamp(bw::Datetime::now());
     data.setSensorType(m_configuration.sensorType());
 
-    uint16_t temp = (response[10] << 8) | response[11];
-    BW_DEBUG_TRACE("Temp raw: 0x%0hx", temp);
+    int16_t temp = (response[10] << 8) | response[11];
+    BW_DEBUG_TRACE("Temp raw: 0x%0hx", (uint16_t)temp);
     if (temp != 0x7fff)
         data.setTemperature(temp * 10);
 
