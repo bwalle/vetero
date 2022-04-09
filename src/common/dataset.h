@@ -81,7 +81,7 @@ public:
     }
 
     inline bool hasPressure() const {
-        return (m_typeId == IdFreeTec);
+        return (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
     bool operator==(const SensorType &other) const {
