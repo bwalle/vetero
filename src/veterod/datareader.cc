@@ -397,10 +397,10 @@ vetero::common::Dataset Ws980DataReader::read()
     if (humid != 0xff)
         data.setHumidity(humid * 100);
 
-    uint16_t abs_pressure = (response[26]<<8) | response[27];
-    BW_DEBUG_TRACE("Absolute pressure raw: 0x%0hx", abs_pressure);
-    if (abs_pressure != 0xfff)
-        data.setPressure(abs_pressure * 10);
+    uint16_t rel_pressure = (response[29]<<8) | response[30];
+    BW_DEBUG_TRACE("Pressure at sea level raw: 0x%0hx", rel_pressure);
+    if (rel_pressure != 0xfff)
+        data.setPressure(rel_pressure * 10);
 
     uint16_t wind_dir = (response[32]<<8) | response[33];
     BW_DEBUG_TRACE("Wind dir raw: 0x%0hx", wind_dir);
