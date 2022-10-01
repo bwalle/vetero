@@ -72,18 +72,20 @@ void DbAccess::initTables() const
     // TABLE weatherdata
     m_db->executeSql(
         "CREATE TABLE weatherdata ("
-        "    timestamp     DATETIME PRIMARY KEY UNIQUE,"
-        "    jdate         INTEGER,"
-        "    temp          INTEGER,"
-        "    humid         INTEGER,"
-        "    dewpoint      INTEGER,"
-        "    wind          INTEGER,"
-        "    wind_bft      INTEGER,"
-        "    wind_gust     INTEGER,"
-        "    wind_gust_bft INTEGER,"
-        "    wind_dir      INTEGER,"
-        "    rain          INTEGER,"
-        "    pressure      INTEGER"
+        "    timestamp       DATETIME PRIMARY KEY UNIQUE,"
+        "    jdate           INTEGER,"
+        "    temp            INTEGER,"
+        "    humid           INTEGER,"
+        "    dewpoint        INTEGER,"
+        "    wind            INTEGER,"
+        "    wind_bft        INTEGER,"
+        "    wind_gust       INTEGER,"
+        "    wind_gust_bft   INTEGER,"
+        "    wind_dir        INTEGER,"
+        "    solar_radiation INTEGER,"
+        "    uv_index        INTEGER,"
+        "    rain            INTEGER,"
+        "    pressure        INTEGER"
         ")"
     );
 
@@ -179,6 +181,8 @@ void DbAccess::initTables() const
         "    round(wind_gust/100.0, 1)        AS wind_gust,"
         "    wind_gust_bft                    AS wind_gust_bft,"
         "    wind_dir                         AS wind_dir,"
+        "    solar_radiation                  AS solar_radiation,"
+        "    uv_index                         AS uv_index,"
         "    round(rain/1000.0, 3)            AS rain, "
         "    round(pressure/100.0, 0)         AS pressure "
         "FROM weatherdata"
@@ -242,7 +246,7 @@ void DbAccess::initTables() const
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 6);
+    writeMiscEntry(DatabaseSchemaRevision, 7);
 }
 
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const
@@ -311,20 +315,31 @@ void DbAccess::insertDataset(const Dataset &dataset, int &rainValue) const
         dewpoint = bw::str(weather::dewpoint(dataset.temperature(), dataset.humidity()));
     }
 
+    // solar radiation
+    std::string solarRadiation("NULL");
+    std::string uvIndex("NULL");
+    if (dataset.sensorType().hasSolarRadiation()) {
+        solarRadiation = bw::str(dataset.solarRadiation());
+        uvIndex = bw::str(dataset.uvIndex());
+    }
+
     // pressure
     std::string pressure("NULL");
     if (dataset.sensorType().hasPressure())
         pressure = bw::str(dataset.pressure());
 
     m_db->executeSql("INSERT INTO weatherdata "
-                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, pressure, rain) "
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                     "(timestamp, temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, "
+                     " solar_radiation, uv_index, pressure, rain) "
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      c_str_null(dataset.timestamp().str()),
                      c_str_null(bw::str( dataset.temperature() )),
                      c_str_null(humidity), c_str_null(dewpoint),
                      c_str_null(windSpeed), c_str_null(windStrength),
                      c_str_null(windGust), c_str_null(windGustStrength),
-                     c_str_null(windDirection), c_str_null(pressure), c_str_null(rain) );
+                     c_str_null(windDirection),
+                     c_str_null(solarRadiation), c_str_null(uvIndex),
+                     c_str_null(pressure), c_str_null(rain) );
 
     if (dataset.sensorType().hasRain())
         writeMiscEntry(LastRain, dataset.rainGauge());
@@ -336,7 +351,8 @@ CurrentWeather DbAccess::queryCurrentWeather() const
 
     Database::Result result = m_db->executeSqlQuery(
         "SELECT   strftime('%%s', datetime(timestamp, 'utc')), "
-        "         temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, pressure "
+        "         temp, humid, dewpoint, wind, wind_bft, wind_gust, wind_gust_bft, wind_dir, "
+        "         solar_radiation, uv_index, pressure "
         "FROM     weatherdata "
         "ORDER BY timestamp DESC "
         "LIMIT 1"
@@ -367,7 +383,13 @@ CurrentWeather DbAccess::queryCurrentWeather() const
         ret.setWindDirection( bw::from_str<int>(data.at(8)) );
 
     if (!data.at(9).empty())
-        ret.setPressure( bw::from_str<int>(data.at(9)) );
+        ret.setSolarRadiation( bw::from_str<int>(data.at(9)) );
+
+    if (!data.at(10).empty())
+        ret.setUvIndex( bw::from_str<int>(data.at(10)) );
+
+    if (!data.at(11).empty())
+        ret.setPressure( bw::from_str<int>(data.at(11)) );
 
     result = m_db->executeSqlQuery(
         "SELECT   temp_min, temp_max, wind_max, wind_gust_max, rain "

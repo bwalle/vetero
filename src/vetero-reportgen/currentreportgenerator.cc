@@ -208,6 +208,24 @@ void CurrentReportGenerator::createSVG(const common::CurrentWeather &currentWeat
             line.replace(pos, 4, value);
         }
 
+        pos = line.find("SSSS");
+        if (pos != std::string::npos) {
+            if (currentWeather.hasSolarRadiation())
+                value = std::to_string(currentWeather.solarRadiation());
+            else
+                value = "----";
+            line.replace(pos, 4, value);
+        }
+
+        pos = line.find("UUU");
+        if (pos != std::string::npos) {
+            if (currentWeather.hasSolarRadiation())
+                value = std::to_string(currentWeather.uvIndex());
+            else
+                value = "---";
+            line.replace(pos, 3, value);
+        }
+
         output << line;
     }
 

@@ -76,6 +76,10 @@ public:
         return (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
 
+    inline bool hasSolarRadiation() const {
+        return (m_typeId == IdWs980);
+    }
+
     inline bool hasRain() const {
         return (m_typeId == IdKombi) || (m_typeId == IdFreeTec) || (m_typeId == IdWs980);
     }
@@ -146,6 +150,12 @@ class Dataset {
         int pressure() const;
         void setPressure(int pressure);
 
+        int solarRadiation() const;
+        void setSolarRadiation(int radiation);
+
+        int uvIndex() const;
+        void setUvIndex(int index);
+
         int rainGauge() const;
         void setRainGauge(int rainGauge);
 
@@ -165,6 +175,8 @@ class Dataset {
         int m_windGust = 0;
         int m_pressure = 0; // 1/100 hPa, sea level
         int m_rainGauge = 0;
+        int m_solarRadiation = 0; // W/m^2
+        int m_uvIndex = 0;
         bool m_IsRain = false;
         int m_windDirection = 0; // degrees
 };
@@ -270,6 +282,15 @@ class CurrentWeather
         void setWindDirection(int windDirection);
         std::string windDirectionStr() const;
 
+        // Solar Radiation
+
+        bool hasSolarRadiation() const;
+        int solarRadiation() const;
+        void setSolarRadiation(int radiation);
+
+        int uvIndex() const;
+        void setUvIndex(int index);
+
         // Rain
 
         bool hasRain() const;
@@ -308,6 +329,9 @@ class CurrentWeather
 
         bool m_hasWindDirection = false;
         int m_windDirection = 0; // degrees
+
+        bool m_hasSolarRadiation = false;
+        int m_solarRadiation = 0, m_uvIndex = 0;
 
         bool m_hasRain = false;
         int m_rain = 0;

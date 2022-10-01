@@ -61,6 +61,7 @@ class DayReportGenerator : public ReportGenerator
         void createWindDiagram();
         void createRainDiagram();
         void createPressureDiagram();
+        void createSolarRadiationDiagram();
 
         void createHtml();
 
@@ -68,6 +69,7 @@ class DayReportGenerator : public ReportGenerator
         bool haveRainData() const;
         bool haveWindData() const;
         bool havePressureData() const;
+        bool haveSolarRadiationData() const;
 
         bool haveWeatherData(const std::string &name) const;
 
@@ -78,10 +80,11 @@ class DayReportGenerator : public ReportGenerator
         bw::Datetime m_date;
 
         // 0=false, 1=true, -1=not set
-        mutable int m_havePressure;
-        mutable int m_haveRain;
-        mutable int m_haveWind;
-        mutable int m_haveHumidity;
+        mutable int m_havePressure = -1;
+        mutable int m_haveRain = -1;
+        mutable int m_haveWind = -1;
+        mutable int m_haveHumidity = -1;
+        mutable int m_haveSolarRadiation = -1;
 };
 
 } // end namespace reportgen

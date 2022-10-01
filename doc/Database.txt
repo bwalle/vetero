@@ -7,23 +7,25 @@ Table weatherdata
 This table contains all data sets that are received.
 
 -------------------------------------------------------------------------------
- Name         | Type      | Description
+ Name            | Type      | Description
 ===============================================================================
- timestamp    | DATETIME  | Time of the measurement, localtime
- jdate        | INTEGER   | Julian date (redundant but improves performance)
- temp         | INTEGER   | Temperature in 1/100 °C (e.g. 2750)
- humid        | INTEGER   | Humidity in 1/100 % (e.g. 7500). 0 if the
-              |           | sensor doesn't measure humidity.
- dewpoint     | INTEGER   | Dewpoint in 1/100 °C (e.g. 1675). Calculcated from
-              |           | Dewpoint in 1/100 °C (e.g. 1675). Calculcated from
-              |           | the temperature and the humidity. 0 if the sensor
-              |           | doesn't measure the humidity.
- wind         | INTEGER   | Wind in 1/100 km/h (e.g. 400). 0 if the sensor
-              |           | doesn't measure the wind.
-              |           | doesn't measure the wind.
- wind_bft     | INTEGER   | Wind strength in Beaufort.
- rain         | INTEGER   | Rain in 1/1000 l/m², counted from the last
-              |           | measurement.
+ timestamp       | DATETIME  | Time of the measurement, localtime
+ jdate           | INTEGER   | Julian date (redundant but improves performance)
+ temp            | INTEGER   | Temperature in 1/100 °C (e.g. 2750)
+ humid           | INTEGER   | Humidity in 1/100 % (e.g. 7500). 0 if the
+                 |           | sensor doesn't measure humidity.
+ dewpoint        | INTEGER   | Dewpoint in 1/100 °C (e.g. 1675). Calculcated from
+                 |           | Dewpoint in 1/100 °C (e.g. 1675). Calculcated from
+                 |           | the temperature and the humidity. 0 if the sensor
+                 |           | doesn't measure the humidity.
+ wind            | INTEGER   | Wind in 1/100 km/h (e.g. 400). 0 if the sensor
+                 |           | doesn't measure the wind.
+                 |           | doesn't measure the wind.
+ wind_bft        | INTEGER   | Wind strength in Beaufort.
+ solar_radiation | INTEGER   | Solar radiation in W/m².
+ uv_index        | INTEGER   | UV Index.
+ rain            | INTEGER   | Rain in 1/1000 l/m², counted from the last
+                 |           | measurement.
 -------------------------------------------------------------------------------
 
 Table day_statistics

@@ -167,6 +167,26 @@ void Dataset::setWindDirection(int windDirection)
     m_windDirection = windDirection;
 }
 
+int Dataset::solarRadiation() const
+{
+    return m_solarRadiation;
+}
+
+void Dataset::setSolarRadiation(int radiation)
+{
+    m_solarRadiation = radiation;
+}
+
+int Dataset::uvIndex() const
+{
+    return m_uvIndex;
+}
+
+void Dataset::setUvIndex(int index)
+{
+    m_uvIndex = index;
+}
+
 int Dataset::rainGauge() const
 {
     return m_rainGauge;
@@ -206,6 +226,8 @@ std::string Dataset::str() const
        << "wind="             << windSpeed() << "km/h, "
        << "wind="             << windGust() << "km/h, "
        << "windDirection="    << windDirection() << "deg, "
+       << "solarRadiation="   << solarRadiation() << "W/m^2, "
+       << "uvIndex="          << uvIndex() << ", "
        << "pressure="         << pressure() << "hPa, "
        << "rainGauge="        << rainGauge() << ", "
        << "rain="             << std::boolalpha << isRain();
@@ -504,6 +526,34 @@ std::string CurrentWeather::windDirectionStr() const
 
     int index = m_windDirection/22 % 16;
     return windDirs[index];
+}
+
+/* Solar Radiation {{{ */
+
+bool CurrentWeather::hasSolarRadiation() const
+{
+    return m_hasSolarRadiation;
+}
+
+int CurrentWeather::solarRadiation() const
+{
+    return m_solarRadiation;
+}
+
+void CurrentWeather::setSolarRadiation(int radiation)
+{
+    m_hasSolarRadiation = true;
+    m_solarRadiation = radiation;
+}
+
+int CurrentWeather::uvIndex() const
+{
+    return m_uvIndex;
+}
+
+void CurrentWeather::setUvIndex(int index)
+{
+    m_uvIndex = index;
 }
 
 /* }}} */

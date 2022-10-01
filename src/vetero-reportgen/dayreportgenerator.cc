@@ -34,12 +34,8 @@ namespace reportgen {
 DayReportGenerator::DayReportGenerator(VeteroReportgen      *reportGenerator,
                                        const std::string    &date)
     : ReportGenerator(reportGenerator),
-      m_dateString(date),
-      m_havePressure(-1),
-      m_haveWind(-1),
-      m_haveHumidity(-1),
-      m_haveRain(-1)
-{}
+      m_dateString(date)
+  {}
 
 void DayReportGenerator::generateReports()
 {
@@ -86,6 +82,8 @@ void DayReportGenerator::generateOneReport(const std::string &date)
         createWindDiagram();
     if (haveRainData())
         createRainDiagram();
+    if (haveSolarRadiationData())
+        createSolarRadiationDiagram();
     if (havePressureData())
         createPressureDiagram();
 
@@ -246,6 +244,45 @@ void DayReportGenerator::createRainDiagram()
     plot.plot(result.data);
 }
 
+void DayReportGenerator::createSolarRadiationDiagram()
+{
+    BW_DEBUG_DBG("Solar radiation diagram for %s", m_dateString.c_str());
+
+    common::Database::Result result = reportgen()->database().executeSqlQuery(
+        "SELECT   time(timestamp), solar_radiation, uv_index "
+        "FROM     weatherdata_float "
+        "WHERE    jdate = julianday(?) "
+        "ORDER BY timestamp",
+        m_date.strftime("%Y-%m-%d 12:00").c_str()
+    );
+
+    WeatherGnuplot plot(reportgen()->configuration());
+    plot.setWorkingDirectory(reportgen()->configuration().reportDirectory());
+    plot.setOutputFile(nameProvider().dailyDiagram(m_date, "solar"));
+    plot << "set xlabel '"<< _("Time [HH:MM]") << "'\n";
+    plot << "set format x '%H:%M'\n";
+    plot << "set grid\n";
+    plot << "set timefmt '%H:%M:%S'\n";
+    plot << "set xdata time\n";
+    plot << "set xrange ['00:00:00' : '24:00:00']\n";
+    plot << "set xtics format '%H:%M'\n";
+    plot << "set xtics '02:00'\n";
+    plot << "set ylabel '" << _("Solar radiation [W/m²]") << "'\n";
+    plot << "set y2label '" << _("UVI") << "'\n";
+    plot << "set grid xtics\n";
+    plot << "set ytics nomirror\n";
+    plot << "set y2tics nomirror\n";
+    plot << "set yrange [0 : 1200]\n";
+    plot << "set y2range [0 : 12]\n";
+    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines title 'Strahlung' "
+            "linecolor rgb '#ff9900' lw 2";
+    plot << ", '" << Gnuplot::PLACEHOLDER << "' using 1:3 with lines title 'UVI' "
+            "linecolor rgb '#993300' lw 2 axis x1y2 ";
+    plot << "\n";
+
+    plot.plot(result.data, 2);
+}
+
 void DayReportGenerator::createPressureDiagram()
 {
     BW_DEBUG_DBG("Generating pressure diagrams for %s", m_dateString.c_str());
@@ -334,6 +371,12 @@ void DayReportGenerator::createHtml()
         html.addTopLink();
     }
 
+    if (haveSolarRadiationData()) {
+        html.addSection(_("Solar radiation profile"), _("Solar radiation"), "solar");
+        html.img(nameProvider().dailyDiagramLink(m_date, "solar"));
+        html.addTopLink();
+    }
+
     if (havePressureData()) {
         html.addSection(_("Air pressure profile"), _("Air pressure"), "pressure");
         html.img(nameProvider().dailyDiagramLink(m_date, "pressure"));
@@ -350,6 +393,14 @@ bool DayReportGenerator::havePressureData() const
         m_havePressure = haveWeatherData("pressure");
 
     return m_havePressure;
+}
+
+bool DayReportGenerator::haveSolarRadiationData() const
+{
+    if (m_haveSolarRadiation == -1)
+        m_haveSolarRadiation = haveWeatherData("solar_radiation");
+
+    return m_haveSolarRadiation;
 }
 
 bool DayReportGenerator::haveHumidityData() const
@@ -397,6 +448,7 @@ void DayReportGenerator::reset()
     m_haveHumidity = -1;
     m_haveWind = -1;
     m_haveRain = -1;
+    m_haveSolarRadiation = -1;
 }
 
 } // end namespace reportgen
