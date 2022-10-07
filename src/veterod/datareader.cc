@@ -424,9 +424,15 @@ vetero::common::Dataset Ws980DataReader::read()
     BW_DEBUG_TRACE("Total rain raw: 0x%0x", total_rain);
     data.setRainGauge(total_rain);
 
-    uint16_t solar_radiation = ((response[76] << 8) | response[77]);
-    BW_DEBUG_TRACE("Solar radiation raw: 0x%0hx", solar_radiation);
-    data.setSolarRadiation(solar_radiation);
+    uint32_t lux = ((response[71] << 24) |
+		    (response[72] << 16) |
+		    (response[73] << 8) |
+		    response[74] );
+    BW_DEBUG_TRACE("Lux: 0x%0x", lux);
+    data.setSolarRadiation(lux/10.0/126.7);
+
+    uint16_t uv_raw = ((response[76] << 8) | response[77]);
+    BW_DEBUG_TRACE("UV raw: 0x%0hx", uv_raw);
 
     uint8_t uv_index = response[79];
     BW_DEBUG_TRACE("UV Index Solar radiation raw: 0x%0hhx", uv_index);
