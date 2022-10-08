@@ -331,7 +331,7 @@ void Veterod::execSingleTest(DataReader &reader)
        << "Wind speed      : " << dataset.windSpeed()/100.0 << " km/h\n"
        << "Wind gust       : " << dataset.windGust()/100.0 << " km/h\n"
        << "Pressure        : " << dataset.pressure()/100.0 << " hPa\n"
-       << "Solar radiation : " << dataset.solarRadiation() << " W/m²\n"
+       << "Solar radiation : " << dataset.solarRadiation()/10.0 << " W/m²\n"
        << "UV Index        : " << dataset.uvIndex() << "\n"
        << "Rain            : " << dataset.rainGauge()*dataset.rainGaugeFactor()/1000.0 << " mm\n";
 }

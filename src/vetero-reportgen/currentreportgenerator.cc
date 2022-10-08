@@ -211,7 +211,7 @@ void CurrentReportGenerator::createSVG(const common::CurrentWeather &currentWeat
         pos = line.find("SSSS");
         if (pos != std::string::npos) {
             if (currentWeather.hasSolarRadiation())
-                value = std::to_string(currentWeather.solarRadiation());
+                value = common::str_printf_l("%4.1lf", loc.c_str(), currentWeather.solarRadiationReal());
             else
                 value = "----";
             line.replace(pos, 4, value);

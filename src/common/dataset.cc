@@ -540,11 +540,17 @@ int CurrentWeather::solarRadiation() const
     return m_solarRadiation;
 }
 
+double CurrentWeather::solarRadiationReal() const
+{
+    return m_solarRadiation/10.0;
+}
+
 void CurrentWeather::setSolarRadiation(int radiation)
 {
     m_hasSolarRadiation = true;
     m_solarRadiation = radiation;
 }
+
 
 int CurrentWeather::uvIndex() const
 {

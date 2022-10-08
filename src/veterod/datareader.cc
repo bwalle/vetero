@@ -429,7 +429,7 @@ vetero::common::Dataset Ws980DataReader::read()
 		    (response[73] << 8) |
 		    response[74] );
     BW_DEBUG_TRACE("Lux: 0x%0x", lux);
-    data.setSolarRadiation(lux/10.0/126.7);
+    data.setSolarRadiation(lround(lux/126.7));
 
     uint16_t uv_raw = ((response[76] << 8) | response[77]);
     BW_DEBUG_TRACE("UV raw: 0x%0hx", uv_raw);

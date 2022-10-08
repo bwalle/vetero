@@ -181,7 +181,7 @@ void DbAccess::initTables() const
         "    round(wind_gust/100.0, 1)        AS wind_gust,"
         "    wind_gust_bft                    AS wind_gust_bft,"
         "    wind_dir                         AS wind_dir,"
-        "    solar_radiation                  AS solar_radiation,"
+        "    round(solar_radiation/10.0, 1)   AS solar_radiation,"
         "    uv_index                         AS uv_index,"
         "    round(rain/1000.0, 3)            AS rain, "
         "    round(pressure/100.0, 0)         AS pressure "
@@ -246,7 +246,7 @@ void DbAccess::initTables() const
         "FROM month_statistics"
     );
 
-    writeMiscEntry(DatabaseSchemaRevision, 7);
+    writeMiscEntry(DatabaseSchemaRevision, 8);
 }
 
 void DbAccess::writeMiscEntry(const std::string &key, const std::string &value) const

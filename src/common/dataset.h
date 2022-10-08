@@ -175,7 +175,7 @@ class Dataset {
         int m_windGust = 0;
         int m_pressure = 0; // 1/100 hPa, sea level
         int m_rainGauge = 0;
-        int m_solarRadiation = 0; // W/m^2
+        int m_solarRadiation = 0; // 1/10 W/m^2
         int m_uvIndex = 0;
         bool m_IsRain = false;
         int m_windDirection = 0; // degrees
@@ -286,6 +286,7 @@ class CurrentWeather
 
         bool hasSolarRadiation() const;
         int solarRadiation() const;
+        double solarRadiationReal() const;
         void setSolarRadiation(int radiation);
 
         int uvIndex() const;
