@@ -249,7 +249,7 @@ void DayReportGenerator::createSolarRadiationDiagram()
     BW_DEBUG_DBG("Solar radiation diagram for %s", m_dateString.c_str());
 
     common::Database::Result result = reportgen()->database().executeSqlQuery(
-        "SELECT   time(timestamp), solar_radiation, uv_index "
+        "SELECT   time(timestamp), solar_radiation "
         "FROM     weatherdata_float "
         "WHERE    jdate = julianday(?) "
         "ORDER BY timestamp",
@@ -268,19 +268,14 @@ void DayReportGenerator::createSolarRadiationDiagram()
     plot << "set xtics format '%H:%M'\n";
     plot << "set xtics '02:00'\n";
     plot << "set ylabel '" << _("Solar radiation [W/m²]") << "'\n";
-    plot << "set y2label '" << _("UVI") << "'\n";
     plot << "set grid xtics\n";
     plot << "set ytics nomirror\n";
-    plot << "set y2tics nomirror\n";
     plot << "set yrange [0 : 1200]\n";
-    plot << "set y2range [0 : 12]\n";
-    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines title 'Strahlung' "
+    plot << "plot '" << Gnuplot::PLACEHOLDER << "' using 1:2 with lines notitle "
             "linecolor rgb '#ff9900' lw 2";
-    plot << ", '" << Gnuplot::PLACEHOLDER << "' using 1:3 with lines title 'UVI' "
-            "linecolor rgb '#993300' lw 2 axis x1y2 ";
     plot << "\n";
 
-    plot.plot(result.data, 2);
+    plot.plot(result.data);
 }
 
 void DayReportGenerator::createPressureDiagram()
