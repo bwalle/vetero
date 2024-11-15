@@ -78,8 +78,32 @@ void DataSocket::connect(const std::string &host, int port)
         throw SystemError("Unable to " + cause + " to \"" + host + "\"");
 }
 
-ssize_t DataSocket::read(void *buf, size_t nbyte)
+bool DataSocket::waitForRead(int timeout_ms)
 {
+    fd_set fdset;
+    FD_ZERO(&fdset);
+    FD_SET(m_socket, &fdset);
+
+    struct timeval timeout = {
+        timeout_ms / 1000,
+        (timeout_ms % 1000) * 1000
+    };
+
+    int rc = select(m_socket+1, &fdset, nullptr, nullptr, &timeout);
+    if (rc > 0)
+        return true;
+    else if (rc == 0)
+        return false;
+    else
+        throw SystemError("Error in select()");
+}
+
+ssize_t DataSocket::read(void *buf, size_t nbyte, int timeout)
+{
+    if (timeout > 0)
+        if (!waitForRead(timeout))
+            return 0;
+
     ssize_t result = ::read(m_socket, buf, nbyte);
     if (result < 0)
         throw SystemError("Unable to read from socket");

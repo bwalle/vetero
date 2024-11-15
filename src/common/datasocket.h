@@ -98,14 +98,29 @@ public:
     void connect(const std::string &host, int port);
 
     /**
+     * @brief Waits for data available for read
+     *
+     * Blocks until data is ready to be read.
+     *
+     * @retval true data is available
+     * @retval false timeout reached
+     * @exception SystemError on any errro
+     */
+    bool waitForRead(int timeout_ms);
+
+    /**
      * @brief Reads from the socket
      * 
+     * If @c timeout_ms is non-zero, times out when no data is available after
+     * @c timeout_ms milliseconds. Then a value of 0 is returend.
+     *
      * @param[out] buf the output buffer
      * @param[in] nbyte length of the buffer
+     * @param[in] timeout_ms timeout if non-zero, waits only @c timeout_ms milliseconds.
      * @return ssize_t the number of bytes read
      * @exception SystemError on any errro
      */
-    ssize_t read(void *buf, size_t nbyte);
+    ssize_t read(void *buf, size_t nbyte, int timeout_ms=0);
 
     /**
      * @brief Writes to the socket

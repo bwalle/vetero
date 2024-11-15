@@ -375,9 +375,12 @@ vetero::common::Dataset Ws980DataReader::read()
     socket.write(get_data, sizeof(get_data));
 
     unsigned char response[256];
-    ssize_t data_len = socket.read(response, sizeof(response));
+    ssize_t data_len = socket.read(response, sizeof(response), 5000);
 
     BW_DEBUG_TRACE("Got %zd bytes of data\n", data_len);
+
+    if (data_len == 0) // timeout
+        throw common::ApplicationError("ws980: read timeout");
 
     if (data_len < 82)
         throw common::ApplicationError("ws980: response too short: got " + std::to_string(data_len) +
